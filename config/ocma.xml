@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<berkeleymapper>
+  <metadata>
+    <name>OMCA Berkeley Mapper Configuration File</name>
+    <abstract>GIS configuration file for the Oakland Museum of California query interface</abstract>
+    <mapkeyword keyword="objects"></mapkeyword>
+    <logo img="http://museumca.org/sites/default/files/OMCA-logo.png" url="http://museumca.org" />
+  </metadata>
+  <recordlinkback>
+    <linkback method="root" linkurl="https://10.99.1.12/omca/search/search/?displayType=full&amp;maxresults=1&amp;start=0" text="View Details" fieldname="Full Record" key1="musno" value1="char120:1" />
+  </recordlinkback>
+  <concepts xlmns:darwin="http://digir.net/schema/conceptual/darwin/2003/1.0">
+    <concept viewlist="1" colorlist="0" datatype="char120:1" alias="Museum Number" />
+    <concept viewlist="1" colorlist="0" datatype="char120:2" alias="Object Name" />
+    <concept viewlist="1" colorlist="0" datatype="char255:1" alias="Collection Place" />
+    <concept viewlist="1" colorlist="1" datatype="char120:3" alias="Culture" />
+    <concept viewlist="0" colorlist="0" datatype="darwin:decimallatitude" alias="DecimalLatitude" />
+    <concept viewlist="0" colorlist="0" datatype="darwin:decimallongitude" alias="DecimalLongitude" />
+  </concepts>
+  <colors method="dynamicfield" fieldname="char120:3" label="Culture"/>
+</berkeleymapper>
