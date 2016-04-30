@@ -1,7 +1,7 @@
 #	parameter specification spreadsheet for a django portal app															x
 #																x
-date	4/30/2016															x
-revision	6															x
+date	4/29/2016															x
+revision	5															x
 title	Simple Portal															x
 #																x
 server	http://localhost:8983/solr															x
@@ -14,10 +14,10 @@ field	1	id	id	id			id									x
 field	2	csid	Object CSID	csid_s			csid								39	x
 field	3	objectcsid	Record CSID	objectcsid_s			csid								40	x
 field	4	objectNumber	Identification Number	objectnumber_s			objectno,accession	2,1		1	1				2	x
-field	5	sortableObjectNumber	Sortable Identification Number	sortableobjectnumber_s			string,sortkey								1	x
+field	5	sortableObjectNumber	Sortable Identification Number	sortableobjectnumber_s		ss	string,sortkey								1	x
 field	6	objectName	Object Name	objectname_s		ss	keyword,mainentry	3,1	1	2	2				3	x
 field	7	otherNumber	Number	objaltnum_s		ss	keyword	5,1				27			34	x
-field	8	title	Title	title_s		ss	keyword	4,1			4	4	3		7	x
+field	8	title	Title	title_s			keyword	4,1			4	4	3		7	x
 field	9	art	Art Checkbox	art_s			dropdown	6,1	4			24			31	x
 field	10	history	History Checkbox	history_s			dropdown	7,1	4			25			32	x
 field	11	science	Science Checkbox	science_s			dropdown	8,1	4			26			33	x
@@ -25,7 +25,7 @@ field	12	ipAudit	IP Audit	ipaudit_s			dropdown		5			28			35	displayonly
 field	13	recordStatus	Record Status	recordstatus_s			dropdown		6			31			38	displayonly
 field	14	comments	Inhouse Notes	comments_s		ss	keyword					29			36	displayonly
 field	15	computedCurrentLocation	Current Location	computedcurrentlocation_s			keyword	9,1			10	8			11	x
-field	16	dhName	Taxon/Common Name	dhname_s		ss	keyword	10,1	2		3	1	1		4	x
+field	16	dhName	Taxon/Common Name	dhname_s			keyword	10,1	2		3	1	1		4	x
 field	17	styles	Style	styles_s		ss	keyword	1,2				9			12	x
 field	18	colors	Colors	colors_s		ss	keyword	2,2				10			13	x
 field	19	materials	Materials	materials_s		ss	keyword	3,2	3							x
@@ -38,12 +38,12 @@ field	25	contentPlace	Content Place	contentplace_s		ss	keyword	6,2				16			19	x
 field	26	contentPerson	Content Person	contentperson_s		ss	keyword	7,2				17			20	x
 field	27	contentOrganization	Content Organization	contentorganization_s		ss	keyword	8,2				18			21	x
 field	28	contentNote	Content Note	contentnote_s			keyword					19			22	displayonly
-field	29	proddate_display	Production Date	objproddate_s		objproddate_ss	keyword	2,3			7	5	4		8	x
+field	29	proddate_display	Production Date	objproddate_s		objproddate_s	keyword	2,3			7	5	4		8	x
 field	30	proddate_begin	Production Date (earliest)	objproddate_begin_dt		objproddate_begin_dt	date									x
 field	31	proddate_end	Production Date (latest)	objproddate_end_dt		objproddate_end_dt	date									x
-field	32	productionPerson	Maker	objectproductionperson_s		objectproductionperson_ss	keyword	1,3			5	2	2		5	x
-field	33	productionOrganization	Production Organization	objectproductionorganization_s		objectproductionorganization_ss	keyword	3,3			6	3			6	x
-field	34	productionPlace	Production Place	objectproductionplace_s		objectproductionplace_ss	keyword	4,3		3					23	x
+field	32	productionPerson	Maker	objectproductionperson_s		ss	keyword	1,3			5	2	2		5	x
+field	33	productionOrganization	Production Organization	objectproductionorganization_s		ss	keyword	3,3			6	3			6	x
+field	34	productionPlace	Production Place	objectproductionplace_s		ss	keyword	4,3		3					23	x
 field	35	productionTechnique	Technique	objtechnique_s		objtechnique_ss	keyword	5,3								x
 field	36	assocPerson	Associated Person	assocperson_s		ss	keyword	6,3							24	x
 field	37	assocOrganization	Associated Organization	assocorganization_s		ss	keyword	7,3							25	x
@@ -77,10 +77,10 @@ field	64	conservationstatus	Conservation Status	conservationstatus_s		ss	dropdow
 field	65	conservationstatusdate	Conservation Status Date	conservationstatusdate_s		ss	keyword									x
 field	66	exitNumber	Object Exit Number	objexitno_s		objexitno_s	keyword									x
 field	67	keyword	Keyword	text			keyword	1,1								x
-field	68	blobs	Blob	blob_ss		ss	blob									x
+field	68	blobs	Blob	blob_s			blob									x
 field	69	cards	Card	card_s			card									x
 field	70	primaryimage	Primary Image	primaryimage_s			primaryimage									x
-field	71	imagetypes	Image Type	imagetype_s		ss	dropdown									x
+field	71	imagetypes	Image Type	imagetype_s			dropdown									x
 field	72	hasimage	Has image?	hasimages_s			dropdown	11,3								x
 field	73	collection	collection	collection_s												x
 field	74	computedcurrentlocationrefname	computedcurrentlocationrefname	computedcurrentlocationrefname_s												x
