@@ -1,20 +1,16 @@
 #!/bin/bash -x
 date
 ##############################################################################
-# move the current set of extracts to temp (thereby saving the previous run, just in case)
-##############################################################################
-mv 4solr.*.csv.gz /tmp
-##############################################################################
 # while most of this script is already tenant specific, many of the specific commands
 # are shared between the different scripts; having them be as similar as possible
 # eases maintainance. ergo, the TENANT parameter
 ##############################################################################
 TENANT=$1
-SERVER="localhost sslmode=prefer password=xxx"
+SERVER="localhost sslmode=prefer password=xxxx"
 USERNAME="nuxeo_$TENANT"
 DATABASE="${TENANT}_domain_${TENANT}"
 CONNECTSTRING="host=$SERVER dbname=$DATABASE"
-export NUMCOLS=56
+export NUMCOLS=57
 ##############################################################################
 # extract metadata and media info from CSpace
 ##############################################################################

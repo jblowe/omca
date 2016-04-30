@@ -10,11 +10,11 @@ mv 4solr.*.csv.gz /tmp
 # eases maintainance. ergo, the TENANT parameter
 ##############################################################################
 TENANT=$1
-SERVER="localhost sslmode=prefer password=xxx"
+SERVER="localhost sslmode=prefer password=xxxx"
 USERNAME="nuxeo_$TENANT"
 DATABASE="${TENANT}_domain_${TENANT}"
 CONNECTSTRING="host=$SERVER dbname=$DATABASE"
-export NUMCOLS=56
+export NUMCOLS=57
 ##############################################################################
 # extract metadata and media info from CSpace
 ##############################################################################
@@ -52,8 +52,8 @@ wc -l *.csv
 curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8'
 curl -S -s "http://localhost:8983/solr/${TENANT}-public/update" --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'
 time curl -S -s "http://localhost:8983/solr/${TENANT}-public/update/csv?commit=true&header=true&trim=true&separator=%7C&f.othernumbers_ss.split=true&f.othernumbers_ss.separator=;&f.blob_ss.split=true&f.blob_ss.separator=,&encapsulator=\\" --data-binary @4solr.$TENANT.public.csv -H 'Content-type:text/plain; charset=utf-8'
-# get rid of intermediate files
-rm d?.csv m?.csv b?.csv media.csv metadata.csv
+# get rid of intermediate files except media which is used in the construction of the internal portal datastore
+rm d?.csv m?.csv b?.csv metadata.csv
 # zip up .csvs, save a bit of space on backups
 gzip -f *.csv
 #

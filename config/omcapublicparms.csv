@@ -14,7 +14,7 @@ field	1	id	id	id			id									x
 field	2	csid	Object CSID	csid_s			csid								39	x
 field	3	objectcsid	Record CSID	objectcsid_s			csid								40	x
 field	4	objectNumber	Identification Number	objectnumber_s			objectno,accession	2,1		1	1				2	x
-field	5	sortableObjectNumber	Sortable Identification Number	sortableobjectnumber_s		ss	string,sortkey								1	x
+field	5	sortableObjectNumber	Sortable Identification Number	sortableobjectnumber_s			string,sortkey								1	x
 field	6	objectName	Object Name	objectname_s		ss	keyword,mainentry	3,1	1	2	2				3	x
 field	7	otherNumber	Number	objaltnum_s		ss	keyword	5,1				27			34	x
 field	8	title	Title	title_s			keyword	4,1			4	4	3		7	x
@@ -84,7 +84,7 @@ field	71	imagetypes	Image Type	imagetype_s			dropdown									x
 field	72	hasimage	Has image?	hasimages_s			dropdown	11,3								x
 field	73	collection	collection	collection_s												x
 field	74	computedcurrentlocationrefname	computedcurrentlocationrefname	computedcurrentlocationrefname_s												x
-field	75	dimensionsummary	dimensionsummary	dimensionsummary_s			keyword	4,2			8	7	6		10	x
+field	75	dimensionsummary	Dimensions	dimensionsummary_s			keyword	4,2			8	7	6		10	x
 field	76	exhibitionobjectnumber	exhibitionobjectnumber	exhibitionobjectnumber_s												x
 field	77	exhibitionobjectnumberomca	exhibitionobjectnumberomca	exhibitionobjectnumberomca_s												x
 field	78	hazarddate	hazarddate	hazarddate_s												x

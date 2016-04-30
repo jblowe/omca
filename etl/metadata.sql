@@ -28,6 +28,7 @@ SELECT
   regexp_replace(coom.ipaudit, '^.*\)''(.*)''$', '\1') AS ipaudit_s,
   coom.computedcurrentlocationdisplay AS computedcurrentlocation_s,
   coom.argusremarks AS argusremarks_s,
+  coom.argusdescription AS argusdescription_s,
 
   exhobjg.exhibitionobjectnumber AS exhibitionobjectnumber_s,
   exhobjomcag.exhibitionobjectnumberomca AS exhibitionobjectnumberomca_s,
@@ -35,7 +36,7 @@ SELECT
   titleg.title AS title_s,
   gc.responsibledepartment AS responsibledepartment_s,
   mpg.dimensionsummary AS dimensionsummary_s,
-  mpg.measuredpart AS mmeasuredpart_s,
+  regexp_replace(mpg.measuredpart, '^.*\)''(.*)''$', '\1') AS mmeasuredpart_s,
   regexp_replace(dethistg.dhname, '^.*\)''(.*)''$', '\1') AS dhname_s,
   matg.materialsource AS materials_s,
   objcmpg.objectcomponentname AS objectcomponentname_s,
@@ -49,13 +50,7 @@ SELECT
   regexp_replace(aorgg.assocorganization, '^.*\)''(.*)''$', '\1') AS assocorganization_s,
   regexp_replace(aplaceg.assocplace, '^.*\)''(.*)''$', '\1') AS assocplace_s,
   accg.assocculturalcontext AS assocculturalcontext_s,
-
-  lic.loaninnumber loaninnumber_s,
-  regexp_replace(lg.lender, '^.*\)''(.*)''$', '\1') AS lender_s,
-
-  loc.loanoutnumber loanoutnumber_s,
-  regexp_replace(loc.borrower, '^.*\)''(.*)''$', '\1') AS borrower_s,
-
+  lg.lender AS lender_s,
   lsg.loanstatusnote AS loanstatusnote_s,
   lsg.loanstatus AS loanstatus_s,
   lsg.loanstatusdate AS loanstatusdate_s,
@@ -98,19 +93,10 @@ FROM collectionobjects_common coc
   LEFT OUTER JOIN groups_common gc ON (h13.id = gc.id)
   LEFT OUTER JOIN hierarchy h14 ON (h14.parentid = coc.id AND h14.name='conditionchecks_common:hazardGroupList' AND h14.pos=0)
   LEFT OUTER JOIN hazardgroup hazardg ON (h14.id = hazardg.id)
-
-  JOIN relations_common rc1 ON h1.name=rc1.objectcsid
-  JOIN hierarchy hr2 ON rc1.subjectcsid=hr2.name
-  JOIN loansin_common lic ON hr2.id=lic.id
-  LEFT OUTER JOIN hierarchy h15 ON (h15.parentid = lic.id AND h15.name='loansin_common:lenderGroupList' AND h15.pos=0)
+  LEFT OUTER JOIN hierarchy h15 ON (h15.parentid = coc.id AND h15.name='loansin_common:lenderGroupList' AND h15.pos=0)
   LEFT OUTER JOIN lendergroup lg ON (h15.id = lg.id)
-
-  JOIN relations_common rc2 ON h1.name=rc2.objectcsid
-  JOIN hierarchy hr3 ON rc2.subjectcsid=hr3.name
-  JOIN loansout_common loc ON hr3.id=lic.id
-  LEFT OUTER JOIN hierarchy h16 ON (h16.parentid = loc.id AND h16.name='loansout_common:loanStatusGroupList' AND h16.pos=0)
+  LEFT OUTER JOIN hierarchy h16 ON (h16.parentid = coc.id AND h16.name='loansin_common:loanStatusGroupList' AND h16.pos=0)
   LEFT OUTER JOIN loanstatusgroup lsg ON (h16.id = lsg.id)
-
   LEFT OUTER JOIN hierarchy h17 ON (h17.parentid = coc.id AND h17.name='collectionobjects_common:materialGroupList' AND h17.pos=0)
   LEFT OUTER JOIN materialgroup matg ON (h17.id = matg.id)
   LEFT OUTER JOIN hierarchy h18 ON (h18.parentid = coc.id AND h18.name='collectionobjects_common:measuredPartGroupList' AND h18.pos=0)
