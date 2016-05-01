@@ -1,0 +1,8 @@
+collectionobjects_common,comments
+collectionobjects_common,styles
+collectionobjects_common,colors
+collectionobjects_common,contentconcepts
+collectionobjects_common,contentplaces
+collectionobjects_common,contentpersons
+collectionobjects_common,contentorganizations
+collectionobjects_omca,exhibitionhistories
