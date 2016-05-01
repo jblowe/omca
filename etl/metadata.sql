@@ -27,8 +27,8 @@ SELECT
   coom.science AS science_s,
   regexp_replace(coom.ipaudit, '^.*\)''(.*)''$', '\1') AS ipaudit_s,
   coom.computedcurrentlocationdisplay AS computedcurrentlocation_s,
-  coom.argusremarks AS argusremarks_s,
-  coom.argusdescription AS argusdescription_s,
+  replace(coom.argusremarks,'|',' ') AS argusremarks_s,
+  replace(coom.argusdescription,'|',' ') AS argusdescription_s,
 
   exhobjg.exhibitionobjectnumber AS exhibitionobjectnumber_s,
   exhobjomcag.exhibitionobjectnumberomca AS exhibitionobjectnumberomca_s,

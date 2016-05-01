@@ -2,7 +2,8 @@
 # cleanup this directory to return it to a pristine state.
 #
 rm 4solr.*.csv.gz
-rm *.csv
+rm basic.csv
+rm part*.csv
 rm nohup.out
 rm errors.csv
 rm header4Solr.csv

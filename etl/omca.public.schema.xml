@@ -195,63 +195,47 @@
 
    <!-- Create keyword versions for searching -->
 
-    <copyField source="csid_s" dest="csid_txt"/>
-    <copyField source="objectcsid_s" dest="objectcsid_txt"/>
+
     <copyField source="objectname_s" dest="objectname_txt"/>
     <copyField source="objectnumber_s" dest="objectnumber_txt"/>
-    <copyField source="recordstatus_s" dest="recordstatus_txt"/>
-    <copyField source="comments_s" dest="comments_txt"/>
-    <copyField source="styles_s" dest="styles_txt"/>
-    <copyField source="colors_s" dest="colors_txt"/>
-    <copyField source="physicaldescription_s" dest="physicaldescription_txt"/>
-    <copyField source="contentdescription_s" dest="contentdescription_txt"/>
-    <copyField source="contentconcept_s" dest="contentconcept_txt"/>
-    <copyField source="contentplace_s" dest="contentplace_txt"/>
-    <copyField source="contentperson_s" dest="contentperson_txt"/>
-    <copyField source="contentorganization_s" dest="contentorganization_txt"/>
-    <copyField source="contentnote_s" dest="contentnote_txt"/>
-    <copyField source="fieldcollectionplace_s" dest="fieldcollectionplace_txt"/>
-    <copyField source="collection_s" dest="collection_txt"/>
     <copyField source="numberofobjects_s" dest="numberofobjects_txt"/>
     <copyField source="computedcurrentlocationrefname_s" dest="computedcurrentlocationrefname_txt"/>
+    <copyField source="dhname_s" dest="dhname_txt"/>
     <copyField source="sortableobjectnumber_s" dest="sortableobjectnumber_txt"/>
     <copyField source="art_s" dest="art_txt"/>
     <copyField source="history_s" dest="history_txt"/>
     <copyField source="science_s" dest="science_txt"/>
-    <copyField source="ipaudit_s" dest="ipaudit_txt"/>
     <copyField source="computedcurrentlocation_s" dest="computedcurrentlocation_txt"/>
+    <copyField source="recordstatus_s" dest="recordstatus_txt"/>
+    <copyField source="physicaldescription_s" dest="physicaldescription_txt"/>
+    <copyField source="contentdescription_s" dest="contentdescription_txt"/>
+    <copyField source="contentnote_s" dest="contentnote_txt"/>
+    <copyField source="fieldcollectionplace_s" dest="fieldcollectionplace_txt"/>
+    <copyField source="collection_s" dest="collection_txt"/>
+    <copyField source="ipaudit_s" dest="ipaudit_txt"/>
     <copyField source="argusremarks_s" dest="argusremarks_txt"/>
-    <copyField source="exhibitionobjectnumber_s" dest="exhibitionobjectnumber_txt"/>
-    <copyField source="exhibitionobjectnumberomca_s" dest="exhibitionobjectnumberomca_txt"/>
-    <copyField source="grouptitle_s" dest="grouptitle_txt"/>
-    <copyField source="title_s" dest="title_txt"/>
-    <copyField source="responsibledepartment_s" dest="responsibledepartment_txt"/>
-    <copyField source="dimensionsummary_s" dest="dimensionsummary_txt"/>
-    <copyField source="mmeasuredpart_s" dest="mmeasuredpart_txt"/>
-    <copyField source="dhname_s" dest="dhname_txt"/>
-    <copyField source="materials_s" dest="materials_txt"/>
-    <copyField source="objectcomponentname_s" dest="objectcomponentname_txt"/>
-    <copyField source="objectcomponentinformation_s" dest="objectcomponentinformation_txt"/>
-    <copyField source="dimension_s" dest="dimension_txt"/>
-    <copyField source="objectproductionperson_s" dest="objectproductionperson_txt"/>
-    <copyField source="objectproductionorganization_s" dest="objectproductionorganization_txt"/>
-    <copyField source="objectproductionplace_s" dest="objectproductionplace_txt"/>
-    <copyField source="objectproductionplacerole_s" dest="objectproductionplacerole_txt"/>
-    <copyField source="assocperson_s" dest="assocperson_txt"/>
-    <copyField source="assocorganization_s" dest="assocorganization_txt"/>
-    <copyField source="assocplace_s" dest="assocplace_txt"/>
-    <copyField source="assocculturalcontext_s" dest="assocculturalcontext_txt"/>
-    <copyField source="lender_s" dest="lender_txt"/>
-    <copyField source="loanstatusnote_s" dest="loanstatusnote_txt"/>
-    <copyField source="loanstatus_s" dest="loanstatus_txt"/>
-    <copyField source="loanstatusdate_s" dest="loanstatusdate_txt"/>
-    <copyField source="condition_s" dest="condition_txt"/>
-    <copyField source="conditiondate_s" dest="conditiondate_txt"/>
-    <copyField source="hazardnote_s" dest="hazardnote_txt"/>
-    <copyField source="hazard_s" dest="hazard_txt"/>
-    <copyField source="hazarddate_s" dest="hazarddate_txt"/>
-    <copyField source="conservationstatus_s" dest="conservationstatus_txt"/>
-    <copyField source="conservationstatusdate_s" dest="conservationstatusdate_txt"/>
+    <copyField source="argusdescription_s" dest="argusdescription_txt"/>
+    <copyField source="assocculturalcontext_ss" dest="assocculturalcontext_txt"/>
+    <copyField source="assocorganization_ss" dest="assocorganization_txt"/>
+    <copyField source="assocperson_ss" dest="assocperson_txt"/>
+    <copyField source="assocplace_ss" dest="assocplace_txt"/>
+    <copyField source="lender_ss" dest="lender_txt"/>
+    <copyField source="loanstatus_ss" dest="loanstatus_txt"/>
+    <copyField source="loanstatus_ss" dest="loanstatus_txt"/>
+    <copyField source="material_ss" dest="material_txt"/>
+    <copyField source="measuredpart_ss" dest="measuredpart_txt"/>
+    <copyField source="objectproductionorganization_ss" dest="objectproductionorganization_txt"/>
+    <copyField source="objectproductionperson_ss" dest="objectproductionperson_txt"/>
+    <copyField source="objectproductionplace_ss" dest="objectproductionplace_txt"/>
+    <copyField source="title_ss" dest="title_txt"/>
+    <copyField source="comments_ss" dest="comments_txt"/>
+    <copyField source="styles_ss" dest="styles_txt"/>
+    <copyField source="colors_ss" dest="colors_txt"/>
+    <copyField source="contentconcepts_ss" dest="contentconcepts_txt"/>
+    <copyField source="contentplaces_ss" dest="contentplaces_txt"/>
+    <copyField source="contentpersons_ss" dest="contentpersons_txt"/>
+    <copyField source="contentorganizations_ss" dest="contentorganizations_txt"/>
+    <copyField source="exhibitionhistories_ss" dest="exhibitionhistories_txt"/>
 
    <copyField source="*_s" dest="text"/>
    <copyField source="*_ss" dest="text"/>
