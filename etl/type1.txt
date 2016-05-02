@@ -6,10 +6,6 @@ conditionchecks_common,conditioncheck
 collectionobjects_omca,determinationHistory
 collectionobjects_omca,conservationStatus
 collectionobjects_common,dimensionsub
-loansin_common,lender
-loansin_common,loanStatus
-loansout_common,borrower
-loansout_common,loanStatus
 collectionobjects_common,material
 collectionobjects_common,measuredPart
 collectionobjects_common,objectComponent
@@ -17,3 +13,5 @@ collectionobjects_common,objectProductionOrganization
 collectionobjects_common,objectProductionPerson
 collectionobjects_common,objectProductionPlace
 collectionobjects_common,title
+loansout_common,loanStatus
+loansin_common,lender

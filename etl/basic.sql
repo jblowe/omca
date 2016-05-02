@@ -5,12 +5,6 @@ SELECT
   regexp_replace(ong.objectname, '^.*\)''(.*)''$', '\1') AS objectname_s,
 
   coc.objectnumber AS objectnumber_s,
-  regexp_replace(coc.recordstatus, '^.*\)''(.*)''$', '\1') AS recordstatus_s,
-  coc.physicaldescription AS physicaldescription_s,
-  coc.contentdescription AS contentdescription_s,
-  coc.contentnote AS contentnote_s,
-  regexp_replace(coc.fieldcollectionplace, '^.*\)''(.*)''$', '\1') AS fieldcollectionplace_s,
-  regexp_replace(coc.collection, '^.*\)''(.*)''$', '\1') AS collection_s,
   coc.numberofobjects AS numberofobjects_s,
   coc.computedcurrentlocation AS computedcurrentlocationrefname_s,
   regexp_replace(dethistg.dhname, '^.*\)''(.*)''$', '\1') AS dhname_s,
@@ -18,10 +12,16 @@ SELECT
   coom.art AS art_s,
   coom.history AS history_s,
   coom.science AS science_s,
-  regexp_replace(coom.ipaudit, '^.*\)''(.*)''$', '\1') AS ipaudit_s,
   coom.computedcurrentlocationdisplay AS computedcurrentlocation_s,
-  replace(coom.argusremarks,'|',' ') AS argusremarks_s,
-  replace(coom.argusdescription,'|',' ') AS argusdescription_s
+  regexp_replace(coc.recordstatus, '^.*\)''(.*)''$', '\1') AS recordstatus_s,
+  regexp_replace(coc.physicaldescription, E'[\\t\\n\\r]+', ' ', 'g') AS physicaldescription_s,
+  regexp_replace(coc.contentdescription, E'[\\t\\n\\r]+', ' ', 'g') AS contentdescription_s,
+  regexp_replace(coc.contentnote, E'[\\t\\n\\r]+', ' ', 'g') AS contentnote_s,
+  regexp_replace(coc.fieldcollectionplace, '^.*\)''(.*)''$', '\1') AS fieldcollectionplace_s,
+  regexp_replace(coc.collection, '^.*\)''(.*)''$', '\1') AS collection_s,
+  regexp_replace(coom.ipaudit, '^.*\)''(.*)''$', '\1') AS ipaudit_s,
+  regexp_replace(coom.argusremarks, E'[\\t\\n\\r]+', ' ', 'g') AS argusremarks_s,
+  regexp_replace(coom.argusdescription, E'[\\t\\n\\r]+', ' ', 'g') AS argusdescription_s
 
 FROM collectionobjects_common coc
   JOIN hierarchy h1 ON (h1.id = coc.id)

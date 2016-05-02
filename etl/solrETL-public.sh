@@ -50,6 +50,18 @@ do
     cp temp.csv public.csv
     cp temp2.csv t2.${var}.csv
 done
+#
+for var in `cat type3.txt`
+do
+    XTABLE=`echo $var | cut -d ',' -f 1`
+    FIELD=`echo $var | cut -d ',' -f 2`
+    perl -pe "s/XTABLE/${XTABLE}/g;s/FIELD/${FIELD}/g" template3.sql > temp3.sql
+    time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f temp3.sql | perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' > temp3.csv
+    time python join.py public.csv temp3.csv > temp.csv
+    cp temp.csv public.csv
+    cp temp3.csv t3.${var}.csv
+done
+rm temp?.csv
 # check latlongs 
 ##############################################################################
 #perl -ne '@y=split /\t/;@x=split ",",$y[34];print if     ((abs($x[0])<90 && abs($x[1])<180 && $y[34]!~/[^0-9\, \.\-]/) || $y[34]=~/_p/);' public.csv > d6.csv
