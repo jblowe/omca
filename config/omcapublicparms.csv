@@ -15,7 +15,7 @@ field	2	csid	Object CSID	csid_s			csid								39	x
 field	3	objectNumber	Identification Number	objectnumber_s			objectno,accession	2,1		1	1				2	x
 field	4	sortableObjectNumber	Sortable Identification Number	sortableobjectnumber_s			string,sortkey								1	x
 field	5	objectName	Object Name	objectname_s			keyword,mainentry	3,1	1	2	2				3	x
-field	6	otherNumber	Number	otherNumber_s		otherNumber	keyword	5,1				27			34	x
+field	6	otherNumber	Number	othernumber_s		otherNumber	keyword	5,1				27			34	x
 field	7	title	Title	title_ss			keyword	4,1			4	4	3		7	x
 field	8	art	Art Checkbox	art_s			dropdown	6,1	4			24			31	x
 field	9	history	History Checkbox	history_s			dropdown	7,1	4			25			32	x
@@ -50,32 +50,32 @@ field	37	assocOrganization	Associated Organization	assocorganization_ss			keywor
 field	38	assocPlace	Associated Place	assocplace_ss			keyword	8,3		5					26	x
 field	39	assocCulturalContext	Cultural Affinity	assocculturalcontext_ss			keyword	9,3		6		20			27	x
 field	40	exhibitionHistory	Exhibition History	exhibitionhistories_ss		objexhibition_ss	keyword	10,3				21			28	x
-field	41	fieldCollectionDate	Collection Date	fieldCollectionDate_s		fieldCollectionDate	keyword	9,2				22			29	x
+field	41	fieldCollectionDate	Collection Date	fieldCollectiondate_s		fieldCollectionDate	keyword	9,2				22			29	x
 field	42	colldate_begin	Collection Date (earliest)	colldate_begin_s		colldate_begin	date									x
 field	43	colldate_end	Collection Date (latest)	colldate_end_s		colldate_end	date									x
 field	44	fieldCollectionPlace	Field Collection Place	fieldcollectionplace_s			keyword	10,2		4	9	23			30	x
-field	45	acquisitionReferenceNumber	Acquisition Reference Number	acquisitionReferenceNumber_s		acquisitionReferenceNumber	keyword									displayonly
-field	46	accessionDate	Accession Date	accessionDate_s		accessionDate	keyword									displayonly
+field	45	acquisitionReferenceNumber	Acquisition Reference Number	acquisitionreferencenumber_s		acquisitionReferenceNumber	keyword									displayonly
+field	46	accessionDate	Accession Date	accessiondate_s		accessionDate	keyword									displayonly
 field	47	accdate_begin	Accession Date (earliest)	accdate_begin_s		accdate_begin	date									displayonly
 field	48	accdate_end	Accession Date (latest)	accdate_end_s		accdate_end	date									displayonly
 field	49	creditLine	Credit Line	creditLine_s		creditLine	keyword	11,1				30			37	x
-field	50	loanInNumber	Loan In Number	loanInNumber_s		loanInNumber	keyword									x
-field	51	loanInStatus	Loan In Status	loaninstatus_ss			dropdown									x
-field	52	loanInStatusDate	Loan In Status Date	loanInStatusDate_s		loanInStatusDate	keyword									x
+field	50	loaninNumber	Loan In Number	loaninnumber_s		loaninNumber	keyword									x
+field	51	loaninStatus	Loan In Status	loaninstatus_ss			dropdown									x
+field	52	loaninStatusDate	Loan In Status Date	loaninstatusdate_s		loaninStatusDate	keyword									x
 field	53	lender	Lender	lender_ss			keyword									x
-field	54	loanOutNumber	Loan Out Number	loanOutNumber_s		loanOutNumber	keyword									x
-field	55	loanOutStatus	Loan Out Status	loanoutstatus_ss			dropdown									x
-field	56	loanOutStatusDate	Loan Out Status Date	loanOutStatusDate_s		loanOutStatusDate	keyword									x
+field	54	loanoutNumber	Loan Out Number	loanoutnumber_s		loanoutNumber	keyword									x
+field	55	loanoutStatus	Loan Out Status	loanoutstatus_ss			dropdown									x
+field	56	loanoutStatusDate	Loan Out Status Date	loanoutstatusdate_s		loanoutStatusDate	keyword									x
 field	57	borrower	Borrower	borrower_s		borrower	keyword									x
-field	58	entryNumber	Intake Entry Number	entryNumber_s		entryNumber	keyword									x
+field	58	entryNumber	Intake Entry Number	entrynumber_s		entryNumber	keyword									x
 field	59	entryReason	Entry Reason	entryReason_s		entryReason	dropdown									x
 field	60	groupTitle	Group Title	groupTitle_s		groupTitle	keyword									x
 field	61	condition	Condition	condition_s		condition	dropdown									x
-field	62	conditionDate	Condition Date	conditionDate_s		conditionDate	keyword									x
+field	62	conditionDate	Condition Date	conditiondate_s		conditionDate	keyword									x
 field	63	hazard	Hazard	hazard_s		hazard	dropdown									x
 field	64	conservationstatus	Conservation Status	conservationstatus_s		conservationstatus	dropdown									x
 field	65	conservationstatusdate	Conservation Status Date	conservationstatusdate_s		conservationstatusdate	keyword									x
-field	66	exitNumber	Object Exit Number	exitNumber_s		exitNumber	keyword									x
+field	66	exitNumber	Object Exit Number	exitnumber_s		exitNumber	keyword									x
 field	67	keyword	Keyword	text			keyword	1,1								x
 field	68	blobs	Blob	blob_ss			blob									x
 field	69	cards	Card	cards_s		cards	card									x
