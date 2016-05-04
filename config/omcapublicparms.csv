@@ -80,23 +80,18 @@ field	67	keyword	Keyword	text			keyword	1,1								x
 field	68	blobs	Blob	blob_ss			blob									x
 field	69	cards	Card	cards_s		cards	card									x
 field	70	primaryimage	Primary Image	primaryimage_s		primaryimage	primaryimage									x
-field	71	imagetypes	Image Type	imagetype_ss			dropdown									x
-field	72	hasimage	Has image?	hasimage_s			dropdown	11,3								x
-#	73	collection	collection	collection_s												x
-#	74	computedcurrentlocationrefname	computedcurrentlocationrefname	computedcurrentlocationrefname_s												x
-field	75	dimensionsummary	Dimensions	dimensionsummary_s			keyword	4,2			8	7	6		10	x
-#	76	exhibitionobjectnumber	exhibitionobjectnumber													x
-#	77	exhibitionobjectnumberomca	exhibitionobjectnumberomca													x
-#	78	hazarddate	hazarddate													x
-#	79	hazardnote	hazardnote													x
-#	80	lender	lender													x
-#	81	loanstatus	loanstatus	lender_ss												x
-#	82	loanstatusdate	loanstatusdate	loanstatus_ss												x
-#	83	loanstatusnote	loanstatusnote	loanstatus_ss												x
-#	84	mmeasuredpart	mmeasuredpart													x
-#	85	numberofobjects	numberofobjects	measuredpart_ss												x
-#	86	objectproductionplacerole	objectproductionplacerole	numberofobjects_s												x
-#	87	responsibledepartment	responsibledepartment	physicaldescription_s												x
-#	88	objectComponentName	Component													x
-#	89	objectComponentInformation	Component Information													x
-field	90	distinguishingFeatures	Curatorial Remarks	distinguishingFeatures_s		distinguishingFeatures	keyword					11			14	x
+field	71	hasimage	Has image?	hasimage_s			dropdown	11,3								x
+field	72	dimensionsummary	Dimension Summary	dimensionsummary_s			keyword	4,2			8	7	6		10	x
+field	73	distinguishingFeatures	Curatorial Remarks	distinguishingFeatures_s		distinguishingFeatures	keyword					11			14	x
+#	74	collection	collection	collection_s												x
+#	76	computedcurrentlocationrefname	computedcurrentlocationrefname	computedcurrentlocationrefname_s												x
+#	77	exhibitionobjectnumber	exhibitionobjectnumber													x
+#	78	exhibitionobjectnumberomca	exhibitionobjectnumberomca													x
+#	79	hazarddate	hazarddate													x
+#	84	hazardnote	hazardnote													x
+#	85	measuredpart	measuredpart	measuredpart_ss												x
+#	86	numberofobjects	numberofobjects	numberofobjects_s												x
+#	87	objectproductionplacerole	objectproductionplacerole													x
+#	88	responsibledepartment	responsibledepartment													x
+#	89	objectComponentName	Component													x
+#	90	objectComponentInformation	Component Information													x

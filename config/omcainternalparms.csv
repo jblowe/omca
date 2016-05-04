@@ -15,8 +15,8 @@ field	2	csid	Object CSID	csid_s			csid								57	x
 field	3	objectNumber	Identification Number	objectnumber_s			objectno,accession	2,1		1	1				2	x
 field	4	sortableObjectNumber	Sortable Identification Number	sortableobjectnumber_s			string,sortkey								1	x
 field	5	objectName	Object Name	objectname_s			keyword,mainentry	3,1	1	2	2				3	x
-field	6	title	Title	title_ss			keyword	4,1			4	4	3		7	x
-field	7	otherNumber	Number	otherNumber_s		otherNumber	keyword	5,1				27			34	x
+field	6	otherNumber	Number	otherNumber_s		otherNumber	keyword	5,1				27			34	x
+field	7	title	Title	title_ss			keyword	4,1			4	4	3		7	x
 field	8	art	Art Checkbox	art_s			dropdown	6,1	4			24			31	x
 field	9	history	History Checkbox	history_s			dropdown	7,1	4			25			32	x
 field	10	science	Science Checkbox	science_s			dropdown	8,1	4			26			33	x
@@ -80,23 +80,18 @@ field	67	keyword	Keyword	text			keyword	1,1								x
 field	68	blobs	Blob	blob_ss			blob									x
 field	69	cards	Card	cards_s		cards	card									x
 field	70	primaryimage	Primary Image	primaryimage_s		primaryimage	primaryimage									x
-#	71	imagetypes	Image Type	imagetype_ss			dropdown									x
 field	72	hasimage	Has image?	hasimage_s			dropdown	17,3								x
-#	73	collection	collection	collection_s												x
-#	74	computedcurrentlocationrefname	computedcurrentlocationrefname	computedcurrentlocationrefname_s												x
-#	75	dimensionsummary	dimensionsummary	dimensionsummary_s			keyword									x
-#	76	exhibitionobjectnumber	exhibitionobjectnumber													x
-#	77	exhibitionobjectnumberomca	exhibitionobjectnumberomca													x
-#	78	hazarddate	hazarddate													x
-#	79	hazardnote	hazardnote													x
-#	80	lender	lender	lender_ss												x
-#	81	loanstatus	loanstatus	loanstatus_ss												x
-#	82	loanstatusdate	loanstatusdate	loanstatus_ss												x
-#	83	loanstatusnote	loanstatusnote													x
-#	84	mmeasuredpart	mmeasuredpart	measuredpart_ss												x
-#	85	numberofobjects	numberofobjects	numberofobjects_s												x
-#	86	objectproductionplacerole	objectproductionplacerole	physicaldescription_s												x
-#	87	responsibledepartment	responsibledepartment													x
-#	88	objectComponentName	Component													x
-#	89	objectComponentInformation	Component Information													x
-field	90	distinguishingFeatures	Curatorial Remarks	distinguishingFeatures_s		distinguishingFeatures	keyword					11			14	x
+field	72	dimensionsummary	Dimension Summary	dimensionsummary_s			keyword	4,2			8	7	6		10	x
+field	73	distinguishingFeatures	Curatorial Remarks	distinguishingFeatures_s		distinguishingFeatures	keyword					11			14	x
+#	74	collection	collection	collection_s												x
+#	76	computedcurrentlocationrefname	computedcurrentlocationrefname	computedcurrentlocationrefname_s												x
+#	77	exhibitionobjectnumber	exhibitionobjectnumber													x
+#	78	exhibitionobjectnumberomca	exhibitionobjectnumberomca													x
+#	79	hazarddate	hazarddate													x
+#	84	hazardnote	hazardnote													x
+#	85	measuredpart	measuredpart	measuredpart_ss												x
+#	86	numberofobjects	numberofobjects	numberofobjects_s												x
+#	87	objectproductionplacerole	objectproductionplacerole													x
+#	88	responsibledepartment	responsibledepartment													x
+#	89	objectComponentName	Component													x
+#	90	objectComponentInformation	Component Information													x
