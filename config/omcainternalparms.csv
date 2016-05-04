@@ -81,7 +81,7 @@ field	68	blobs	Blob	blob_ss			blob									x
 field	69	cards	Card	cards_s		cards	card									x
 field	70	primaryimage	Primary Image	primaryimage_s		primaryimage	primaryimage									x
 field	71	hasimage	Has image?	hasimage_s			dropdown	17,3								x
-field	72	dimensionsummary	Dimension Summary	dimensionsummary_s			keyword	4,2			8	59	6		10	x
+field	72	dimensionsummary	Dimension Summary	dimensionsummary_s			keyword	16,2			8	59	6		10	x
 field	73	distinguishingFeatures	Curatorial Remarks	distinguishingFeatures_s		distinguishingFeatures	keyword					11			14	x
 #	74	collection	collection	collection_s								58				x
 #	76	computedcurrentlocationrefname	computedcurrentlocationrefname	computedcurrentlocationrefname_s												x
