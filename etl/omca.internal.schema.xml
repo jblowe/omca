@@ -219,15 +219,16 @@
     <copyField source="assocorganization_ss" dest="assocorganization_txt"/>
     <copyField source="assocperson_ss" dest="assocperson_txt"/>
     <copyField source="assocplace_ss" dest="assocplace_txt"/>
-    <copyField source="lender_ss" dest="lender_txt"/>
-    <copyField source="loanstatus_ss" dest="loanstatus_txt"/>
-    <copyField source="loanstatus_ss" dest="loanstatus_txt"/>
     <copyField source="material_ss" dest="material_txt"/>
+    <copyField source="dimensions_ss" dest="dimensions_txt"/>
+    <copyField source="dimensionsummary_s" dest="dimensions_txt"/>
     <copyField source="measuredpart_ss" dest="measuredpart_txt"/>
     <copyField source="objectproductionorganization_ss" dest="objectproductionorganization_txt"/>
     <copyField source="objectproductionperson_ss" dest="objectproductionperson_txt"/>
     <copyField source="objectproductionplace_ss" dest="objectproductionplace_txt"/>
     <copyField source="title_ss" dest="title_txt"/>
+    <copyField source="loanstatus_ss" dest="loanstatus_txt"/>
+    <copyField source="lender_ss" dest="lender_txt"/>
     <copyField source="comments_ss" dest="comments_txt"/>
     <copyField source="styles_ss" dest="styles_txt"/>
     <copyField source="colors_ss" dest="colors_txt"/>
@@ -236,6 +237,10 @@
     <copyField source="contentpersons_ss" dest="contentpersons_txt"/>
     <copyField source="contentorganizations_ss" dest="contentorganizations_txt"/>
     <copyField source="exhibitionhistories_ss" dest="exhibitionhistories_txt"/>
+    <copyField source="loanoutnumber_ss" dest="loanoutnumber_txt"/>
+    <copyField source="borrower_ss" dest="borrower_txt"/>
+    <copyField source="loaninnumber_ss" dest="loaninnumber_txt"/>
+    <copyField source="blob_ss" dest="blob_txt"/>
 
    <copyField source="*_s" dest="text"/>
    <copyField source="*_ss" dest="text"/>
