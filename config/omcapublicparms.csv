@@ -31,7 +31,7 @@ field	18	argusDescription	Material/Technique Summary	argusdescription_s			keywor
 field	19	materials	Materials	material_ss			keyword	3,2	3							x
 field	20	argusRemarks	Argus Remarks	argusremarks_s			keyword					14			17	displayonly
 field	21	dimensions	Dimensions	dimensions_s												x
-field	22	physicalDescription	Physical Description	physicalDescription_s		physicalDescription	keyword					12			15	displayonly
+field	22	physicalDescription	Physical Description	physicaldescription_s		physicalDescription	keyword					12			15	displayonly
 field	23	contentDescription	Content Description	contentdescription_s			keyword					13			16	displayonly
 field	24	contentConcept	Content Concept	contentconcepts_ss			keyword	5,2				15			18	x
 field	25	contentPlace	Content Place	contentplaces_ss			keyword	6,2				16			19	x
@@ -42,7 +42,7 @@ field	29	proddate_display	Production Date	proddate_display_s		proddate_display	k
 field	30	proddate_begin	Production Date (earliest)	proddate_begin_s		proddate_begin	date									x
 field	31	proddate_end	Production Date (latest)	proddate_end_s		proddate_end	date									x
 field	32	productionPerson	Maker	objectproductionperson_ss			keyword	1,3			5	2	2		5	x
-field	33	productionOrganization	Production Organization	productionTechnique_s		productionTechnique	keyword	3,3			6	3			6	x
+field	33	productionOrganization	Production Organization	productiontechnique_s		productionTechnique	keyword	3,3			6	3			6	x
 field	34	productionPlace	Production Place	objectproductionplace_ss			keyword	4,3		3					23	x
 field	35	productionTechnique	Technique	objectproductionorganization_ss			keyword	5,3								x
 field	36	assocPerson	Associated Person	assocperson_ss			keyword	6,3							24	x
@@ -50,15 +50,15 @@ field	37	assocOrganization	Associated Organization	assocorganization_ss			keywor
 field	38	assocPlace	Associated Place	assocplace_ss			keyword	8,3		5					26	x
 field	39	assocCulturalContext	Cultural Affinity	assocculturalcontext_ss			keyword	9,3		6		20			27	x
 field	40	exhibitionHistory	Exhibition History	exhibitionhistories_ss		objexhibition_ss	keyword	10,3				21			28	x
-field	41	fieldCollectionDate	Collection Date	fieldCollectionDate_s		fieldCollectionDate	keyword	9,2				22			29	x
+field	41	fieldcollectionDate	Collection Date	fieldcollectiondate_s		fieldcollectionDate	keyword	9,2				22			29	x
 field	42	colldate_begin	Collection Date (earliest)	colldate_begin_s		colldate_begin	date									x
 field	43	colldate_end	Collection Date (latest)	colldate_end_s		colldate_end	date									x
-field	44	fieldCollectionPlace	Field Collection Place	fieldcollectionplace_s			keyword	10,2		4	9	23			30	x
+field	44	fieldcollectionPlace	Field Collection Place	fieldcollectionplace_s			keyword	10,2		4	9	23			30	x
 field	45	acquisitionReferenceNumber	Acquisition Reference Number	acquisitionreferencenumber_s		acquisitionReferenceNumber	keyword									displayonly
-field	46	accessionDate	Accession Date	accessionDate_s		accessionDate	keyword									displayonly
+field	46	accessionDate	Accession Date	accessiondate_s		accessionDate	keyword									displayonly
 field	47	accdate_begin	Accession Date (earliest)	accdate_begin_s		accdate_begin	date									displayonly
 field	48	accdate_end	Accession Date (latest)	accdate_end_s		accdate_end	date									displayonly
-field	49	creditLine	Credit Line	creditLine_s		creditLine	keyword	11,1				30			37	x
+field	49	creditLine	Credit Line	creditline_s		creditLine	keyword	11,1				30			37	x
 field	50	loaninNumber	Loan In Number	loaninnumber_ss		loaninNumber	keyword									x
 field	51	loaninStatus	Loan In Status	loaninstatus_ss			dropdown									x
 field	52	loaninStatusDate	Loan In Status Date	loaninstatusdate_ss		loaninStatusDate	keyword									x
@@ -69,9 +69,9 @@ field	56	loanoutStatusDate	Loan Out Status Date	loanoutstatusdate_ss		loanoutSta
 field	57	borrower	Borrower	borrower_ss		borrower	keyword									x
 field	58	entryNumber	Intake Entry Number	entrynumber_s		entryNumber	keyword									x
 field	59	entryReason	Entry Reason	entryReason_s		entryReason	dropdown									x
-field	60	groupTitle	Group Title	groupTitle_s		groupTitle	keyword									x
+field	60	grouptitle	Group Title	grouptitle_s		grouptitle	keyword									x
 field	61	condition	Condition	condition_s		condition	dropdown									x
-field	62	conditionDate	Condition Date	conditionDate_s		conditionDate	keyword									x
+field	62	conditionDate	Condition Date	conditiondate_s		conditionDate	keyword									x
 field	63	hazard	Hazard	hazard_s		hazard	dropdown									x
 field	64	conservationstatus	Conservation Status	conservationstatus_s		conservationstatus	dropdown									x
 field	65	conservationstatusdate	Conservation Status Date	conservationstatusdate_s		conservationstatusdate	keyword									x
