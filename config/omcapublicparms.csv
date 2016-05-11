@@ -30,7 +30,7 @@ field	17	colors	Colors	colors_ss			keyword	2,2				10			13	x
 field	18	argusDescription	Material/Technique Summary	argusdescription_s			keyword					6	5		9	x
 field	19	materials	Materials	material_ss			keyword	3,2	3							x
 field	20	argusRemarks	Argus Remarks	argusremarks_s			keyword					14			17	displayonly
-field	21	dimensions	Dimensions	dimensions_s												x
+field	21	dimensions	Dimensions	dimensions_ss												x
 field	22	physicalDescription	Physical Description	physicaldescription_s		physicalDescription	keyword					12			15	displayonly
 field	23	contentDescription	Content Description	contentdescription_s			keyword					13			16	displayonly
 field	24	contentConcept	Content Concept	contentconcepts_ss			keyword	5,2				15			18	x
