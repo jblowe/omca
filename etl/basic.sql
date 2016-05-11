@@ -12,6 +12,7 @@ SELECT
   coom.art AS art_s,
   coom.history AS history_s,
   coom.science AS science_s,
+  coom.donotpublishonweb AS donotpublishonweb_s,
   coom.computedcurrentlocationdisplay AS computedcurrentlocation_s,
   regexp_replace(coc.recordstatus, '^.*\)''(.*)''$', '\1') AS recordstatus_s,
   regexp_replace(coc.physicaldescription, E'[\\t\\n\\r]+', ' ', 'g') AS physicaldescription_s,

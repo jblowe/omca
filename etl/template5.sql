@@ -1,5 +1,5 @@
 -- nb: this query assume it will take a variety of field content: refnames, messy free text, and output something "clean"
-SELECT cc.id AS id, regexp_replace(STRING_AGG(DISTINCT x.FIELD, '␥'), '^.*\)''(.*)''$', '\1') AS FIELD_ss
+SELECT cc.id AS id, STRING_AGG(DISTINCT to_char(x.FIELD + interval '8 hours', 'YYYY-MM-DD'), '␥') AS FIELD_ss
 FROM XTABLE_common x 
   JOIN misc m on (m.id = x.id AND m.lifecyclestate <> 'deleted')
   JOIN hierarchy h1 ON (x.id = h1.id)

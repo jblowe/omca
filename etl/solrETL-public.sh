@@ -10,7 +10,7 @@ cp 4solr.*.csv.gz /tmp
 # eases maintainance. ergo, the TENANT parameter
 ##############################################################################
 TENANT=$1
-SERVER="localhost sslmode=prefer password=xxxx"
+SERVER="localhost sslmode=prefer password=xxxxx"
 USERNAME="nuxeo_$TENANT"
 DATABASE="${TENANT}_domain_${TENANT}"
 CONNECTSTRING="host=$SERVER dbname=$DATABASE"
@@ -35,55 +35,38 @@ time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f basic.sql | per
 # the patterns are in the template*.sql files
 # the parameters are in the type*.txt files
 ##############################################################################
-for var in `cat type1.txt`
+for TYPE in 1 2 3 4 5
 do
-    XTABLE=`echo $var | cut -d ',' -f 1`
-    FIELD=`echo $var | cut -d ',' -f 2`
-    perl -pe "s/XTABLE/${XTABLE}/g;s/FIELD/${FIELD}/g" template1.sql > temp1.sql
-    time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f temp1.sql | perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' > temp1.csv
-    time python join.py public.csv temp1.csv > temp.csv
-    cp temp.csv public.csv
-    cp temp1.csv t1.${var}.csv
+  for var in `cat type${TYPE}.txt`
+  do
+      XTABLE=`echo $var | cut -d ',' -f 1`
+      FIELD=`echo $var | cut -d ',' -f 2`
+      perl -pe "s/XTABLE/${XTABLE}/g;s/FIELD/${FIELD}/g" template${TYPE}.sql > temp.sql
+      time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f temp.sql | perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' > temp1.csv
+      time python join.py public.csv temp1.csv > temp2.csv
+      cp temp2.csv public.csv
+      cp temp1.csv t${TYPE}.${var}.csv
+  done
 done
-#
-for var in `cat type2.txt`
-do
-    XTABLE=`echo $var | cut -d ',' -f 1`
-    FIELD=`echo $var | cut -d ',' -f 2`
-    perl -pe "s/XTABLE/${XTABLE}/g;s/FIELD/${FIELD}/g" template2.sql > temp2.sql
-    time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f temp2.sql | perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' > temp2.csv
-    time python join.py public.csv temp2.csv > temp.csv
-    cp temp.csv public.csv
-    cp temp2.csv t2.${var}.csv
-done
-#
-for var in `cat type3.txt`
-do
-    XTABLE=`echo $var | cut -d ',' -f 1`
-    FIELD=`echo $var | cut -d ',' -f 2`
-    perl -pe "s/XTABLE/${XTABLE}/g;s/FIELD/${FIELD}/g" template3.sql > temp3.sql
-    time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f temp3.sql | perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' > temp3.csv
-    time python join.py public.csv temp3.csv > temp.csv
-    cp temp.csv public.csv
-    cp temp3.csv t3.${var}.csv
-done
-rm temp?.csv
+rm temp1.csv temp2.csv temp.sql
 # check latlongs 
 ##############################################################################
 #perl -ne '@y=split /\t/;@x=split ",",$y[34];print if     ((abs($x[0])<90 && abs($x[1])<180 && $y[34]!~/[^0-9\, \.\-]/) || $y[34]=~/_p/);' public.csv > d6.csv
 #perl -ne '@y=split /\t/;@x=split ",",$y[34];print unless ((abs($x[0])<90 && abs($x[1])<180 && $y[34]!~/[^0-9\, \.\-]/) || $y[34]=~/_p/);' public.csv > errors_in_latlong.csv
 #mv d6.csv public.csv
 ##############################################################################
-# these queries are for the internal datastore
+# these queries are special, the dont fit the patterns above
 ##############################################################################
 cp public.csv internal.csv
-for i in {0..0}
+for i in {1..10}
 do
- time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f part$i.sql | perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' > part$i.csv
- time python join.py internal.csv part$i.csv > temp.csv
- cp temp.csv internal.csv
+ if [ -f part$i.sql ]; then
+   time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f part$i.sql | perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' > part$i.csv
+   time python join.py internal.csv part$i.csv > temp.csv
+   cp temp.csv internal.csv
+ fi
 done
-rm temp.csv
+#rm temp.csv
 ##############################################################################
 #  compute a boolean: hascoords = yes/no
 ##############################################################################
@@ -108,6 +91,9 @@ do
   # recover the solr header and put it back at the top of the file
   grep csid d6.csv > header4Solr.csv
   perl -i -pe 's/$/blob_ss/;' header4Solr.csv
+  # generate solr schema <copyField> elements, just in case. 
+  # also generate parameters for POST to solr (to split _ss fields properly)
+  ./genschema.sh ${core}
   grep -v csid d6.csv > d8.csv
   cat header4Solr.csv d8.csv | perl -pe 's/␥/|/g' > 4solr.$TENANT.${core}.csv
   # clean up some outstanding sins perpetuated by earlier scripts
@@ -122,8 +108,9 @@ do
   # this POSTs the csv to the Solr / update endpoint
   # note, among other things, the overriding of the encapsulator with \
   ##############################################################################
-  time curl -S -s "http://localhost:8983/solr/${TENANT}-${core}/update/csv?commit=true&header=true&separator=%09&f.assocculturalcontext_ss.split=true&f.assocculturalcontext_ss.separator=%7C&f.assocorganization_ss.split=true&f.assocorganization_ss.separator=%7C&f.assocperson_ss.split=true&f.assocperson_ss.separator=%7C&f.assocplace_ss.split=true&f.assocplace_ss.separator=%7C&f.material_ss.split=true&f.material_ss.separator=%7C&f.measuredpart_ss.split=true&f.measuredpart_ss.separator=%7C&f.objectproductionorganization_ss.split=true&f.objectproductionorganization_ss.separator=%7C&f.objectproductionperson_ss.split=true&f.objectproductionperson_ss.separator=%7C&f.objectproductionplace_ss.split=true&f.objectproductionplace_ss.separator=%7C&f.title_ss.split=true&f.title_ss.separator=%7C&f.loanstatus_ss.split=true&f.loanstatus_ss.separator=%7C&f.lender_ss.split=true&f.lender_ss.separator=%7C&f.comments_ss.split=true&f.comments_ss.separator=%7C&f.styles_ss.split=true&f.styles_ss.separator=%7C&f.colors_ss.split=true&f.colors_ss.separator=%7C&f.contentconcepts_ss.split=true&f.contentconcepts_ss.separator=%7C&f.contentplaces_ss.split=true&f.contentplaces_ss.separator=%7C&f.contentpersons_ss.split=true&f.contentpersons_ss.separator=%7C&f.contentorganizations_ss.split=true&f.contentorganizations_ss.separator=%7C&f.exhibitionhistories_ss.split=true&f.exhibitionhistories_ss.separator=%7C&f.loanoutnumber_ss.split=true&f.loanoutnumber_ss.separator=%7C&f.borrower_ss.split=true&f.borrower_ss.separator=%7C&f.loaninnumber_ss.split=true&f.loaninnumber_ss.separator=%7C&f.blob_ss.split=true&f.blob_ss.separator=,&encapsulator=\\" --data-binary @4solr.$TENANT.${core}.csv -H 'Content-type:text/plain; charset=utf-8'
-  time ./evaluate.sh 4solr.$TENANT.${core}.csv > 4solr.fields.$TENANT.${core}.csv
+  ss_string=`cat uploadparms.${core}.txt`
+  time curl -S -s "http://localhost:8983/solr/${TENANT}-${core}/update/csv?commit=true&header=true&separator=%09&${ss_string}f.blob_ss.split=true&f.blob_ss.separator=,&encapsulator=\\" --data-binary @4solr.$TENANT.${core}.csv -H 'Content-type:text/plain; charset=utf-8'
+  time bash evaluate.sh 4solr.$TENANT.${core}.csv > 4solr.fields.$TENANT.${core}.csv
 done
 ##############################################################################
 # wrap things up: make a gzipped version of what was loaded

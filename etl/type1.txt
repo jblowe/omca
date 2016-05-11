@@ -15,3 +15,4 @@ collectionobjects_common,objectProductionPlace
 collectionobjects_common,title
 loansout_common,loanStatus
 loansin_common,lender
+loansin_omca,creditline

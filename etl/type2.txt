@@ -6,3 +6,4 @@ collectionobjects_common,contentplaces
 collectionobjects_common,contentpersons
 collectionobjects_common,contentorganizations
 collectionobjects_omca,exhibitionhistories
+collectionobjects_omca,photos

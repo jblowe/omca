@@ -1,11 +1,8 @@
-SELECT
-  cc.id,
-  STRING_AGG(DISTINCT x.FIELD, '␥') AS FIELD_ss
-FROM collectionobjects_common cc
-  JOIN hierarchy h1 ON (cc.id = h1.id)
-  JOIN relations_common rc ON (h1.name = rc.subjectcsid AND rc.objectdocumenttype = 'XTABLE')
-  JOIN hierarchy h2 ON (rc.objectcsid = h2.name)
-  LEFT OUTER JOIN XTABLE_common x ON (h2.id = x.id)
-  JOIN misc m ON (x.id=m.id AND m.lifecyclestate <> 'deleted')
-
+-- nb: this query assume it will take a timestamp and output a string
+SELECT DISTINCT cc.id AS id, STRING_AGG(to_char(grp.FIELD, 'YYYY-MM-DD'), '␥') AS FIELD_ss
+FROM XTABLE cc
+JOIN misc m on (m.id = cc.id AND m.lifecyclestate <> 'deleted')
+JOIN hierarchy h ON (h.parentid=cc.id AND h.primarytype='FIELDGroup')
+JOIN FIELDgroup grp ON (grp.id=h.id)
+WHERE grp.FIELD IS NOT NULL
 GROUP BY cc.id
