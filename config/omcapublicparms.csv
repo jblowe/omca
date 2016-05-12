@@ -38,7 +38,7 @@ field	25	contentplaces	Content Place	contentplaces_ss			keyword	6,2				16			19	x
 field	26	contentpersons	Content Person	contentpersons_ss			keyword	7,2				17			20	x
 field	27	contentorganizations	Content Organization	contentorganizations_ss			keyword	8,2				18			21	x
 field	28	contentnote	Content Note	contentnote_s			keyword					19			22	displayonly
-field	29	proddate	Production Date	proddate_display_s		x	keyword	2,3			7	5	4		8	x
+field	29	proddate	Production Date	proddate_display_s		x	string	2,3			7	5	4		8	x
 field	30	proddate_begin	Production Date (earliest)	proddate_begin_s		x	date									x
 field	31	proddate_end	Production Date (latest)	proddate_end_s		x	date									x
 field	32	objectproductionperson	Maker	objectproductionperson_ss			keyword	1,3			5	2	2		5	x
@@ -50,20 +50,20 @@ field	37	assocorganization	Associated Organization	assocorganization_ss			keywor
 field	38	assocplace	Associated Place	assocplace_ss			keyword	8,3		5					26	x
 field	39	assocculturalcontext	Cultural Affinity	assocculturalcontext_ss			keyword	9,3		6		20			27	x
 field	40	exhibitionhistories	Exhibition History	exhibitionhistories_ss			keyword	10,3				21			28	x
-field	41	fieldcollectiondate	Collection Date	fieldcollectiondate_s		x	keyword	9,2				22			29	x
+field	41	fieldcollectiondate	Collection Date	fieldcollectiondate_s		x	string	9,2				22			29	x
 field	42	colldate_begin	Collection Date (earliest)	colldate_begin_s		x	date									x
 field	43	colldate_end	Collection Date (latest)	colldate_end_s		x	date									x
 field	44	fieldcollectionplace	Field Collection Place	fieldcollectionplace_s			keyword	10,2		4	9	23			30	x
 field	45	acquisitionreferencenumber	Acquisition Reference Number	acquisitionreferencenumber_s		x	keyword									displayonly
-field	46	accessiondate	Accession Date	accessiondate_s		x	keyword									displayonly
+field	46	accessiondate	Accession Date	accessiondate_s		x	string									displayonly
 field	47	accdate_begin	Accession Date (earliest)	accdate_begin_s		x	date									displayonly
 field	48	accdate_end	Accession Date (latest)	accdate_end_s		x	date									displayonly
 field	49	creditline	Credit Line	creditline_s		x	keyword	11,1				30			37	x
 field	50	loaninnumber	Loan In Number	loaninnumber_ss			keyword									x
 field	51	loaninstatus	Loan In Status	loaninstatus_ss		x	dropdown									x
-field	52	loaninreturndate	Loan In Return Date	loaninreturndate_ss			keyword									x
+field	52	loaninreturndate	Loan In Return Date	loaninreturndate_ss			string									x
 field	53	loanindate	Loan In Date	loanindate_ss			string									x
-field	54	lender	Lender	lender_ss			string									x
+field	54	lender	Lender	lender_ss			keyword									x
 field	55	loanoutnumber	Loan Out Number	loanoutnumber_ss			keyword									x
 field	56	loanoutstatus	Loan Out Status	loanoutstatus_ss		x	dropdown									x
 field	57	loanoutreturndate	Loan Out Return Date	loanoutreturndate_ss			string									x
