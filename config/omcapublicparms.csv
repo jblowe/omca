@@ -50,12 +50,12 @@ field	37	assocorganization	Associated Organization	assocorganization_ss			keywor
 field	38	assocplace	Associated Place	assocplace_ss			keyword	8,3		5					26	x
 field	39	assocculturalcontext	Cultural Affinity	assocculturalcontext_ss			keyword	9,3		6		20			27	x
 field	40	exhibitionhistories	Exhibition History	exhibitionhistories_ss			keyword	10,3				21			28	x
-field	41	fieldcollectiondate	Collection Date	fieldcollectiondate_s		x	string	9,2				22			29	x
+field	41	fieldcollectiondate	Collection Date	fieldcollectiondate_s			string	9,2				22			29	x
 field	42	colldate_begin	Collection Date (earliest)	colldate_begin_s		x	date									x
 field	43	colldate_end	Collection Date (latest)	colldate_end_s		x	date									x
 field	44	fieldcollectionplace	Field Collection Place	fieldcollectionplace_s			keyword	10,2		4	9	23			30	x
 field	45	acquisitionreferencenumber	Acquisition Reference Number	acquisitionreferencenumber_s		x	keyword									displayonly
-field	46	accessiondate	Accession Date	accessiondate_s		x	string									displayonly
+field	46	accessiondate	Accession Date	accessiondate_ss		x	string									displayonly
 field	47	accdate_begin	Accession Date (earliest)	accdate_begin_s		x	date									displayonly
 field	48	accdate_end	Accession Date (latest)	accdate_end_s		x	date									displayonly
 field	49	creditline	Credit Line	creditline_s		x	keyword	11,1				30			37	x
@@ -85,20 +85,21 @@ field	72	primaryimage	Primary Image	primaryimage_s		x	primaryimage									x
 field	73	hasimage	Has image?	hasimage_s		x	dropdown	11,3								x
 field	74	dimensionsummary	Dimension Summary	dimensionsummary_s			keyword	4,2			8	7	6		10	x
 field	75	distinguishingfeatures	Curatorial Remarks	distinguishingfeatures_s		x	keyword					11			14	x
-#	76	collection	collection	collection_s		collection_s										x
-#	77	computedcurrentlocationrefname	computedcurrentlocationrefname	computedcurrentlocationrefname_s		computedcurrentlocation_s										x
+#	76	collection	collection	collection_s												x
+#	77	computedcurrentlocationrefname	computedcurrentlocationrefname	computedcurrentlocationrefname_s												x
 #	78	exhibitionobjectnumber	exhibitionobjectnumber													x
 #	79	exhibitionobjectnumberomca	exhibitionobjectnumberomca													x
 #	80	hazarddate	hazarddate													x
 #	81	hazardnote	hazardnote													x
-#	82	measuredpart	measuredpart	measuredpart_ss		measuredpart_ss										x
-#	83	numberofobjects	numberofobjects	numberofobjects_s		numberofobjects_s										x
+#	82	measuredpart	measuredpart	measuredpart_ss												x
+#	83	numberofobjects	numberofobjects	numberofobjects_s												x
 #	84	objectproductionplacerole	objectproductionplacerole													x
 #	85	responsibledepartment	responsibledepartment													x
 #	86	objectComponentName	Component													x
 #	87	objectComponentInformation	Component Information													x
-#	88	exhibitionnumber	Exhibition Number			exhibitionnumber_ss										x
-#	89	exhibitiontitle	Exhibition Title			exhibitiontitle_ss										x
-#	90	photos	photos			photos_ss										x
-#	91	fieldcollectors	Field Collectors			fieldcollectors_ss										x
-#	92	donotpublishonweb	Do not publish on Web			donotpublishonweb_s										x
+#	88	exhibitionnumber	Exhibition Number	exhibitionnumber_ss												x
+#	89	exhibitiontitle	Exhibition Title	exhibitiontitle_ss												x
+#	90	photos	photos	photos_ss												x
+#	91	fieldcollectors	Field Collectors	fieldcollectors_ss												x
+#	92	donotpublishonweb	Do not publish on Web	donotpublishonweb_s												x
+#	93	acquisitiondate	Acquisition Date	acquisitiondate_ss												x
