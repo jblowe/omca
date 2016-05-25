@@ -7,6 +7,7 @@ import traceback
 import cgitb; cgitb.enable()  # for troubleshooting
 from cswaConstants import selectWebapp
 from cswaUtils import *
+#from cswaObjDetails import *
 
 reload(sys)
 sys.setdefaultencoding('utf-8')

@@ -14,9 +14,13 @@ import collections
 import time, datetime
 import httplib, urllib2
 import cgi
+#import cgitb; cgitb.enable()  # for troubleshooting
 import re
 
 from cswaConstants import OMCADATA
+from cswaConstants import BASE_DIR
+
+#import cswaSMBclient
 
 MAXLOCATIONS = 1000
 
@@ -71,7 +75,7 @@ def getConfig(form):
     try:
         fileName = form.get('webapp') + '.cfg'
         config = ConfigParser.RawConfigParser()
-        config.read(os.path.join('/var/www/cfgs',fileName))
+        config.read(os.path.join(BASE_DIR,'cfgs',fileName))
         # test to see if it seems like it is really a config file
         updateType = config.get('info', 'updatetype')
         return config
@@ -647,7 +651,7 @@ def doCheckMove(form, config):
 
     print """<tr><td align="center" colspan="6"><hr><td></tr>"""
     print """<tr><td align="center" colspan="3">"""
-    msg = "Caution: clicking on the button at left will move <b>ALL %s objects</b> shown in this crate!" % totalobjects
+    msg = "Caution: clicking on the button at left will move <b>ALL %s objects</b> shown in this location!" % totalobjects
     print '''<input type="submit" class="save" value="''' + updateactionlabel + '''" name="action"></td><td  colspan="3">%s</td></tr>''' % msg
 
     print "\n</table><hr/>"
@@ -736,7 +740,7 @@ def doCheckPowerMove(form, config):
 
     print """<tr><td align="center" colspan="6"><hr><td></tr>"""
     print """<tr><td align="center" colspan="3">"""
-    msg = "Caution: clicking on the button at left will move <b>ALL %s objects</b> shown in this crate!" % totalobjects
+    msg = "Caution: clicking on the button at left will move <b>ALL %s objects</b> shown in this location!" % totalobjects
     print '''<input type="submit" class="save" value="''' + updateactionlabel + '''" name="action"></td><td  colspan="3">%s</td></tr>''' % msg
 
     print "\n</table><hr/>"
@@ -3021,8 +3025,8 @@ def starthtml(form, config):
 	  <tr><th><span class="cell">destination:</span></th>
 	  <th><input id="lo.location1" class="cell" type="text" size="40" name="lo.location1" value="''' + location1 + '''" class="xspan"></th>
           <th><span class="cell">reason:</span></th><th>''' + reasons + '''</th>
-          <tr><th><span class="cell">crate:</span></th>
-          <th><input id="lo.crate" class="cell" type="text" size="40" name="lo.crate" value="''' + crate + '''" class="xspan"></th>
+          <tr><th><!-- span class="cell">crate:</span --></th>
+          <th><input id="lo.crate" class="cell" type="hidden" size="40" name="lo.crate" value="''' + crate + '''" class="xspan"></th>
           <th><span class="cell">handler:</span></th><th>''' + handlers + '''</th></tr>
         '''
 
@@ -3033,8 +3037,8 @@ def starthtml(form, config):
 	  <th><input id="lo.location1" class="cell" type="text" size="40" name="lo.location1" value="''' + location1 + '''" class="xspan"></th>
           <th><span class="cell">to:</span></th>
           <th><input id="lo.location2" class="cell" type="text" size="40" name="lo.location2" value="''' + location2 + '''" class="xspan"></th></tr>
-          <tr><th><span class="cell">crate:</span></th>
-          <th><input id="lo.crate" class="cell" type="text" size="40" name="lo.crate" value="''' + crate + '''" class="xspan"></th></tr>
+          <tr><th><!-- span class="cell">crate:</span --></th>
+          <th><input id="lo.crate" class="cell" type="hidden" size="40" name="lo.crate" value="''' + crate + '''" class="xspan"></th></tr>
     '''
 
         handlers, selected = cswaConstants.getHandlers(form, institution)
@@ -3054,10 +3058,10 @@ def starthtml(form, config):
 	      <th><input id="lo.location1" class="cell" type="text" size="40" name="lo.location1" value="''' + location1 + '''" class="xspan"></th>
 	      <th><span class="cell">to location:</span></th>
           <th><input id="lo.location2" class="cell" type="text" size="40" name="lo.location2" value="''' + location2 + '''" class="xspan"></th></tr>
-          <tr><th><span class="cell">crate (optional):</span></th>
-          <th><input id="lo.crate1" class="cell" type="text" size="40" name="lo.crate1" value="''' + crate1 + '''" class="xspan"></th>
-          <th><span class="cell">crate (optional):</span></th>
-          <th><input id="lo.crate2" class="cell" type="text" size="40" name="lo.crate2" value="''' + crate2 + '''" class="xspan"></th></tr>
+          <tr><th><!-- span class="cell">crate (optional):</span --></th>
+          <th><input id="lo.crate1" class="cell" type="hidden" size="40" name="lo.crate1" value="''' + crate1 + '''" class="xspan"></th>
+          <th><!-- span class="cell">crate (optional):</span --></th>
+          <th><input id="lo.crate2" class="cell" type="hidden" size="40" name="lo.crate2" value="''' + crate2 + '''" class="xspan"></th></tr>
     '''
 
         handlers, selected = cswaConstants.getHandlers(form, institution)

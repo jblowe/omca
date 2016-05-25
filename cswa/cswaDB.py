@@ -276,18 +276,18 @@ SELECT
   regexp_replace(ong.objectname, '^.*\\)''(.*)''$', '\\1') AS objectname,
   coc.objectnumber AS objectnumber,
   regexp_replace(coc.fieldcollectionplace, '^.*\\)''(.*)''$', '\\1') AS fieldcollectionplace,
-  '1999-09-09' AS fieldcollectiondate,
-  coc_collectors.item AS fieldcollector,
+  fcd.datedisplaydate AS fieldcollectiondate,
+  regexp_replace(coc_collectors.item, '^.*\\)''(.*)''$', '\\1') AS fieldcollector,
   coc.computedcurrentlocation AS computedcurrentlocationrefname,
   coom.sortableobjectnumber AS sortableobjectnumber,
   h1.name AS csid,
   coom.argusdescription AS argusdescription,
   regexp_replace(dethistg.dhname, '^.*\\)''(.*)''$', '\\1') AS dhname,
-  matg.material AS materials,
+  regexp_replace(matg.material, '^.*\\)''(.*)''$', '\\1') AS materials,
   regexp_replace(objprdpg.objectproductionperson, '^.*\\)''(.*)''$', '\\1') AS objectproductionperson,
   regexp_replace(objprdorgg.objectproductionorganization, '^.*\\)''(.*)''$', '\\1') AS objectproductionorganization,
   regexp_replace(objprdplaceg.objectproductionplace, '^.*\\)''(.*)''$', '\\1') AS objectproductionplace,
-  '1999-09-09' AS objectproductiondate,
+  opd.datedisplaydate AS objectproductiondate,
   (case when coom.donotpublishonweb then 'true' else 'false' end) AS donotpublishonweb,
   regexp_replace(coc.collection, '^.*\\)''(.*)''$', '\\1') AS collection,
   regexp_replace(coom.ipaudit, '^.*\\)''(.*)''$', '\\1') AS ipaudit,
@@ -323,6 +323,10 @@ FROM loctermgroup l
   LEFT OUTER JOIN objectproductionpersongroup objprdpg ON (h22.id = objprdpg.id)
   LEFT OUTER JOIN hierarchy h23 ON (h23.parentid = coc.id AND h23.name='collectionobjects_common:objectProductionPlaceGroupList' AND h23.pos=0)
   LEFT OUTER JOIN objectproductionplacegroup objprdplaceg ON (h23.id = objprdplaceg.id)
+  LEFT OUTER JOIN hierarchy h24 ON (h24.parentid = coc.id AND h24.name='collectionobjects_common:objectProductionDateGroupList' AND h24.pos=0)
+  LEFT OUTER JOIN structureddategroup opd ON (h24.id = opd.id)
+  LEFT OUTER JOIN hierarchy h10 ON (h10.parentid = coc.id AND h10.pos = 0 AND h10.name = 'collectionobjects_common:fieldCollectionDateGroup')
+  LEFT OUTER JOIN structureddategroup fcd ON (fcd.id = h10.id)
 
   LEFT OUTER JOIN collectionobjects_omca_photos coc_photos ON (coc.id = coc_photos.id AND coc_photos.pos = 0)
   LEFT OUTER JOIN collectionobjects_common_fieldcollectors coc_collectors ON (coc.id = coc_collectors.id AND coc_collectors.pos = 0)
@@ -683,18 +687,18 @@ SELECT
   regexp_replace(ong.objectname, '^.*\\)''(.*)''$', '\\1') AS objectname,
   coc.objectnumber AS objectnumber,
   regexp_replace(coc.fieldcollectionplace, '^.*\\)''(.*)''$', '\\1') AS fieldcollectionplace,
-  '1999-09-09' AS fieldcollectiondate,
-  coc_collectors.item AS fieldcollector,
+  fcd.datedisplaydate AS fieldcollectiondate,
+  regexp_replace(coc_collectors.item, '^.*\\)''(.*)''$', '\\1') AS fieldcollector,
   coc.computedcurrentlocation AS computedcurrentlocationrefname,
   coom.sortableobjectnumber AS sortableobjectnumber,
   h1.name AS csid,
   coom.argusdescription AS argusdescription,
   regexp_replace(dethistg.dhname, '^.*\\)''(.*)''$', '\\1') AS dhname,
-  matg.materialsource AS materials,
+  regexp_replace(matg.material, '^.*\\)''(.*)''$', '\\1') AS materials,
   regexp_replace(objprdpg.objectproductionperson, '^.*\\)''(.*)''$', '\\1') AS objectproductionperson,
   regexp_replace(objprdorgg.objectproductionorganization, '^.*\\)''(.*)''$', '\\1') AS objectproductionorganization,
   regexp_replace(objprdplaceg.objectproductionplace, '^.*\\)''(.*)''$', '\\1') AS objectproductionplace,
-  '1999-09-09' AS objectproductiondate,
+  opd.datedisplaydate AS objectproductiondate,
   (case when coom.donotpublishonweb then 'true' else 'false' end) AS donotpublishonweb,
   regexp_replace(coc.collection, '^.*\\)''(.*)''$', '\\1') AS collection,
   regexp_replace(coom.ipaudit, '^.*\\)''(.*)''$', '\\1') AS ipaudit,
@@ -719,6 +723,10 @@ FROM collectionobjects_omca coom
   LEFT OUTER JOIN objectproductionpersongroup objprdpg ON (h22.id = objprdpg.id)
   LEFT OUTER JOIN hierarchy h23 ON (h23.parentid = coc.id AND h23.name='collectionobjects_common:objectProductionPlaceGroupList' AND h23.pos=0)
   LEFT OUTER JOIN objectproductionplacegroup objprdplaceg ON (h23.id = objprdplaceg.id)
+  LEFT OUTER JOIN hierarchy h24 ON (h24.parentid = coc.id AND h24.name='collectionobjects_common:objectProductionDateGroupList' AND h24.pos=0)
+  LEFT OUTER JOIN structureddategroup opd ON (h24.id = opd.id)
+  LEFT OUTER JOIN hierarchy h10 ON (h10.parentid = coc.id AND h10.pos = 0 AND h10.name = 'collectionobjects_common:fieldCollectionDateGroup')
+  LEFT OUTER JOIN structureddategroup fcd ON (fcd.id = h10.id)
 
   LEFT OUTER JOIN collectionobjects_omca_photos coc_photos ON (coc.id = coc_photos.id AND coc_photos.pos = 0)
   LEFT OUTER JOIN collectionobjects_common_fieldcollectors coc_collectors ON (coc.id = coc_collectors.id AND coc_collectors.pos = 0)
