@@ -100,6 +100,8 @@ def makeJSON(d, indent=0, lookup=None):
     if not (isinstance(d, dict)):
         res += space * indent + '{ label: "' + str(lookup[d]) + '"}\n'
     for key in d:
+	if not key in lookup:
+            continue
         res += space * indent + '{ label: "' + str(lookup[key]) + '",\n'
         if isinstance(d[key], basestring):
             res += space * indent + '{ label: "' + str(lookup(d[key])) + '"}\n'
@@ -161,28 +163,29 @@ if __name__ == '__main__':
     #    ("Places", "places"),
     #    ("Archaeological Culture", "archculture"),
     #    ("Ethnographic File Codes", "ethusecode"),
-    #    ("Materials", "material_ca"),
+    #    ("Materials", "taxonomy_ca"),
     #    ("Taxonomy", "taxonomy")
     #]
 
-    form = {'authority': 'taxonomy', 'webapp': 'ucbghierarchyViewerDev' }
+    form = {'authority': 'taxonomy', 'webapp': 'omca_HierarchyViewer_Dev' }
     config = getConfig(form)
 
-    doHierarchyView(form, config)
-    sys.exit()
+    #doHierarchyView(form, config)
+    #sys.exit()
 
     res = cswaDB.gethierarchy('taxonomy', config)
 
+    print 'res %s' % len(res)
     PARENT = 'ROOT'
     lookup = {PARENT: PARENT}
-    #for row in res:
-    #    prettyName = row[0].replace('"', "'")
-    #    if prettyName[0] == '@':
-    #        prettyName = '<' + prettyName[1:] + '>'
-    #    lookup[row[2]] = prettyName
-    #print '''var data = ['''
-    #print concept.buildJSON(concept.buildConceptDict(res), 0, lookup)
+    for row in res:
+        prettyName = row[0].replace('"', "'")
+        if prettyName[0] == '@':
+            prettyName = '<' + prettyName[1:] + '>'
+        lookup[row[2]] = prettyName
+    print buildJSON(buildConceptDict(res), 0, lookup)
     d = buildConceptDict(res)
+    
     for top in d[PARENT]:
         if type(top) == type('str'): print top
     #print d

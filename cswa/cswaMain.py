@@ -127,7 +127,7 @@ try:
 except:
     sys.stderr.write("error! %s" % traceback.format_exc())
     print '''<h3><span class="error">Sorry! An error occurred; it has been logged and will be investigated.<br/>
-        However, it may take some days before the log is reviewed, so please contact John Lowe jblowe@berkeley.edu directly
+        However, it may take some days before the log is reviewed, so please contact wepapp staff directly
         if you have even the <i>slightest</i> concern about getting this issue resolved.
         <br/>If there is a traceback below, please include the text!
         <br/>

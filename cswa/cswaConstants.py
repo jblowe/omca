@@ -7,31 +7,33 @@ import ConfigParser
 BASE_DIR = '/var/www'
 
 OMCADATA = {
-    'mattech': [('Museum #', 'objnum', 'onn', 2),
-                ('Object name', 'objname', 'on', 1),
-                ('Material', 'material', 'ma', 11),
-                ('Technique', 'tech', 'tc', 21),
-                ('Material/Technique Summary', 'argusd', 'ard', 9)],
-    'nameprod': [('Museum #', 'objnum', 'onn', 2),
-                 ('Object name', 'objname', 'on', 1),
-                 ('Production Person', 'person', 'pc', 12),
-                 ('Production Organization', 'org', 'or', 13),
-                 ('Production Date', 'prodate', 'pdt', 15)],
-    'specimen': [('Museum #', 'objnum', 'onn', 2),
-                 ('DH name', 'dhname', 'dh', 10),
-                 ('Field collection date', 'colldate', 'cod', 4),
-                 ('Field collection place', 'place', 'pl', 3),
-                 ('Field collector', 'collector', 'clc', 5)],
-    'rights': [('Museum #', 'objnum', 'onn', 2),
-               ('Object name', 'objname', 'on', 1),
-               ('IP Audit', 'ipaudit', 'ip', 18),
-               ('Do not publish on web', 'dontpublish', 'dnp', 16),
-               ('Copyright Holder', 'holder', 'hld', 20),
-               ('Photo', 'photo', 'pho', 19)]
+    'mattech': [('Museum #', 'objnum', 'onn', 2, '', ''),
+                ('Object name', 'objectName', 'on', 1, 'concept', 'concepts_common'),
+                ('Material', 'material', 'ma', 11, 'concept', 'concepts_common'),
+                ('Technique', 'tech', 'tc', 21, 'concept', ''),
+                ('Material/Technique Summary', 'argusDescription', 'ard', 9, 'argusDescription', '')],
+    'nameprod': [('Museum #', 'objnum', 'onn', 2, '', ''),
+                 ('Object name', 'objectName', 'on', 1, 'concept', 'concepts_common'),
+                 ('Production Person', 'objectProductionPerson', 'pc', 12, 'person', 'persons_common'),
+                 ('Production Organization', 'objectProductionOrganization', 'or', 13, 'organization',
+                  'organizations_common'),
+                 ('Production Date', 'objectProductionDateGroup', 'pdt', 15, '', '')],
+    'specimen': [('Museum #', 'objnum', 'onn', 2, 'concept', 'concepts_common'),
+                 ('DH name', 'dhname', 'dh', 10, '', ''),
+                 ('Field collection date', 'colldate', 'cod', 4, '', ''),
+                 ('Field collection place', 'fieldCollectionPlace', 'pl', 3, 'places_common', 'place'),
+                 ('Field collector', 'fieldCollector', 'pc', 5, 'collectionobjects_common_fieldcollectors', '')],
+    'rights': [('Museum #', 'objnum', 'onn', 2, '', ''),
+               ('Object name', 'objectName', 'on', 1, 'concept', 'concepts_common'),
+               ('IP Audit', 'ipAudit', 'ip', 18, 'item', 'ipAudit'),
+               ('Do not publish on web', 'doNotPublishOnWeb', 'dnp', 16, '', ''),
+               ('Copyright Holder', 'holder', 'hld', 20, 'person', ''),
+               ('Photo', 'photo', 'pho', 19, '', '')]
 }
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
 
 def getStyle(schemacolor1):
     return '''
@@ -73,6 +75,7 @@ th[data-sort]{ cursor:pointer; }
 .notentered { font-style: italic; color: #999999; }
 </style>
 '''
+
 
 def infoHeaders(fieldSet):
     if fieldSet == 'keyinfo':
@@ -152,9 +155,10 @@ def infoHeaders(fieldSet):
     else:
         return "<table><tr>DEBUG</tr>"
 
+
 def getProhibitedLocations(config):
-    #fileName = config.get('files','prohibitedLocations')
-    fileName = (os.path.join(BASE_DIR,'cfgs','prohibitedLocations.csv'))
+    # fileName = config.get('files','prohibitedLocations')
+    fileName = (os.path.join(BASE_DIR, 'cfgs', 'prohibitedLocations.csv'))
     locList = []
     try:
         with open(fileName, 'rb') as csvfile:
@@ -171,67 +175,30 @@ def getProhibitedLocations(config):
 def getHandlers(form, institution):
     selected = form.get('handlerRefName')
 
-
-    if institution == 'bampfa':
-        handlerlist = [
-            ('Kelly Bennett', 'KB'),
-            ('Gary Bogus', 'GB'),
-            ('Lisa Calden', 'LC'),
-            ('Stephanie Cannizzo', 'SC'),
-            ('Genevieve Cottraux', 'GC'),
-            ('Laura Hansen', 'LH'),
-            ('Michael Meyers', 'MM'),
-            ('Scott Orloff', 'SO'),
-            ('Pamela Pack', 'PP'),
-            ('Julia White', 'JW'),
-        ]
-    else:
-
-        handlerlist = [
-            ("Victoria Bradshaw", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(7267)'Victoria Bradshaw'"),
-            ("Sofia Cano", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(SofiaCano1441412806257)'Sofia Cano'"),
-            ("Iris Close", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(IrisClose1351199196181)'Iris Close'"),
-            ("Barrett Dryden", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(BarrettDryden1441411842447)'Barrett Dryden'"),
-            ("Alicja Egbert", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(8683)'Alicja Egbert'"),
-            ("Madeleine Fang", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(7248)'Madeleine W. Fang'"),
-            ("Leslie Freund", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(7475)'Leslie Freund'"),
-            ("Haley Goren", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(HaleyGoren1441412331902)'Haley Goren'"),
-            ("Samuel Hemsley", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(SamuelHemsley1441412367955)'Samuel Hemsley'"),
-            ("Chelsea Hernandez-Garcia", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(ChelseaHernandezGarcia1436388486316)'Chelsea Hernandez-Garcia'"),
-            ("Alexandra Idso", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(AlexandraIdso1441412402823)'Alexandra Idso'"),
-            ("Natasha Johnson", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(7652)'Natasha Johnson'"),
-            ("Brenna Jordan","urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(BrennaJordan1383946978257)'Brenna Jordan'"),
-            ("Dani Knapp", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(DaniKnapp1436386634306)'Dani Knapp'"),
-            ("Theo Lovett","urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(TheoLovett1441780245610)'Theo Lovett'"),
-            ("Corri MacEwen", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(9090)'Corri MacEwen'"),
-            ("Rebekah McKay","urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(RebekahMcKay1441780293210)'Rebekah McKay'"),
-            ("Karyn Moore","urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(KarynMoore1399567930777)'Karyn Moore'"),
-            ("Jon Oligmueller", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(JonOligmueller1372192617217)'Jon Oligmueller'"),
-            ("Katrina Oshima", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(KatrinaOshima1441412692846)'Katrina Oshima'"),
-            ("Nathaniel Rigler", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(NathanielRigler1441412770505)'Nathaniel Rigler'"),
-            ("Adrian Rios", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(AdrianRios1441412383598)'Adrian Rios'"),
-            ("Barbara Rocha", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(BarbaraRocha1441413033713)'Barbara Rocha'"),
-            ("Rubi Ruopp", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(RubiRuopp1441412850032)'Rubi Ruopp'"),
-            ("Emily Sandoval", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(EmilySandoval1441412274520)'Emily Sandoval'"),
-            ("Holly Seyler", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(HollySeyler1351291017723)'Holly Seyler'"),
-            ("Martina Smith", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(9034)'Martina Smith'"),
-            ("Kaci Spooner", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(KaciSpooner1441412653643)'Kaci Spooner'"),
-            ("Susannah Starr","urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(SusannahStarr1438363401681)'Susannah Starr'"),
-            ("Linda Waterfield", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(LindaWaterfield1358535276741)'Linda Waterfield'"),
-            ("Leah Weaver", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(LeahWeaver1441412347620)'Leah Weaver'"),
-            ("Jane Williams", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(7420)'Jane L. Williams'"),
-            ("Madlyne Woodward", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(MadlyneWoodward1441412735172)'Madlyne Woodward'"),
-            ("Heather Van Zankwyk", "urn:cspace:omca.cspace.berkeley.edu:personauthorities:name(person):item:name(HeatherVanZankwyk1436386602136)'Heather Van Zankwyk'"),
-        ]
+    handlerlist = [
+        ("Adriane Tafoya",
+         "urn:cspace:museumca.org:personauthorities:name(person):item:name(staff1994)'Adriane Tafoya'"),
+        ("Anna Bunting",
+         "urn:cspace:museumca.org:personauthorities:name(person):item:name(AnnaBunting1457972526862)'Anna Bunting'"),
+        ("Christine Osborne",
+         "urn:cspace:museumca.org:personauthorities:name(person):item:name(staff1986)'Christine Osborne'"),
+        ("Jadeen Young", "urn:cspace:museumca.org:personauthorities:name(person):item:name(staff1977)'Jadeen Young'"),
+        ("Joy Tahan", "urn:cspace:museumca.org:personauthorities:name(person):item:name(staff1646)'Joy Tahan'"),
+        ("Meredith Patute",
+         "urn:cspace:museumca.org:personauthorities:name(person):item:name(staff1968)'Meredith Patute'"),
+        ("Michael Lange", "urn:cspace:museumca.org:personauthorities:name(person):item:name(staff2003)'Michael Lange'"),
+        ("Nathan Kerr", "urn:cspace:museumca.org:personauthorities:name(person):item:name(staff1933)'Nathan Kerr'"),
+        ("Valerie Huaco", "urn:cspace:museumca.org:personauthorities:name(person):item:name(staff1941)'Valerie Huaco'")
+    ]
 
     handlers = '''
           <select class="cell" name="handlerRefName">
               <option value="None">Select a handler</option>'''
 
     for handler in handlerlist:
-        #print handler
+        # print handler
         handlerOption = """<option value="%s">%s</option>""" % (handler[1], handler[0])
-        #print "xxxx",selected
+        # print "xxxx",selected
         if selected and str(selected) == handler[1]:
             handlerOption = handlerOption.replace('option', 'option selected')
         handlers = handlers + handlerOption
@@ -319,7 +286,7 @@ def getReasons(form, institution):
 
 
 # NB: not currently used
-#def getWebappList():
+# def getWebappList():
 #    return {
 #        'omca': {'apps': ['inventory', 'keyinfo', 'objinfo', 'objdetails', 'bulkedit', 'moveobject', 'packinglist', 'movecrate', 'omcaPowerMove', 'upload',
 #                  'barcodeprint', 'hierarchyViewer', 'collectionStats', 'governmentholdings']},
@@ -329,7 +296,7 @@ def getReasons(form, institution):
 
 
 # NB: not currently used
-#def getAppOptions(museum):
+# def getAppOptions(museum):
 #    webapps = getWebappList()
 #    appOptions = ''
 #    for w in webapps[museum]:
@@ -339,7 +306,7 @@ def getReasons(form, institution):
 
 def selectWebapp(form):
     if form.get('webapp') == 'switchapp':
-        #sys.stderr.write('%-13s:: %s' % ('switchapp','looking for creds..'))
+        # sys.stderr.write('%-13s:: %s' % ('switchapp','looking for creds..'))
         username = form.get('csusername')
         password = form.get('cspassword')
         payload = '''
@@ -349,10 +316,10 @@ def selectWebapp(form):
     else:
         payload = ''
 
-    files = os.listdir(os.path.join(BASE_DIR,'cfgs'))
+    files = os.listdir(os.path.join(BASE_DIR, 'cfgs'))
 
-    programName = os.path.basename(__file__).replace('Constants', 'Main') + '?webapp=' # yes, this is fragile!
-    programName = programName.replace('.pyc', '.py') # desperate hack
+    programName = os.path.basename(__file__).replace('Constants', 'Main') + '?webapp='  # yes, this is fragile!
+    programName = programName.replace('.pyc', '.py')  # desperate hack
     apptitles = {}
     serverlabels = {}
     badconfigfiles = ''
@@ -362,11 +329,11 @@ def selectWebapp(form):
     for f in files:
         if '.cfg' in f:
             config = ConfigParser.RawConfigParser()
-            config.read(os.path.join(BASE_DIR,'cfgs',f))
+            config.read(os.path.join(BASE_DIR, 'cfgs', f))
             try:
                 configfile = f
-                configfile = configfile.replace('Dev.cfg','')
-                configfile = configfile.replace('Prod.cfg','')
+                configfile = configfile.replace('Dev.cfg', '')
+                configfile = configfile.replace('Prod.cfg', '')
                 logo = config.get('info', 'logo')
                 updateType = config.get('info', 'updatetype')
                 schemacolor1 = config.get('info', 'schemacolor1')
@@ -374,17 +341,18 @@ def selectWebapp(form):
                 apptitle = config.get('info', 'apptitle')
                 serverlabel = config.get('info', 'serverlabel')
                 # only show dev or prod options in this app
-                if not serverlabel in ['production','development']:
+                if not serverlabel in ['production', 'development']:
                     continue
-                serverlabel = serverlabel.replace('production','Prod')
-                serverlabel = serverlabel.replace('development','Dev')
+                serverlabel = serverlabel.replace('production', 'Prod')
+                serverlabel = serverlabel.replace('development', 'Dev')
                 serverlabelcolor = config.get('info', 'serverlabelcolor')
-                serverlabels['%s.%s.%s' % (institution,updateType,serverlabel)] = '''<span style="cursor:pointer;color:%s;"><a target="%s" onclick="$('#ucbwebapp').attr('action', '%s').submit(); return false;">%s</a></span>''' % (
+                serverlabels['%s.%s.%s' % (institution, updateType,
+                                           serverlabel)] = '''<span style="cursor:pointer;color:%s;"><a target="%s" onclick="$('#ucbwebapp').attr('action', '%s').submit(); return false;">%s</a></span>''' % (
                     serverlabelcolor, serverlabel, programName + configfile + serverlabel, serverlabel)
                 if not institution in webapps.keys():
                     webapps[institution] = {'apps': {}}
                 webapps[institution]['logo'] = logo
-                webapps[institution]['apps'][updateType] = [serverlabel,configfile]
+                webapps[institution]['apps'][updateType] = [serverlabel, configfile]
                 apptitles[updateType] = apptitle
             except:
                 badconfigfiles += '<tr><td>%s</td></tr>' % f
@@ -418,16 +386,18 @@ def selectWebapp(form):
         "%Y-%m-%dT%H:%M:%SZ") + '''.</p>'''
 
     for museum in sorted(webapps.keys()):
-        line += '<td valign="top"><table><tr style="height:130px; vertical-align:top"><td colspan="3"><h2>%s</h2><img style="max-height:60px; padding:8px" src="%s"></td></tr><tr><th colspan="3"><hr/></th></tr>\n' % (museum,webapps[museum]['logo'])
+        line += '<td valign="top"><table><tr style="height:130px; vertical-align:top"><td colspan="3"><h2>%s</h2><img style="max-height:60px; padding:8px" src="%s"></td></tr><tr><th colspan="3"><hr/></th></tr>\n' % (
+        museum, webapps[museum]['logo'])
         listOfWebapps = sorted(webapps[museum]['apps'].keys())
         for webapp in listOfWebapps:
             apptitle = apptitles[webapp] if apptitles.has_key(webapp) else webapp
             line += '<tr class="imagecell" ><th>%s</th>' % apptitle
             for deployment in ['Prod', 'Dev']:
                 available = ''
-                #available = '''<a target="%s" onclick="$('#ucbwebapp').attr('action', '%s').submit(); return false;">%s</a>''' % (deployment, programName + webapps[museum]['cfgs'][webapp] + deployment.replace('Prod','V321'), webapp + deployment)
-                if os.path.isfile(os.path.join(BASE_DIR,'cfgs',webapps[museum]['apps'][webapp][1] + deployment + '.cfg')):
-                    label = '%s.%s.%s' % (museum,webapp,deployment)
+                # available = '''<a target="%s" onclick="$('#ucbwebapp').attr('action', '%s').submit(); return false;">%s</a>''' % (deployment, programName + webapps[museum]['cfgs'][webapp] + deployment.replace('Prod','V321'), webapp + deployment)
+                if os.path.isfile(
+                        os.path.join(BASE_DIR, 'cfgs', webapps[museum]['apps'][webapp][1] + deployment + '.cfg')):
+                    label = '%s.%s.%s' % (museum, webapp, deployment)
                     if label in serverlabels:
                         available = serverlabels[label]
                 line += ' <td>%s</td>\n' % available
@@ -439,7 +409,7 @@ def selectWebapp(form):
     line += '''
 </tr></table>
 <hr/>
-<h4>jblowe@berkeley.edu   7 Feb 2013, last revised 14 January 2015</h4>''' + payload + '''
+<h4>jblowe@berkeley.edu   7 Feb 2013, last revised 6 June 2016</h4>''' + payload + '''
 </form>
 </body>
 </html>'''
@@ -512,24 +482,30 @@ def getHierarchies(form):
     selected = form.get('authority')
 
     authoritylist = [
-        ("Ethnographic Culture", "concept"),
-        ("Places", "places"),
-        ("Archaeological Culture", "archculture"),
-        ("Ethnographic File Codes", "ethusecode"),
-        ("Materials", "material_ca"),
-        ("Taxonomy", "taxonomy")
+        ("Concept", "Concept"),
+        ("Place", "Place"),
+        ("Taxon", "taxonomy"),
+        ("Local Storage Location", "Location"),
+        ("Offsite Storage Locations", "Location"),
+        ("Organization", "Organization")
+        # ("Ethnographic Culture", "concept"),
+        # ("Places", "places"),
+        # ("Archaeological Culture", "archculture"),
+        # ("Ethnographic File Codes", "ethusecode"),
+        # ("Materials", "material_ca"),
+        # ("Taxonomy", "taxonomy")
     ]
 
     authorities = '''
 <select class="cell" name="authority">
 <option value="None">Select an authority</option>'''
 
-    #sys.stderr.write('selected %s\n' % selected)
+    # sys.stderr.write('selected %s\n' % selected)
     for authority in authoritylist:
         authorityOption = """<option value="%s">%s</option>""" % (authority[1], authority[0])
-        #sys.stderr.write('check hierarchy %s %s\n' % (authority[1], authority[0]))
+        # sys.stderr.write('check hierarchy %s %s\n' % (authority[1], authority[0]))
         if selected == authority[1]:
-            #sys.stderr.write('found hierarchy %s %s\n' % (authority[1], authority[0]))
+            # sys.stderr.write('found hierarchy %s %s\n' % (authority[1], authority[0]))
             authorityOption = authorityOption.replace('option', 'option selected')
         authorities = authorities + authorityOption
 
@@ -581,6 +557,7 @@ def getAltNumTypes(form, csid, ant):
     altnumtypes += '\n      </select>'
     return altnumtypes, selected
 
+
 def getObjType(form, csid, ot):
     selected = form.get('objectType')
 
@@ -596,7 +573,7 @@ def getObjType(form, csid, ot):
     ]
 
     objtypes = \
-          '''<select class="cell" name="ot.''' + csid + '''">
+        '''<select class="cell" name="ot.''' + csid + '''">
               <option value="None">Select an object type</option>'''
 
     for objtype in objtypelist:
@@ -608,6 +585,7 @@ def getObjType(form, csid, ot):
 
     objtypes += '\n      </select>'
     return objtypes, selected
+
 
 def getCollMan(form, csid, cm):
     selected = form.get('collMan')
@@ -622,7 +600,7 @@ def getCollMan(form, csid, cm):
     ]
 
     collmans = \
-          '''<select class="cell" name="cm.''' + csid + '''">
+        '''<select class="cell" name="cm.''' + csid + '''">
               <option value="None">Select a collection manager</option>'''
 
     for collman in collmanlist:
@@ -634,25 +612,40 @@ def getCollMan(form, csid, cm):
 
     collmans += '\n      </select>'
     return collmans, selected
+
+
 def getAgencies(form):
     selected = form.get('agency')
 
     agencylist = [ \
-        ("Bureau of Indian Affairs", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(8452)"),
-        ("Bureau of Land Management", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(3784)"),
-        ("Bureau of Reclamation", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(6392)"),
-        ("California Department of Transportation", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(9068)"),
-        ("California State Parks", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(8594)"),
-        ("East Bay Municipal Utility District", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(EastBayMunicipalUtilityDistrict1370388801890)"),
-        ("National Park Service", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(1533)"),
-        ("United States Air Force", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(UnitedStatesAirForce1369177133041)"),
+        ("Bureau of Indian Affairs",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(8452)"),
+        ("Bureau of Land Management",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(3784)"),
+        ("Bureau of Reclamation",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(6392)"),
+        ("California Department of Transportation",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(9068)"),
+        ("California State Parks",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(8594)"),
+        ("East Bay Municipal Utility District",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(EastBayMunicipalUtilityDistrict1370388801890)"),
+        ("National Park Service",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(1533)"),
+        ("United States Air Force",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(UnitedStatesAirForce1369177133041)"),
         ("United States Army", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(3021)"),
-        ("United States Coast Guard", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(UnitedStatesCoastGuard1342641628699)"),
-        ("United States Fish and Wildlife Service", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(UnitedStatesFishandWildlifeService1342132748290)"),
-        ("United States Forest Service", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(3120)"),
-        ("United States Marine Corps", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(UnitedStatesMarineCorps1365524918536)"),
+        ("United States Coast Guard",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(UnitedStatesCoastGuard1342641628699)"),
+        ("United States Fish and Wildlife Service",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(UnitedStatesFishandWildlifeService1342132748290)"),
+        ("United States Forest Service",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(3120)"),
+        ("United States Marine Corps",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(UnitedStatesMarineCorps1365524918536)"),
         ("United States Navy", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(9079)"),
-        ("U.S. Army Corps of Engineers", "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(9133)"),
+        ("U.S. Army Corps of Engineers",
+         "urn:cspace:omca.cspace.berkeley.edu:orgauthorities:name(organization):item:name(9133)"),
     ]
 
     agencies = '''
@@ -668,34 +661,34 @@ def getAgencies(form):
     agencies += '\n </select>'
     return agencies, selected
 
-def getIntakeFields(fieldset):
 
+def getIntakeFields(fieldset):
     if fieldset == 'intake':
 
         return [
-            ('TR', 20, 'tr','31','fixed'),
-            ('Number of Objects:', 5, 'numobjects','1','text'),
-            ('Source:', 40, 'pc.source','','text'),
-            ('Date in:', 30, 'datein',time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),'text'),
-            ('Receipt?', 40, 'receipt','','checkbox'),
-            ('Location:', 40, 'lo.location','','text'),
-            ('Disposition:', 30, 'disposition','','text'),
-            ('Artist/Title/Medium', 10, 'atm','','text'),
-            ('Purpose:', 40, 'purpose','','text')
+            ('TR', 20, 'tr', '31', 'fixed'),
+            ('Number of Objects:', 5, 'numobjects', '1', 'text'),
+            ('Source:', 40, 'pc.source', '', 'text'),
+            ('Date in:', 30, 'datein', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), 'text'),
+            ('Receipt?', 40, 'receipt', '', 'checkbox'),
+            ('Location:', 40, 'lo.location', '', 'text'),
+            ('Disposition:', 30, 'disposition', '', 'text'),
+            ('Artist/Title/Medium', 10, 'atm', '', 'text'),
+            ('Purpose:', 40, 'purpose', '', 'text')
         ]
     elif fieldset == 'objects':
 
         return [
-            ('ID number', 30, 'id','','text'),
-            ('Title', 30, 'title','','text'),
-            ('Comments', 30, 'comments','','text'),
-            ('Artist', 30, 'pc.artist','','text'),
-            ('Creation date', 30, 'cd','','text'),
-            ('Creation technique', 30, 'ct','','text'),
-            ('Dimensions', 30, 'dim','','text'),
-            ('Responsible department', 30, 'rd','','text'),
-            ('Computed current location', 30, 'lo.loc','','text')
-            ]
+            ('ID number', 30, 'id', '', 'text'),
+            ('Title', 30, 'title', '', 'text'),
+            ('Comments', 30, 'comments', '', 'text'),
+            ('Artist', 30, 'pc.artist', '', 'text'),
+            ('Creation date', 30, 'cd', '', 'text'),
+            ('Creation technique', 30, 'ct', '', 'text'),
+            ('Dimensions', 30, 'dim', '', 'text'),
+            ('Responsible department', 30, 'rd', '', 'text'),
+            ('Computed current location', 30, 'lo.loc', '', 'text')
+        ]
 
 
 def getHeader(updateType, institution):
@@ -905,9 +898,11 @@ def getHeader(updateType, institution):
       <th>Update status</th>
     </tr>"""
 
+
 from operator import itemgetter
 from heapq import nlargest
 from itertools import repeat, ifilter
+
 
 class Counter(dict):
     '''Dict subclass for counting hashable objects.  Sometimes called a bag
@@ -989,7 +984,7 @@ class Counter(dict):
                     for elem, count in iterable.iteritems():
                         self[elem] = self_get(elem, 0) + count
                 else:
-                    dict.update(self, iterable) # fast path when counter is empty
+                    dict.update(self, iterable)  # fast path when counter is empty
             else:
                 self_get = self.get
                 for elem in iterable:
@@ -1096,7 +1091,8 @@ if __name__ == '__main__':
     print selectWebapp({})
     sys.exit()
 
-    def handleResult(result,header):
+
+    def handleResult(result, header):
         header = '\n<tr><td>%s<td>' % header
         if type(result) == type(()) and len(result) >= 2:
             return header + result[0]
@@ -1104,8 +1100,9 @@ if __name__ == '__main__':
             return header + result
         else:
             raise
-            #return result
-            #return "\n<h2>some other result</h2>\n"
+            # return result
+            # return "\n<h2>some other result</h2>\n"
+
 
     form = {}
     config = {}
@@ -1116,17 +1113,17 @@ if __name__ == '__main__':
 
     # all the following return HTML)
     result += '<h2>Dropdowns</h2><table border="1">'
-    #result += handleResult(getAppOptions('omca'),'getAppOptions')
-    result += handleResult(getAltNumTypes(form, 'test-csid', 'attributed omca number'),'getAltNumTypes')
-    result += handleResult(getHandlers(form,'bampfa'),'getHandlers: bampfa')
-    result += handleResult(getHandlers(form,''),'getHandlers')
-    result += handleResult(getReasons(form,'bampfa'),'getReasons:bampfa')
-    result += handleResult(getReasons(form,''),'getReasons')
-    result += handleResult(getPrinters(form),'getPrinters')
-    result += handleResult(getFieldset(form,'omca'),'getFieldset')
-    result += handleResult(getFieldset(form,'bampfa'),'getFieldset')
-    result += handleResult(getHierarchies(form),'getHierarchies')
-    result += handleResult(getAgencies(form),'getAgencies')
+    # result += handleResult(getAppOptions('omca'),'getAppOptions')
+    result += handleResult(getAltNumTypes(form, 'test-csid', 'attributed omca number'), 'getAltNumTypes')
+    result += handleResult(getHandlers(form, 'bampfa'), 'getHandlers: bampfa')
+    result += handleResult(getHandlers(form, ''), 'getHandlers')
+    result += handleResult(getReasons(form, 'bampfa'), 'getReasons:bampfa')
+    result += handleResult(getReasons(form, ''), 'getReasons')
+    result += handleResult(getPrinters(form), 'getPrinters')
+    result += handleResult(getFieldset(form, 'omca'), 'getFieldset')
+    result += handleResult(getFieldset(form, 'bampfa'), 'getFieldset')
+    result += handleResult(getHierarchies(form), 'getHierarchies')
+    result += handleResult(getAgencies(form), 'getAgencies')
     result += '</table>'
 
     # these two return python objects
@@ -1140,9 +1137,10 @@ if __name__ == '__main__':
         result += '<li>%s</li>' % p
 
     result += '<h2>Headers</h2>'
-    for h in 'inventory movecrate packinglist packinglistbyculture moveobject bedlist bedlistnone keyinfoResult objinfoResult inventoryResult barcodeprint barcodeprintlocations upload'.split(' '):
+    for h in 'inventory movecrate packinglist packinglistbyculture moveobject bedlist bedlistnone keyinfoResult objinfoResult inventoryResult barcodeprint barcodeprintlocations upload'.split(
+            ' '):
         result += '<h3>Header for %s</h3>' % h
-        header = getHeader(h,'')
+        header = getHeader(h, '')
         result += header.replace('<table', '<table border="1" ')
         result += '</table>'
 
@@ -1158,6 +1156,4 @@ if __name__ == '__main__':
     '''
     print result
 
-
     result += '</html>\n'
-

@@ -948,6 +948,19 @@ def doUpdateKeyinfo(form, config):
     doTheUpdate(CSIDs, form, config, fieldset, refNames2find)
 
 
+def setUpdateItems(form, index, fieldset, config):
+    updateItems = {}
+
+    for f in OMCADATA.keys():
+        if fieldset == f:
+            for mySet in OMCADATA[f]:
+                if mySet[5] != '':
+                    updateItems[mySet[1]] = cswaDB.getrefname(mySet[5], form.get(mySet[2] + '.' + index), config)
+                else:
+                    updateItems[mySet[1]] = form.get(mySet[2] + '.' + index)
+                sys.stderr.write('added: %s = %s\n' % (mySet[1], updateItems[mySet[1]]))
+    return updateItems
+
 def doTheUpdate(CSIDs, form, config, fieldset, refNames2find):
 
     updateType = config.get('info', 'updatetype')
@@ -967,39 +980,44 @@ def doTheUpdate(CSIDs, form, config, fieldset, refNames2find):
         else:
             index = csid
         updateItems = {}
-        updateItems['objectCsid'] = csid
-        updateItems['objectName'] = form.get('onm.' + index)
-        #updateItems['objectNumber'] = form.get('oox.' + index)
-        if fieldset == 'namedesc':
-            updateItems['briefDescription'] = form.get('bdx.' + index)
-        elif fieldset == 'registration':
-            updateItems['pahmaAltNum'] = form.get('anm.' + index)
-            updateItems['pahmaAltNumType'] = form.get('ant.' + index)
-            updateItems['fieldCollector'] = refNames2find[form.get('pc.' + index)]
-        elif fieldset == 'keyinfo':
-            if form.get('ocn.' + index) != '':
-                updateItems['objectCount'] = form.get('ocn.' + index)
-            updateItems['pahmaFieldCollectionPlace'] = refNames2find[form.get('cp.' + index)]
-            updateItems['assocPeople'] = refNames2find[form.get('cg.' + index)]
-            updateItems['pahmaEthnographicFileCode'] = refNames2find[form.get('fc.' + index)]
-        elif fieldset == 'hsrinfo':
-            if form.get('ocn.' + index) != '':
-                updateItems['objectCount'] = form.get('ocn.' + index)
-            updateItems['inventoryCount'] = form.get('ctn.' + index)
-            updateItems['pahmaFieldCollectionPlace'] = refNames2find[form.get('cp.' + index)]
-            updateItems['briefDescription'] = form.get('bdx.' + index)
-        elif fieldset == 'objtypecm':
-            if form.get('ocn.' + index) != '':
-                updateItems['objectCount'] = form.get('ocn.' + index)
-            updateItems['collection'] = form.get('ot.' + index)
-            updateItems['responsibleDepartment'] = form.get('cm.' + index)
-            updateItems['pahmaFieldCollectionPlace'] = refNames2find[form.get('cp.' + index)]
-        elif fieldset == 'placeanddate':
-            updateItems['pahmaFieldLocVerbatim'] = form.get('vfcp.' + index)
-            updateItems['pahmaFieldCollectionDate'] = form.get('cd.' + index)
+
+        if institution == 'omca':
+            updateItems = setUpdateItems(form, index, fieldset, config)
         else:
-            pass
-            #error!
+            updateItems['objectName'] = form.get('onm.' + index)
+            #updateItems['objectNumber'] = form.get('oox.' + index)
+            if fieldset == 'namedesc':
+                updateItems['briefDescription'] = form.get('bdx.' + index)
+            elif fieldset == 'registration':
+                updateItems['pahmaAltNum'] = form.get('anm.' + index)
+                updateItems['pahmaAltNumType'] = form.get('ant.' + index)
+                updateItems['fieldCollector'] = refNames2find[form.get('pc.' + index)]
+            elif fieldset == 'keyinfo':
+                if form.get('ocn.' + index) != '':
+                    updateItems['objectCount'] = form.get('ocn.' + index)
+                updateItems['pahmaFieldCollectionPlace'] = refNames2find[form.get('cp.' + index)]
+                updateItems['assocPeople'] = refNames2find[form.get('cg.' + index)]
+                updateItems['pahmaEthnographicFileCode'] = refNames2find[form.get('fc.' + index)]
+            elif fieldset == 'hsrinfo':
+                if form.get('ocn.' + index) != '':
+                    updateItems['objectCount'] = form.get('ocn.' + index)
+                updateItems['inventoryCount'] = form.get('ctn.' + index)
+                updateItems['pahmaFieldCollectionPlace'] = refNames2find[form.get('cp.' + index)]
+                updateItems['briefDescription'] = form.get('bdx.' + index)
+            elif fieldset == 'objtypecm':
+                if form.get('ocn.' + index) != '':
+                    updateItems['objectCount'] = form.get('ocn.' + index)
+                updateItems['collection'] = form.get('ot.' + index)
+                updateItems['responsibleDepartment'] = form.get('cm.' + index)
+                updateItems['pahmaFieldCollectionPlace'] = refNames2find[form.get('cp.' + index)]
+            elif fieldset == 'placeanddate':
+                updateItems['pahmaFieldLocVerbatim'] = form.get('vfcp.' + index)
+                updateItems['pahmaFieldCollectionDate'] = form.get('cd.' + index)
+            else:
+                pass
+                #error!
+
+        updateItems['objectCsid'] = csid
 
         for i in ('handlerRefName',):
             updateItems[i] = form.get(i)
@@ -2058,13 +2076,13 @@ def updateKeyInfo(fieldset, updateItems, config, form):
     root = etree.fromstring(content)
     # add the user's changes to the XML
     for relationType in fieldList:
-        #sys.stderr.write('tag1: %s\n' % relationType)
+        sys.stderr.write('update: %s = %s\n' % (relationType, updateItems[relationType]))
         # this app does not insert empty values into anything!
         if not relationType in updateItems.keys() or updateItems[relationType] == '':
             continue
         listSuffix = 'List'
         extra = ''
-        if relationType in ['assocPeople', 'pahmaAltNum', 'pahmaFieldCollectionDate']:
+        if relationType in ['assocPeople', 'pahmaAltNum', 'pahmaFieldCollectionDate', 'material']:
             extra = 'Group'
         elif relationType in ['briefDescription', 'fieldCollector', 'responsibleDepartment']:
             listSuffix = 's'
@@ -2073,7 +2091,7 @@ def updateKeyInfo(fieldset, updateItems, config, form):
         else:
             pass
             #print ">>> ",'.//'+relationType+extra+'List'
-        #sys.stderr.write('tag2: %s\n' % (relationType + extra + listSuffix))
+        sys.stderr.write('tag2: %s\n' % (relationType + extra + listSuffix))
         metadata = root.findall('.//' + relationType + extra + listSuffix)
         try:
             metadata = metadata[0] # there had better be only one!
@@ -2085,7 +2103,7 @@ def updateKeyInfo(fieldset, updateItems, config, form):
         #print ">>> ",relationType,':',updateItems[relationType]
         if relationType in ['assocPeople', 'objectName', 'pahmaAltNum']:
             #group = metadata.findall('.//'+relationType+'Group')
-            #sys.stderr.write('  updateItem: ' + relationType + ':: ' + updateItems[relationType] + '\n' )
+            sys.stderr.write('  updateItem: ' + relationType + ':: ' + updateItems[relationType] + '\n' )
             Entries = metadata.findall('.//' + relationType)
             if not alreadyExists(updateItems[relationType], Entries):
                 newElement = etree.Element(relationType + 'Group')
@@ -2225,7 +2243,8 @@ def updateKeyInfo(fieldset, updateItems, config, form):
     uri = 'collectionobjects' + '/' + updateItems['objectCsid']
     payload = '<?xml version="1.0" encoding="UTF-8"?>\n' + etree.tostring(root,encoding='utf-8')
     # update collectionobject..
-    #print "<br>pretending to post update to %s to REST API..." % updateItems['objectCsid']
+    sys.stderr.write("post update to %s to REST API..." % updateItems['objectCsid'])
+    sys.stderr.write(etree.tostring(root))
     (url, data, csid, elapsedtime) = postxml('PUT', uri, realm, hostname, username, password, payload)
     writeLog(updateItems, uri, 'PUT', username, config)
 
@@ -3027,7 +3046,7 @@ def starthtml(form, config):
           <th><span class="cell">reason:</span></th><th>''' + reasons + '''</th>
           <tr><th><!-- span class="cell">crate:</span --></th>
           <th><input id="lo.crate" class="cell" type="hidden" size="40" name="lo.crate" value="''' + crate + '''" class="xspan"></th>
-          <th><span class="cell">handler:</span></th><th>''' + handlers + '''</th></tr>
+          <th><span class="cell">contact:</span></th><th>''' + handlers + '''</th></tr>
         '''
 
     elif updateType == 'movecrate':
@@ -3045,7 +3064,7 @@ def starthtml(form, config):
         reasons, selected = cswaConstants.getReasons(form, institution)
         otherfields += '''
           <tr><th><span class="cell">reason:</span></th><th>''' + reasons + '''</th>
-          <th><span class="cell">handler:</span></th><th>''' + handlers + '''</th></tr>'''
+          <th><span class="cell">contact:</span></th><th>''' + handlers + '''</th></tr>'''
 
 
     elif updateType == 'powermove':
@@ -3068,7 +3087,7 @@ def starthtml(form, config):
         reasons, selected = cswaConstants.getReasons(form, institution)
         otherfields += '''
           <tr><th><span class="cell">reason:</span></th><th>''' + reasons + '''</th>
-          <th><span class="cell">handler:</span></th><th>''' + handlers + '''</th></tr>'''
+          <th><span class="cell">contact:</span></th><th>''' + handlers + '''</th></tr>'''
 
     elif updateType == 'bedlist':
         location1 = str(form.get("lo.location1")) if form.get("lo.location1") else ''
@@ -3147,7 +3166,7 @@ def starthtml(form, config):
         reasons, selected = cswaConstants.getReasons(form, institution)
         otherfields += '''
           <tr><th><span class="cell">reason:</span></th><th>''' + reasons + '''</th>
-          <th><span class="cell">handler:</span></th><th>''' + handlers + '''</th></tr>'''
+          <th><span class="cell">contact:</span></th><th>''' + handlers + '''</th></tr>'''
 
     elif updateType == 'packinglist' or updateType == 'packinglistbyculture':
         if institution == 'bampfa':
