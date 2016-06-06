@@ -83,7 +83,6 @@ A map they could all understand.
               <tr>
                 <td>
                   <li><a href="#si">Systematic Inventory</a></li>
-                  <li><a href="#mor">Move Object Range</a></li>
                   <li><a href="#pm">Power Move</a></li>
                   <li><a href="#bmu">Bulk Media Upload</a></li>
                 </td>
@@ -160,13 +159,6 @@ A map they could all understand.
             <td style="page-break-before:avoid">
               <div><a href="si1.png"><img src="si1.png" width="600px"/></a></div>
               <p>This webapp allows registrars to reconcile the results of a (normally physical) inventory. User enters a <i>range</i> of storage locations and the objects in those locations are displayed; the user can then indicate (using the radio buttons) whether the object is indeed located or not. Other reports or the regular UI can be used to follow up on the objects that were not located. </p>
-            </td>
-          </tr>
-          <tr>
-            <td style="page-break-before:avoid">
-              <hr/>
-              <div><a href="mor1.png"><img src="mor1.png" width="600px"/></a></div>
-              <p>This webapp allows registrars, collections managers, and conservators to record the movement of a specific range of Museum numbers to a new storage location (and a new crate, if so desired). Once the user has entered a range of Museum numbers, a new destination/storage location, a reason, and a handler and clicked "Search", all objects in that range of Museum numbers are displayed, along with their object names, counts, and current locations. The user can choose to exclude any objects in this range from the move by deselecting those objects using the provided checkboxes. Once "Move Selected Objects" is clicked, all non-excluded displayed objects will be recorded as having been moved to the new storage location.</p>
             </td>
           </tr>
           <tr>
@@ -271,35 +263,6 @@ A map they could all understand.
         <ul>
           <li>NB: the objects are not updated in order, alas.</li>
           <li>You can save or print this page for your records.</li>
-        </ul>
-      <a id="mor"/>
-        <h3 class="subheader">Move Object Range: Step 1, Initial Data Entry</h3>
-        <img src="mor1.png" width="800px"/>
-        <h4>Inputs and Outputs</h4>
-        <ul>
-          <li>Starting object number</li>
-          <li>Ending Object Number</li>
-          <li>Destination Locations</li>
-          <li>Reason</li>
-          <li>Crate</li>
-          <li>Handler</li>
-        </ul>
-        <h4>Remarks</h4>
-        <ul>
-          <li>A very powerful tool, use with caution!</li>
-        </ul>
-        <h3 class="subheader">Move Object Range: Step 2, Verification Page</h3>
-        <img src="mor2.png" width="800px"/>
-        <h4>Remarks</h4>
-        <ul>
-          <li>Shows the objects that will be moved.</li>
-          <li>You can use the check boxes under "Move?" to prevent individual items from being moved.</li>
-        </ul>
-        <h3 class="subheader">Move Object Range: Step 3, Response Page</h3>
-        <img src="mor3.png" width="800px"/>
-        <h4>Remarks</h4>
-        <ul>
-          <li>Shows the result of each move.</li>
         </ul>
       <a id="pm"/>
         <h3 class="subheader">Power Move: Steps 1 &amp; 2, Initial Data Entry and Verfication</h3>
