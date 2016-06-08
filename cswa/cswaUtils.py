@@ -2397,11 +2397,11 @@ def formatRow(result, form, config):
         return """<tr>
 <td class="objno"><a target="cspace" href="%s">%s</a></td>
 <td class="objname" name="onm.%s">%s</td>
-<td class="xspan" name="ocn.%s">%s</td>
 <td class="xspan" name="cp.%s">%s</td>
 <td class="xspan" name="cg.%s">%s</td>
 <td class="xspan" name="fc.%s">%s</td>
-</tr>""" % (link, rr[3], rr[8], rr[4], rr[8], rr[5], rr[8], rr[6], rr[8], rr[7], rr[8], rr[9])
+</tr>""" % (link, rr[2], rr[0], rr[1], rr[0], rr[3], rr[0], rr[4], rr[0], rr[5])
+#</tr>""" % (link, rr[3], rr[8], rr[4], rr[8], rr[5], rr[8], rr[6], rr[8], rr[7], rr[8], rr[9])
 
     elif result['rowtype'] == 'packinglistbyculture':
         link = protocol + '://' + hostname + port + '/collectionspace/ui/'+institution+'/html/cataloging.html?csid=%s' % rr[8]
@@ -3172,13 +3172,14 @@ def starthtml(form, config):
         if institution == 'bampfa':
             pass
         else:
+
             place = str(form.get('cp.place')) if form.get('cp.place') else ''
-            otherfields += '''
-	  <tr><th><span class="cell">collection place:</span></th>
-	  <th><input id="cp.place" class="cell" type="text" size="40" name="cp.place" value="''' + place + '''" class="xspan"></th>'''
-            otherfields += '''
-          <th><span class="cell">group by culture </span></th>
-	  <th><input id="groupbyculture" class="cell" type="checkbox" name="groupbyculture" value="groupbyculture" class="xspan"></th</tr>'''
+            #otherfields += '''
+	  #<tr><th><span class="cell">collection place:</span></th>
+	  #<th><input id="cp.place" class="cell" type="text" size="40" name="cp.place" value="''' + place + '''" class="xspan"></th>'''
+            #otherfields += '''
+      #    <th><span class="cell">group by culture </span></th>
+	  #<th><input id="groupbyculture" class="cell" type="checkbox" name="groupbyculture" value="groupbyculture" class="xspan"></th</tr>'''
             if form.get('groupbyculture'): otherfields = otherfields.replace('value="groupbyculture"',
                                                                          'checked value="groupbyculture"')
 

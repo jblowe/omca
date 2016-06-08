@@ -1,8 +1,5 @@
 #!/usr/bin/env /usr/bin/python
 
-import sys
-import time
-import cgi
 import traceback
 import cgitb; cgitb.enable()  # for troubleshooting
 from cswaConstants import selectWebapp
@@ -110,7 +107,7 @@ try:
             elif updateType == 'keyinfo':      doLocationSearch(form,config,'list')
             elif updateType == 'objinfo':      doObjectSearch(form,config,'list')
             elif updateType == 'moveobject':   doObjectSearch(form,config,'list')
-            elif updateType == 'objdetails':   doObjectDetails(form,config)
+            # elif updateType == 'objdetails':   doObjectDetails(form,config)
             elif updateType == 'editrel':      doRelationsSearch(form,config)
             elif updateType == 'makegroup':    doComplexSearch(form,config,'select')
 

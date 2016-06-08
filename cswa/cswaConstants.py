@@ -773,10 +773,9 @@ def getHeader(updateType, institution):
     <table><tr>
       <th>Museum #</th>
       <th>Object name</th>
-      <th>Count</th>
       <th>Field Collection Place</th>
-      <th>Cultural Group</th>
-      <th>Ethnographic File Code</th>
+      <th>Field Collection Date</th>
+      <th>Field Collector</th>
       <th>P?</th>
     </tr>"""
     elif updateType == 'packinglistbyculture':
