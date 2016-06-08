@@ -54,7 +54,7 @@ field	41	fieldcollectiondate	Collection Date	fieldcollectiondate_s			string	11,2
 field	42	colldate_begin	Collection Date (earliest)	colldate_begin_s		x	date									x
 field	43	colldate_end	Collection Date (latest)	colldate_end_s		x	date									x
 field	44	fieldcollectionplace	Field Collection Place	fieldcollectionplace_s			keyword	12,2		4	9	23			30	x
-field	45	acquisitionreferencenumber	Acquisition Reference Number	acquisitionreferencenumber_s		x	keyword	13,2				38			38	x
+field	45	acquisitionreferencenumber	Acquisition Reference Number	acquisitionreferencenumber_ss		x	keyword	13,2				38			38	x
 field	46	accessiondate	Accession Date	accessiondate_ss			string	14,2				39			39	x
 field	47	accdate_begin	Accession Date (earliest)	accdate_begin_s		x	date									x
 field	48	accdate_end	Accession Date (latest)	accdate_end_s		x	date									x
