@@ -2,7 +2,7 @@ SELECT DISTINCT
   cc.id,
   STRING_AGG(DISTINCT ac.acquisitionreferencenumber, '␥')                     AS acquisitionreferencenumber_ss,
   STRING_AGG(DISTINCT sad1.datedisplaydate, '␥')                              AS accessiondate_ss,
-  STRING_AGG(DISTINCT sad2.datedisplaydate, '␥')                              AS acquisitiondate_ss
+  STRING_AGG(DISTINCT sad2.datedisplaydate, '␥')                              AS acquisitiondate_ss,
   STRING_AGG(DISTINCT ac.creditline, '␥')                                     AS creditline_ss
 FROM collectionobjects_common cc
   JOIN hierarchy h1 ON (h1.id = cc.id)
