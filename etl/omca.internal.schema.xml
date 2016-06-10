@@ -198,6 +198,7 @@
 
     <copyField source="objectname_s" dest="objectname_txt"/>
     <copyField source="objectnumber_s" dest="objectnumber_txt"/>
+    <copyField source="othernumber_s" dest="othernumber_txt"/>
     <copyField source="numberofobjects_s" dest="numberofobjects_txt"/>
     <copyField source="computedcurrentlocationrefname_s" dest="computedcurrentlocationrefname_txt"/>
     <copyField source="dhname_s" dest="dhname_txt"/>
@@ -205,6 +206,7 @@
     <copyField source="art_s" dest="art_txt"/>
     <copyField source="history_s" dest="history_txt"/>
     <copyField source="science_s" dest="science_txt"/>
+    <copyField source="donotpublishonweb_s" dest="donotpublishonweb_txt"/>
     <copyField source="computedcurrentlocation_s" dest="computedcurrentlocation_txt"/>
     <copyField source="recordstatus_s" dest="recordstatus_txt"/>
     <copyField source="physicaldescription_s" dest="physicaldescription_txt"/>
@@ -216,19 +218,20 @@
     <copyField source="argusremarks_s" dest="argusremarks_txt"/>
     <copyField source="argusdescription_s" dest="argusdescription_txt"/>
     <copyField source="dimensionsummary_s" dest="dimensionsummary_txt"/>
-    <copyField source="dimensions_ss" dest="dimensions_txt"/>
-    <copyField source="measuredpart_s" dest="measuredpart_txt"/>
     <copyField source="assocculturalcontext_ss" dest="assocculturalcontext_txt"/>
     <copyField source="assocorganization_ss" dest="assocorganization_txt"/>
     <copyField source="assocperson_ss" dest="assocperson_txt"/>
     <copyField source="assocplace_ss" dest="assocplace_txt"/>
     <copyField source="material_ss" dest="material_txt"/>
     <copyField source="measuredpart_ss" dest="measuredpart_txt"/>
+    <copyField source="technique_ss" dest="technique_txt"/>
+    <copyField source="proddate_s" dest="proddate_txt"/>
     <copyField source="objectproductionorganization_ss" dest="objectproductionorganization_txt"/>
     <copyField source="objectproductionperson_ss" dest="objectproductionperson_txt"/>
     <copyField source="objectproductionplace_ss" dest="objectproductionplace_txt"/>
     <copyField source="title_ss" dest="title_txt"/>
-    <copyField source="loanstatus_ss" dest="loanstatus_txt"/>
+    <copyField source="loaninstatus_ss" dest="loaninstatus_txt"/>
+    <copyField source="loanoutstatus_ss" dest="loanoutstatus_txt"/>
     <copyField source="lender_ss" dest="lender_txt"/>
     <copyField source="comments_ss" dest="comments_txt"/>
     <copyField source="styles_ss" dest="styles_txt"/>
@@ -237,11 +240,26 @@
     <copyField source="contentplaces_ss" dest="contentplaces_txt"/>
     <copyField source="contentpersons_ss" dest="contentpersons_txt"/>
     <copyField source="contentorganizations_ss" dest="contentorganizations_txt"/>
+    <copyField source="fieldcollectors_ss" dest="fieldcollectors_txt"/>
     <copyField source="exhibitionhistories_ss" dest="exhibitionhistories_txt"/>
+    <copyField source="photos_ss" dest="photos_txt"/>
     <copyField source="loanoutnumber_ss" dest="loanoutnumber_txt"/>
     <copyField source="borrower_ss" dest="borrower_txt"/>
     <copyField source="loaninnumber_ss" dest="loaninnumber_txt"/>
+    <copyField source="loanoutdate_ss" dest="loanoutdate_txt"/>
+    <copyField source="loanindate_ss" dest="loanindate_txt"/>
     <copyField source="grouptitle_ss" dest="grouptitle_txt"/>
+    <copyField source="acquisitionreferencenumber_ss" dest="acquisitionreferencenumber_txt"/>
+    <copyField source="accessiondate_ss" dest="accessiondate_txt"/>
+    <copyField source="acquisitiondate_ss" dest="acquisitiondate_txt"/>
+    <copyField source="creditline_ss" dest="creditline_txt"/>
+    <copyField source="exhibitionnumber_ss" dest="exhibitionnumber_txt"/>
+    <copyField source="exhibitiontitle_ss" dest="exhibitiontitle_txt"/>
+    <copyField source="lender_ss" dest="lender_txt"/>
+    <copyField source="loaninreturndate_ss" dest="loaninreturndate_txt"/>
+    <copyField source="loanoutreturndate_ss" dest="loanoutreturndate_txt"/>
+    <copyField source="dimensions_ss" dest="dimensions_txt"/>
+    <copyField source="blob_ss" dest="blob_txt"/>
 
    <copyField source="*_s" dest="text"/>
    <copyField source="*_ss" dest="text"/>

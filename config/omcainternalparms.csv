@@ -70,14 +70,14 @@ field	57	loanoutreturndate	Loan Out Return Date	loanoutreturndate_ss			string	8,
 field	58	loanoutdate	Loan Out Date	loanoutdate_ss			string	9,3				48			49	x
 field	59	borrower	Borrower	borrower_ss			keyword	10,3				49			50	x
 field	60	entrynumber	Intake Entry Number	entrynumber_s		x	keyword	11,3				50			51	x
-field	61	entryReason	Entry Reason	entryReason_s		x	dropdown	12,3				51			52	x
+field	61	entryReason	Entry Reason	entryReason_ss		x	dropdown	12,3				51			52	x
 field	62	grouptitle	Group Title	grouptitle_ss			keyword	13,3				52			53	x
-field	63	condition	Condition	condition_s		x	dropdown	14,3				53			54	x
-field	64	conditiondate	Condition Date	conditiondate_s		x	keyword	15,3				54			55	x
-field	65	hazard	Hazard	hazard_s		x	dropdown	16,3				55			56	x
-field	66	conservationstatus	Conservation Status	conservationstatus_s		x	dropdown	17,3				56			57	x
-field	67	conservationstatusdate	Conservation Status Date	conservationstatusdate_s		x	keyword	18,3				57			58	x
-field	68	exitnumber	Object Exit Number	exitnumber_s		x	keyword					58				x
+field	63	condition	Condition	condition_ss		x	dropdown	14,3				53			54	x
+field	64	conditiondate	Condition Date	conditiondate_ss		x	keyword	15,3				54			55	x
+field	65	hazard	Hazard	hazard_ss		x	dropdown	16,3				55			56	x
+field	66	conservationstatus	Conservation Status	conservationstatus_ss		x	dropdown	17,3				56			57	x
+field	67	conservationstatusdate	Conservation Status Date	conservationstatusdate_ss		x	keyword	18,3				57			58	x
+field	68	exitnumber	Object Exit Number	exitnumber_ss		x	keyword					58				x
 field	69	text	Keyword	text			keyword	1,1								x
 field	70	blobs	Blobs	blob_ss		n/a	blob									x
 field	71	cards	Card	cards_ss		n/a	card									x
