@@ -259,6 +259,19 @@
     <copyField source="loaninreturndate_ss" dest="loaninreturndate_txt"/>
     <copyField source="loanoutreturndate_ss" dest="loanoutreturndate_txt"/>
     <copyField source="dimensions_ss" dest="dimensions_txt"/>
+    <copyField source="conservationstatus_ss" dest="conservationstatus_txt"/>
+    <copyField source="conservationstatusdate_ss" dest="conservationstatusdate_txt"/>
+    <copyField source="condition_ss" dest="conservationstatus_txt"/>
+    <copyField source="conditiondate_ss" dest="conservationstatusdate_txt"/>
+    <copyField source="hazard_ss" dest="hazard_txt"/>
+    <copyField source="proddate_ss" dest="proddate_txt"/>
+    <copyField source="productiontechnique_s" dest="productiontechnique_txt"/>
+    <copyField source="fieldcollectiondate_ss" dest="fieldcollectiondate_txt"/>
+    <copyField source="distinguishingfeatures_s" dest="distinguishingfeatures_txt"/>
+    <copyField source="collection_s" dest="collection_txt"/>
+    <copyField source="exitnumber_s" dest="exitnumber_txt"/>`
+    <copyField source="entrynumber_s" dest="entrynumber_txt"/>
+    <copyField source="entryreason_s" dest="entryreason_txt"/>
     <copyField source="blob_ss" dest="blob_txt"/>
 
    <copyField source="*_s" dest="text"/>

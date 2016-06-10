@@ -70,7 +70,7 @@ field	57	loanoutreturndate	Loan Out Return Date	loanoutreturndate_ss			string			
 field	58	loanoutdate	Loan Out Date	loanoutdate_ss			string									x
 field	59	borrower	Borrower	borrower_ss			keyword									x
 field	60	entrynumber	Intake Entry Number	entrynumber_s		x	keyword									x
-field	61	entryReason	Entry Reason	entryReason_s		x	dropdown									x
+field	61	entryreason	Entry Reason	entryreason_s		x	dropdown									x
 field	62	grouptitle	Group Title	grouptitle_ss			keyword									x
 field	63	condition	Condition	condition_s		x	dropdown									x
 field	64	conditiondate	Condition Date	conditiondate_s		x	keyword									x
@@ -82,7 +82,7 @@ field	69	text	Keyword	text			keyword	1,1								x
 field	70	blobs	Blobs	blob_ss		n/a	blob									x
 field	71	cards	Card	cards_ss		n/a	card									x
 field	72	primaryimage	Primary Image	primaryimage_s		x	primaryimage									x
-field	73	hasimage	Has image?	hasimage_s		x	dropdown	11,3								x
+#	73	hasimage	Has image?	hasimage_s		x	dropdown	11,3								x
 field	74	dimensionsummary	Dimension Summary	dimensionsummary_s			keyword	4,2			8	7	6		10	x
 field	75	distinguishingfeatures	Curatorial Remarks	distinguishingfeatures_s		x	keyword					11			14	x
 #	76	collection	collection	collection_s												x

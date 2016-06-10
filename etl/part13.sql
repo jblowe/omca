@@ -1,7 +1,7 @@
 -- nb: this query assume it will take a variety of field content: refnames, messy free text, and output something "clean"
 SELECT DISTINCT cc.id AS id, 
 STRING_AGG(regexp_replace(grp.status, '^.*\)''(.*)''$', '\1'), '␥') AS conservationstatus_ss,
-STRING_AGG(to_char(grp.statusdate + interval '8 hours', 'YYYY-MM-DD'), '␥') AS conservationstatus_ss
+STRING_AGG(to_char(grp.statusdate + interval '8 hours', 'YYYY-MM-DD'), '␥') AS conservationstatusdate_ss
 FROM conservation_common lc
 JOIN misc m on (m.id = lc.id AND m.lifecyclestate <> 'deleted')
 JOIN hierarchy h ON (h.parentid=lc.id AND h.primarytype = 'conservationStatusGroup')
