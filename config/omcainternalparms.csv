@@ -1,7 +1,7 @@
 #	parameter specification spreadsheet for a django portal app															x
 #																x
-date	5/12/2016															x
-revision	9															x
+date	6/12/2016															x
+revision	10															x
 title	Advanced Portal															x
 #																x
 server	http://localhost:8983/solr															x
@@ -38,11 +38,11 @@ field	25	contentplaces	Content Place	contentplaces_ss			keyword	18,1				16			19	
 field	26	contentpersons	Content Person	contentpersons_ss			keyword	19,1				17			20	x
 field	27	contentorganizations	Content Organization	contentorganizations_ss			keyword	20,1				18			21	x
 field	28	contentnote	Content Note	contentnote_s			keyword					19			22	x
-field	29	proddate	Production Date	proddate_ss		x	string	2,2			7	5	4		8	x
+field	29	objectproductiondate	Production Date	objectproductiondate_ss		x	string	2,2			7	5	4		8	x
 field	30	proddate_begin	Production Date (earliest)	proddate_begin_s		x	date									x
 field	31	proddate_end	Production Date (latest)	proddate_end_s		x	date									x
 field	32	objectproductionperson	Maker	objectproductionperson_ss			keyword	1,2			5	2	2		5	x
-field	33	productiontechnique	Technique	productiontechnique_s		x	keyword	5,2				32				x
+field	33	productiontechnique	Technique	technique_ss		x	keyword	5,2				32				x
 field	34	objectproductionplace	Production Place	objectproductionplace_ss			keyword	4,2		3		34			23	x
 field	35	objectproductionorganization	Production Organization	objectproductionorganization_ss			keyword	3,2			6	3			6	x
 field	36	assocperson	Associated Person	assocperson_ss			keyword	6,2				35			24	x
@@ -50,7 +50,7 @@ field	37	assocorganization	Associated Organization	assocorganization_ss			keywor
 field	38	assocplace	Associated Place	assocplace_ss			keyword	8,2		5		37			26	x
 field	39	assocculturalcontext	Cultural Affinity	assocculturalcontext_ss			keyword	9,2		6		20			27	x
 field	40	exhibitionhistories	Exhibition History	exhibitionhistories_ss			keyword	10,2				21			28	x
-field	41	fieldcollectiondate	Collection Date	fieldcollectiondate_s			string	11,2				22			29	x
+field	41	fieldcollectiondate	Collection Date	fieldcollectiondate_ss			string	11,2				22			29	x
 field	42	colldate_begin	Collection Date (earliest)	colldate_begin_s		x	date									x
 field	43	colldate_end	Collection Date (latest)	colldate_end_s		x	date									x
 field	44	fieldcollectionplace	Field Collection Place	fieldcollectionplace_s			keyword	12,2		4	9	23			30	x
@@ -69,14 +69,14 @@ field	56	loanoutstatus	Loan Out Status	loanoutstatus_ss		x	dropdown	7,3				45			
 field	57	loanoutreturndate	Loan Out Return Date	loanoutreturndate_ss			string	8,3				47			48	x
 field	58	loanoutdate	Loan Out Date	loanoutdate_ss			string	9,3				48			49	x
 field	59	borrower	Borrower	borrower_ss			keyword	10,3				49			50	x
-field	60	entrynumber	Intake Entry Number	entrynumber_s		x	keyword	11,3				50			51	x
-field	61	entryreason	Entry Reason	entryreason_ss		x	dropdown	12,3				51			52	x
-field	62	grouptitle	Group Title	grouptitle_ss			keyword	13,3				52			53	x
-field	63	condition	Condition	condition_ss		x	dropdown	14,3				53			54	x
-field	64	conditiondate	Condition Date	conditiondate_ss		x	keyword	15,3				54			55	x
-field	65	hazard	Hazard	hazard_ss		x	dropdown	16,3				55			56	x
-field	66	conservationstatus	Conservation Status	conservationstatus_ss		x	dropdown	17,3				56			57	x
-field	67	conservationstatusdate	Conservation Status Date	conservationstatusdate_ss		x	keyword	18,3				57			58	x
+#	60	entrynumber	Intake Entry Number	entrynumber_s		x	keyword	11,3				50			51	x
+#	61	entryreason	Entry Reason	entryreason_ss		x	dropdown	12,3				51			52	x
+field	62	grouptitle	Group Title	grouptitle_ss			keyword	11,3				52			53	x
+field	63	condition	Condition	condition_ss		x	dropdown	12,3				53			54	x
+field	64	conditiondate	Condition Date	conditiondate_ss		x	keyword	13,3				54			55	x
+field	65	hazard	Hazard	hazard_ss		x	dropdown	14,3				55			56	x
+field	66	conservationstatus	Conservation Status	conservationstatus_ss		x	dropdown	15,3				56			57	x
+field	67	conservationstatusdate	Conservation Status Date	conservationstatusdate_ss		x	keyword	16,3				57			58	x
 field	68	exitnumber	Object Exit Number	exitnumber_ss		x	keyword					58				x
 field	69	text	Keyword	text			keyword	1,1								x
 field	70	blobs	Blobs	blob_ss		n/a	blob									x
