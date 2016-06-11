@@ -58,7 +58,7 @@ rm temp1.csv temp2.csv temp.sql
 # these queries are special, the dont fit the patterns above
 ##############################################################################
 cp public.csv internal.csv
-for i in {1..15}
+for i in {1..20}
 do
  if [ -f part$i.sql ]; then
    time psql -F $'\t' -R"@@" -A -U $USERNAME -d "$CONNECTSTRING" -f part$i.sql | perl -pe 's/[\r\n]/ /g;s/\@\@/\n/g' > part$i.csv
@@ -66,6 +66,8 @@ do
    cp temp.csv internal.csv
  fi
 done
+# for now the public and internal portal datastores are the same
+cp internal.csv public.csv
 #rm temp.csv
 ##############################################################################
 #  compute a boolean: hascoords = yes/no

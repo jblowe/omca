@@ -1,5 +1,5 @@
 loansout,loanoutnumber
 loansout,borrower
 loansin,loaninnumber
-#collectionobjects,fieldcollectionplace
+objectexit,exitnumber
 

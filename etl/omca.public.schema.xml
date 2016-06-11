@@ -225,7 +225,7 @@
     <copyField source="material_ss" dest="material_txt"/>
     <copyField source="measuredpart_ss" dest="measuredpart_txt"/>
     <copyField source="technique_ss" dest="technique_txt"/>
-    <copyField source="proddate_s" dest="proddate_txt"/>
+    <copyField source="objectproductiondate_ss" dest="objectproductiondate_txt"/>
     <copyField source="objectproductionorganization_ss" dest="objectproductionorganization_txt"/>
     <copyField source="objectproductionperson_ss" dest="objectproductionperson_txt"/>
     <copyField source="objectproductionplace_ss" dest="objectproductionplace_txt"/>
@@ -264,7 +264,6 @@
     <copyField source="condition_ss" dest="conservationstatus_txt"/>
     <copyField source="conditiondate_ss" dest="conservationstatusdate_txt"/>
     <copyField source="hazard_ss" dest="hazard_txt"/>
-    <copyField source="proddate_ss" dest="proddate_txt"/>
     <copyField source="productiontechnique_s" dest="productiontechnique_txt"/>
     <copyField source="fieldcollectiondate_ss" dest="fieldcollectiondate_txt"/>
     <copyField source="distinguishingfeatures_s" dest="distinguishingfeatures_txt"/>
