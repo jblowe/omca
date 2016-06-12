@@ -497,6 +497,46 @@ def getTableFooter(config, displaytype, msg):
     print "</table><hr/>"
 
 
+def doGroupSearch(form, config, displaytype):
+    if not validateParameters(form, config): return
+
+    if form.get('gr.group') == '':
+        print '<h3>Please enter group identifier!</h3><hr>'
+        return
+
+    updateType = 'objinfo'
+    institution = config.get('info','institution')
+    updateactionlabel = config.get('info', 'updateactionlabel')
+
+
+    try:
+        sys.stderr.write('group: %s\n' % form.get("gr.group"))
+        rows = cswaDB.getgrouplist(form.get("gr.group"), 5000, config)
+        sys.stderr.write('group result: %s\n' % len(rows))
+    except:
+        sys.stderr.write('group: %s\n' % form.get("gr.group"))
+        raise
+    [sys.stderr.write('group member : %s\n' % x[3]) for x in rows]
+
+    if len(rows) == 0:
+        print '<span style="color:red;">No objects in this group! Sorry!</span>'
+    else:
+        totalobjects = 0
+        if updateType == 'objinfo':
+            print cswaConstants.infoHeaders(form.get('fieldset'))
+        else:
+            print cswaConstants.getHeader(updateType,institution)
+        for r in rows:
+            totalobjects += 1
+            print formatRow({'rowtype': updateType, 'data': r}, form, config)
+
+        print '\n</table><hr/><table width="100%"'
+        print """<tr><td align="center" colspan="3">"""
+        msg = "Caution: clicking on the button at left will update <b>ALL %s objects</b> shown on this page!" % totalobjects
+        print '''<input type="submit" class="save" value="''' + updateactionlabel + '''" name="action"></td><td  colspan="3">%s</td></tr>''' % msg
+        print "\n</table><hr/>"
+
+
 def doEnumerateObjects(form, config):
     updateactionlabel = config.get('info', 'updateactionlabel')
     updateType = config.get('info', 'updatetype')
@@ -839,6 +879,91 @@ def doBulkEditForm(form, config, displaytype):
     print "<hr/>"
 
 
+def getints(var,form):
+    value = ''
+    try:
+        value = form.get(var)
+        value = int(value)
+        return value,''
+    except:
+        return 'x','invalid value for %s: %s' % (var.replace('create.',''),value)
+
+def doCreateObjects(form, config):
+        # print form
+        #if not validateParameters(form, config): return
+
+        updateType = config.get('info', 'updatetype')
+        updateactionlabel = config.get('info', 'updateactionlabel')
+        msgs = []
+
+        print '''<table width="100%" cellpadding="8px"><tbody><tr class="smallheader">
+          <td>Item</td><td>Value</td>'''
+
+        year, msg = getints('create.year', form)
+        if msg != '': msgs.append(msg)
+        accession, msg = getints('create.accession', form)
+        if msg != '': msgs.append(msg)
+        sequence, msg = getints('create.sequence', form)
+        if msg != '': msgs.append(msg)
+        count, msg = getints('create.count', form)
+        if msg != '': msgs.append(msg)
+
+        try:
+            startobject = '%s.%s.%s' % (year, accession, sequence)
+        except:
+            startobject = 'invalid'
+            msgs.append('start object value invalid')
+
+        try:
+            endobject = '%s.%s.%s' % (year, accession, sequence + count - 1)
+        except:
+            endobject = 'invalid'
+            msgs.append('end object value invalid')
+
+        try:
+            objs = cswaDB.getlistofobjects('range', startobject, endobject, 100, config)
+            totalobjects = len(objs)
+            if totalobjects != 0:
+                msgs.append('there are already %s objects in this range!' % totalobjects)
+                msgs.append('(%s to %s)' % (startobject, endobject))
+                for o in objs:
+                    msgs.append(o[0])
+        except:
+            msgs.append('problem checking object range')
+            totalobjects = -1
+
+        if count > 100:
+            msgs.append('Maximum objects you can create at one time is 100.')
+            msgs.append('Consider breaking your work into chunks of 100.')
+
+        if len(msgs) == 0:
+            print "<tr><td>%s</td><td>%s</td></tr>" % ('first object', startobject)
+            print "<tr><td>%s</td><td>%s</td></tr>" % ('last object', endobject)
+            print "<tr><td>%s</td><td>%s</td></tr>" % ('objects requested', count)
+
+            if form.get('action') == config.get('info', 'updateactionlabel'):
+                # create objects here
+                for seq in range(count):
+                    objectNumber = '%s.%s.%s' % (year, accession, sequence + seq)
+                    objectinfo = {'objectNumber': objectNumber}
+                    message,csid = createObject(objectinfo, config, form)
+                    print "<tr><td>%s</td><td>%s</td></tr>" % (objectNumber, csid)
+                print "<tr><td>%s</td><td>%s</td></tr>" % ('created objects', count)
+            else:
+                # list objects to be created
+                msg = "Caution: clicking on the button at left will create <b> %s empty objects</b>!" % count
+                print """<tr><td align="center" colspan="3"><hr></tr>"""
+                print """<tr><td align="center" colspan="2">"""
+                print '''<input type="submit" class="save" value="''' + updateactionlabel + '''" name="action"></td><td colspan="1">%s</td></tr>''' % msg
+
+        else:
+            for m in msgs:
+                print '<tr><td class="error">%s</td><td></td></tr>' % m
+
+        print '</table>'
+        print "<hr/>"
+
+
 def doSetupIntake(form, config):
 
     updateType = config.get('info', 'updatetype')
@@ -985,7 +1110,7 @@ def doTheUpdate(CSIDs, form, config, fieldset, refNames2find):
             updateItems = setUpdateItems(form, index, fieldset, config)
         else:
             updateItems['objectName'] = form.get('onm.' + index)
-            #updateItems['objectNumber'] = form.get('oox.' + index)
+            updateItems['objectNumber'] = form.get('oox.' + index)
             if fieldset == 'namedesc':
                 updateItems['briefDescription'] = form.get('bdx.' + index)
             elif fieldset == 'registration':
@@ -1101,7 +1226,8 @@ def doTheUpdate(CSIDs, form, config, fieldset, refNames2find):
             #msg += '<span style="color:red;">problem updating</span>'
         #print ('<tr>' + (3 * '<td class="ncell">%s</td>') + '</tr>\n') % (
         #    updateItems['objectNumber'], updateItems['objectCsid'], msg)
-        print ('<tr>' + (3 * '<td class="ncell">%s</td>') + '</tr>\n') % ('',updateItems['objectCsid'], msg)
+        if 'objectNumber' not in updateItems: updateItems['objectNumber'] = 'unknown'
+        print ('<tr>' + (3 * '<td class="ncell">%s</td>') + '</tr>\n') % (updateItems['objectNumber'], updateItems['objectCsid'], msg)
         # print 'place %s' % updateItems['pahmaFieldCollectionPlace']
 
     print "\n</table>"
@@ -2076,7 +2202,7 @@ def updateKeyInfo(fieldset, updateItems, config, form):
     root = etree.fromstring(content)
     # add the user's changes to the XML
     for relationType in fieldList:
-        sys.stderr.write('update: %s = %s\n' % (relationType, updateItems[relationType]))
+        #sys.stderr.write('update: %s = %s\n' % (relationType, updateItems[relationType]))
         # this app does not insert empty values into anything!
         if not relationType in updateItems.keys() or updateItems[relationType] == '':
             continue
@@ -2091,7 +2217,7 @@ def updateKeyInfo(fieldset, updateItems, config, form):
         else:
             pass
             #print ">>> ",'.//'+relationType+extra+'List'
-        sys.stderr.write('tag2: %s\n' % (relationType + extra + listSuffix))
+        #sys.stderr.write('tag2: %s\n' % (relationType + extra + listSuffix))
         metadata = root.findall('.//' + relationType + extra + listSuffix)
         try:
             metadata = metadata[0] # there had better be only one!
@@ -2103,7 +2229,7 @@ def updateKeyInfo(fieldset, updateItems, config, form):
         #print ">>> ",relationType,':',updateItems[relationType]
         if relationType in ['assocPeople', 'objectName', 'pahmaAltNum']:
             #group = metadata.findall('.//'+relationType+'Group')
-            sys.stderr.write('  updateItem: ' + relationType + ':: ' + updateItems[relationType] + '\n' )
+            #sys.stderr.write('  updateItem: ' + relationType + ':: ' + updateItems[relationType] + '\n' )
             Entries = metadata.findall('.//' + relationType)
             if not alreadyExists(updateItems[relationType], Entries):
                 newElement = etree.Element(relationType + 'Group')
@@ -2158,7 +2284,7 @@ def updateKeyInfo(fieldset, updateItems, config, form):
                 else:
                     # exists, but not preferred. make it the preferred: remove it from where it is, insert it as 1st
                     for child in Entries:
-                        sys.stderr.write(' c: %s\n' % child.tag)
+                        #sys.stderr.write(' c: %s\n' % child.tag)
                         if child.text == updateItems[relationType]:
                             new_element = child
                             metadata.remove(child)
@@ -2244,11 +2370,55 @@ def updateKeyInfo(fieldset, updateItems, config, form):
     payload = '<?xml version="1.0" encoding="UTF-8"?>\n' + etree.tostring(root,encoding='utf-8')
     # update collectionobject..
     sys.stderr.write("post update to %s to REST API..." % updateItems['objectCsid'])
-    sys.stderr.write(etree.tostring(root))
+    #sys.stderr.write(etree.tostring(root))
     (url, data, csid, elapsedtime) = postxml('PUT', uri, realm, hostname, username, password, payload)
     writeLog(updateItems, uri, 'PUT', username, config)
 
     return message
+
+    #print "<h3>Done w update!</h3>"
+
+
+def createObject(objectinfo, config, form):
+
+    message = ''
+
+    realm = config.get('connect', 'realm')
+    hostname = config.get('connect', 'hostname')
+    username, password = getCreds(form)
+    #sys.stderr.write('%-13s:: %s %s\n' % ('creds:',username,password))
+
+    uri = 'collectionobjects'
+
+    # get the XML for this object
+    content = '''<document name="collectionobjects">
+<ns2:collectionobjects_common xmlns:ns2="http://collectionspace.org/services/collectionobject" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<objectNameList>
+<objectNameGroup>
+<objectName/>
+</objectNameGroup>
+</objectNameList>
+<objectNumber/>
+</ns2:collectionobjects_common>
+</document>'''
+
+    root = etree.fromstring(content)
+    for elementname in objectinfo:
+        if elementname in objectinfo:
+            element = root.find('.//' + elementname)
+            element.text = objectinfo[elementname]
+
+    uri = 'collectionobjects'
+    payload = '<?xml version="1.0" encoding="UTF-8"?>\n' + etree.tostring(root,encoding='utf-8')
+    # update collectionobject..
+    sys.stderr.write("post new object %s to REST API..." % objectinfo['objectNumber'])
+    #sys.stderr.write(etree.tostring(root))
+    (url, data, csid, elapsedtime) = postxml('POST', uri, realm, hostname, username, password, payload)
+    sys.stderr.write("created new object with csid %s to REST API..." % csid)
+    writeLog(objectinfo, uri, 'POST', username, config)
+    # message = 'succeeded'
+
+    return message, csid
 
     #print "<h3>Done w update!</h3>"
 
@@ -2450,7 +2620,7 @@ def formatInfoReviewRow(form, link, rr, link2):
 <td class="objno"><a target="cspace" href="%s">%s</a>
 <input type="hidden" name="oox.%s" value="%s">
 <input type="hidden" name="csid.%s" value="%s">
-</td>""" %  (link, rr[2], rr[8], rr[8], rr[8], rr[8])
+</td>""" %  (link, rr[2], rr[8], rr[2], rr[8], rr[8])
 
             for x in OMCADATA[f]:
                 if 'Museum #' in x[0]: continue
@@ -3048,6 +3218,40 @@ def starthtml(form, config):
           <th><input id="lo.crate" class="cell" type="hidden" size="40" name="lo.crate" value="''' + crate + '''" class="xspan"></th>
           <th><span class="cell">contact:</span></th><th>''' + handlers + '''</th></tr>
         '''
+
+    elif updateType == 'grpinfo':
+        grpinfo = str(form.get("gr.group")) if form.get("gr.group") else ''
+        fieldset, selected = cswaConstants.getFieldset(form, institution)
+
+        otherfields = '''
+            <tr><th><span class="cell">group:</span></th>
+            <th><input id="gr.group" class="cell" type="text" size="40" name="gr.group" value="''' + grpinfo + '''" class="xspan"></th>
+        <th><th><span class="cell">set:</span></th><th>''' + fieldset + '''</th></tr>'''
+        otherfields += '''
+        <tr></tr>'''
+
+    elif updateType == 'createobjects':
+
+        year = str(form.get("create.year")) if form.get("create.year") else ''
+        accession = str(form.get("create.accession")) if form.get("create.accession") else ''
+        sequence = str(form.get("create.sequence")) if form.get("create.sequence") else ''
+        count = str(form.get("create.count")) if form.get("create.count") else ''
+
+        otherfields = '''
+            <tr><th><span class="cell">year:</span></th>
+            <th><input id="create.year" class="cell" type="text" size="40" name="create.year" value="''' + year + '''" class="xspan"></th></tr>'''
+
+        otherfields += '''
+            <tr><th><span class="cell">accession:</span></th>
+            <th><input id="create.accession" class="cell" type="text" size="40" name="create.accession" value="''' + accession + '''" class="xspan"></th></tr>'''
+
+        otherfields += '''
+            <tr><th><span class="cell">sequence:</span></th>
+            <th><input id="create.sequence" class="cell" type="text" size="40" name="create.sequence" value="''' + sequence + '''" class="xspan"></th></tr>'''
+
+        otherfields += '''
+            <tr><th><span class="cell">count:</span></th>
+            <th><input id="create.count" class="cell" type="text" size="40" name="create.count" value="''' + count + '''" class="xspan"></th></tr>'''
 
     elif updateType == 'movecrate':
         crate = str(form.get("lo.crate")) if form.get("lo.crate") else ''

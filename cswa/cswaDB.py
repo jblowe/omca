@@ -642,21 +642,17 @@ limit """ + str(num2ret)
         raise
 
 
-def getobjlist(searchType, object1, object2, num2ret, config):
-
-    institution = config.get('info','institution')
+def getlistofobjects(searchType, object1, object2, num2ret, config):
+    institution = config.get('info', 'institution')
 
     query1 = """
-    SELECT objectNumber,
-cp.sortableobjectnumber
-FROM collectionobjects_common cc
-left outer join collectionobjects_omca cp on (cp.id=cc.id)
-INNER JOIN hierarchy h1
-        ON cc.id=h1.id
-INNER JOIN misc
-        ON misc.id=h1.id and misc.lifecyclestate <> 'deleted'
-WHERE
-     cc.objectNumber = '%s'"""
+        SELECT objectNumber,
+    coom.sortableobjectnumber
+    FROM collectionobjects_common cc
+    join collectionobjects_omca coom on (coom.id=cc.id)
+    INNER JOIN misc ON misc.id=cc.id and misc.lifecyclestate <> 'deleted'
+    WHERE
+         objectNumber %s= '%s' order by objectnumber %s limit 1"""
 
     dbconn = psycopg2.connect(config.get('connect', 'connect_string'))
     objects = dbconn.cursor()
@@ -664,10 +660,168 @@ WHERE
     if int(num2ret) > 1000: num2ret = 1000
     if int(num2ret) < 1:    num2ret = 1
 
-    objects.execute(query1 % object1)
-    (object1, sortkey1) = objects.fetchone()
-    objects.execute(query1 % object2)
-    (object2, sortkey2) = objects.fetchone()
+    #sys.stderr.write('getlistofobjects1: input: %s to %s\n' % (object1, object2))
+
+    try:
+        objects.execute(query1 % ('>', object1, 'asc'))
+        (object1, sortkey1) = objects.fetchone()
+        objects.execute(query1 % ('<', object2, 'desc'))
+        (object2, sortkey2) = objects.fetchone()
+    except:
+        return []
+
+    #sys.stderr.write('getlistofobjects2: retrieved: %s to %s\n' % (object1, object2))
+
+    # 'set' means 'next num2ret objects', otherwise prefix match
+    if searchType == 'set':
+        whereclause = "WHERE sortableobjectnumber >= '" + sortkey1 + "'"
+    elif searchType == 'prefix':
+        whereclause = "WHERE sortableobjectnumber LIKE '" + sortkey1 + "%'"
+    elif searchType == 'range':
+        whereclause = "WHERE sortableobjectnumber >= '" + sortkey1 + "' AND sortableobjectnumber <= '" + sortkey2 + "'"
+
+    #sys.stderr.write('where: %s\n' % whereclause)
+
+    if institution == 'omca':
+
+        getobjects = """SELECT DISTINCT ON (sortableobjectnumber)
+    cc.objectnumber objectnumber,
+    coom.sortableobjectnumber AS sortableobjectnumber,
+    (case when ong.objectName is NULL then '' else regexp_replace(ong.objectName, '^.*\\)''(.*)''$', '\\1') end) objectName,
+    h4.name  objectCsid
+
+    FROM collectionobjects_omca coom
+    left outer join collectionobjects_common cc on (coom.id=cc.id)
+
+    left outer join hierarchy h4 on (cc.id = h4.parentid and h4.name =
+    'collectionobjects_common:objectNameList' and (h4.pos=0 or h4.pos is null))
+    left outer join objectnamegroup ong on (ong.id=h4.id)
+    join misc ms on (cc.id=ms.id and ms.lifecyclestate <> 'deleted')
+    """ + whereclause + """
+    ORDER BY sortableobjectnumber
+    limit """ + str(num2ret)
+
+    try:
+        objects.execute(getobjects)
+        # for object in objects.fetchall():
+        # print object
+        return objects.fetchall()
+    except:
+        raise
+        print '<tr><td>getlistofobjects: problem retrieving object range: %s to %s' % (object1, object2)
+        return []
+
+    try:
+        objects.execute(getobjects)
+        #for object in objects.fetchall():
+        #print object
+        return objects.fetchall()
+    except:
+        raise
+
+
+def getgrouplist(group, num2ret, config):
+    dbconn = psycopg2.connect(config.get('connect', 'connect_string'))
+    objects = dbconn.cursor()
+    objects.execute(timeoutcommand)
+    if int(num2ret) > 30000: num2ret = 30000
+    if int(num2ret) < 1:    num2ret = 1
+
+
+    getobjects = """
+SELECT distinct on (computedcurrentlocation,objectnumber)
+  coom.computedcurrentlocationdisplay AS computedcurrentlocation,
+  -- coc.id AS objectcsid_s,
+  regexp_replace(ong.objectname, '^.*\\)''(.*)''$', '\\1') AS objectname,
+  coc.objectnumber AS objectnumber,
+  regexp_replace(coc.fieldcollectionplace, '^.*\\)''(.*)''$', '\\1') AS fieldcollectionplace,
+  fcd.datedisplaydate AS fieldcollectiondate,
+  regexp_replace(coc_collectors.item, '^.*\\)''(.*)''$', '\\1') AS fieldcollector,
+  coc.computedcurrentlocation AS computedcurrentlocationrefname,
+  coom.sortableobjectnumber AS sortableobjectnumber,
+  hx2.name AS csid,
+  coom.argusdescription AS argusdescription,
+  regexp_replace(dethistg.dhname, '^.*\\)''(.*)''$', '\\1') AS dhname,
+  regexp_replace(matg.material, '^.*\\)''(.*)''$', '\\1') AS materials,
+  regexp_replace(objprdpg.objectproductionperson, '^.*\\)''(.*)''$', '\\1') AS objectproductionperson,
+  regexp_replace(objprdorgg.objectproductionorganization, '^.*\\)''(.*)''$', '\\1') AS objectproductionorganization,
+  regexp_replace(objprdplaceg.objectproductionplace, '^.*\\)''(.*)''$', '\\1') AS objectproductionplace,
+  opd.datedisplaydate AS objectproductiondate,
+  (case when coom.donotpublishonweb then 'true' else 'false' end) AS donotpublishonweb,
+  regexp_replace(coc.collection, '^.*\\)''(.*)''$', '\\1') AS collection,
+  regexp_replace(coom.ipaudit, '^.*\\)''(.*)''$', '\\1') AS ipaudit,
+  coc_photos.item as photo,
+  '' AS copyrightholder,
+  '' AS technique
+
+FROM groups_common gc
+
+  JOIN hierarchy h1 ON (gc.id=h1.id)
+  JOIN relations_common rc1 ON (h1.name=rc1.subjectcsid)
+  JOIN hierarchy hx2 ON (rc1.objectcsid=hx2.name)
+  JOIN collectionobjects_common coc ON (hx2.id=coc.id)
+  JOIN collectionobjects_omca coom ON (coom.id = coc.id)
+  JOIN misc ON (coc.id = misc.id AND misc.lifecyclestate <> 'deleted')
+
+  LEFT OUTER JOIN hierarchy h2 ON (coc.id=h2.parentid AND h2.name='collectionobjects_common:objectNameList' AND h2.pos=0)
+  LEFT OUTER JOIN objectnamegroup ong ON (ong.id=h2.id)
+  LEFT OUTER JOIN hierarchy h9 ON (h9.parentid = coc.id AND h9.name='collectionobjects_omca:determinationHistoryGroupList' AND h9.pos=0)
+  LEFT OUTER JOIN determinationhistorygroup dethistg ON (h9.id = dethistg.id)
+  LEFT OUTER JOIN hierarchy h17 ON (h17.parentid = coc.id AND h17.name='collectionobjects_common:materialGroupList' AND h17.pos=0)
+  LEFT OUTER JOIN materialgroup matg ON (h17.id = matg.id)
+  LEFT OUTER JOIN hierarchy h21 ON (h21.parentid = coc.id AND h21.name='collectionobjects_common:objectProductionOrganizationGroupList' AND h21.pos=0)
+  LEFT OUTER JOIN objectproductionorganizationgroup objprdorgg ON (h21.id = objprdorgg.id)
+  LEFT OUTER JOIN hierarchy h22 ON (h22.parentid = coc.id AND h22.name='collectionobjects_common:objectProductionPersonGroupList' AND h22.pos=0)
+  LEFT OUTER JOIN objectproductionpersongroup objprdpg ON (h22.id = objprdpg.id)
+  LEFT OUTER JOIN hierarchy h23 ON (h23.parentid = coc.id AND h23.name='collectionobjects_common:objectProductionPlaceGroupList' AND h23.pos=0)
+  LEFT OUTER JOIN objectproductionplacegroup objprdplaceg ON (h23.id = objprdplaceg.id)
+  LEFT OUTER JOIN hierarchy h24 ON (h24.parentid = coc.id AND h24.name='collectionobjects_common:objectProductionDateGroupList' AND h24.pos=0)
+  LEFT OUTER JOIN structureddategroup opd ON (h24.id = opd.id)
+  LEFT OUTER JOIN hierarchy h10 ON (h10.parentid = coc.id AND h10.pos = 0 AND h10.name = 'collectionobjects_common:fieldCollectionDateGroup')
+  LEFT OUTER JOIN structureddategroup fcd ON (fcd.id = h10.id)
+
+  LEFT OUTER JOIN collectionobjects_omca_photos coc_photos ON (coc.id = coc_photos.id AND coc_photos.pos = 0)
+  LEFT OUTER JOIN collectionobjects_common_fieldcollectors coc_collectors ON (coc.id = coc_collectors.id AND coc_collectors.pos = 0)
+
+WHERE
+   gc.title='""" + group + """'
+limit """ + str(num2ret)
+
+
+    try:
+        objects.execute(getobjects)
+        #for object in objects.fetchall():
+        #print object
+        return objects.fetchall()
+    except:
+        raise
+
+def getobjlist(searchType, object1, object2, num2ret, config):
+
+    institution = config.get('info','institution')
+
+    query1 = """
+    SELECT objectNumber,
+coom.sortableobjectnumber
+FROM collectionobjects_common cc
+join collectionobjects_omca coom on (coom.id=cc.id)
+INNER JOIN misc ON misc.id=cc.id and misc.lifecyclestate <> 'deleted'
+WHERE
+     objectNumber = '%s' order by objectnumber limit 1"""
+
+    dbconn = psycopg2.connect(config.get('connect', 'connect_string'))
+    objects = dbconn.cursor()
+    objects.execute(timeoutcommand)
+    if int(num2ret) > 1000: num2ret = 1000
+    if int(num2ret) < 1:    num2ret = 1
+
+    try:
+        objects.execute(query1 % object1)
+        (object1, sortkey1) = objects.fetchone()
+        objects.execute(query1 % object2)
+        (object2, sortkey2) = objects.fetchone()
+    except:
+        return []
 
     # 'set' means 'next num2ret objects', otherwise prefix match
     if searchType == 'set':
@@ -679,7 +833,6 @@ WHERE
 
     if institution == 'omca':
         getobjects = """
-
 SELECT
   coom.computedcurrentlocationdisplay AS computedcurrentlocation,
   -- coc.id AS objectcsid_s,
@@ -736,7 +889,7 @@ limit """ + str(num2ret)
     else:
 
         getobjects = """SELECT DISTINCT ON (sortableobjectnumber)
-(case when ca.computedcrate is Null then regexp_replace(cc.computedcurrentlocation, '^.*\\)''(.*)''$', '\\1') 
+(case when ca.computedcrate is Null then regexp_replace(cc.computedcurrentlocation, '^.*\\)''(.*)''$', '\\1')
      else concat(regexp_replace(cc.computedcurrentlocation, '^.*\\)''(.*)''$', '\\1'),
      ': ',regexp_replace(ca.computedcrate, '^.*\\)''(.*)''$', '\\1')) end) AS storageLocation,
 cc.computedcurrentlocation AS locrefname,
@@ -798,7 +951,7 @@ left outer join collectionobjects_common_contentconcepts pef on (pef.id=cc.id an
 left outer join hierarchy h5 on (cc.id=h5.parentid and h5.primarytype =
 'assocPeopleGroup' and (h5.pos=0 or h5.pos is null))
 left outer join assocpeoplegroup apg on (apg.id=h5.id)
- 
+
 left outer join collectionobjects_common_briefdescriptions bd on (bd.id=cc.id and bd.pos=0)
 left outer join collectionobjects_common_fieldcollectors pc on (pc.id=cc.id and pc.pos=0)
 
@@ -814,7 +967,7 @@ FULL OUTER JOIN othernumber an ON (h8.id = an.id)
 
 FULL OUTER JOIN hierarchy h10 ON (h10.parentid = cc.id AND h10.pos = 0 AND h10.name = 'collectionobjects_omca:omcaFieldCollectionDateGroupList')
 FULL OUTER JOIN structureddategroup fcd ON (fcd.id = h10.id)
- 
+
 join misc ms on (cc.id=ms.id and ms.lifecyclestate <> 'deleted')
 
 left outer join collectionobjects_common_responsibledepartments rd on (rd.id=cc.id and rd.pos=0)

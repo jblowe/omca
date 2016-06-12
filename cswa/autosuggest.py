@@ -93,8 +93,14 @@ def dbtransaction(form):
             and tc.refname like '%%(taxon)%%'
             ORDER BY termdisplayname LIMIT 30
             """
+
         elif srchindex == 'group':
-            template = makeTemplate('grouptermgroup', 'termdisplayname', "like '%s%%'")
+            template = """SELECT title
+            FROM groups_common
+            WHERE title like '%s%%'
+            ORDER BY title LIMIT 30
+            """
+
         elif srchindex == 'place':
             template = makeTemplate('placetermgroup', 'termname', "ilike '%%%s%%' and termtype='descriptor'")
         elif srchindex == 'longplace':
