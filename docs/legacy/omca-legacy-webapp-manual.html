@@ -85,6 +85,7 @@ A map they could all understand.
                   <li><a href="#si">Systematic Inventory</a></li>
                   <li><a href="#pm">Power Move</a></li>
                   <li><a href="#bmu">Bulk Media Upload</a></li>
+                  <li><a href="#ceo">Create Empty Objects</a></li>
                 </td>
               </tr>
             </table>
@@ -99,6 +100,7 @@ A map they could all understand.
                   <li><a href="#kir">Key Information Review</a></li>
                   <li><a href="#oir">Object Info Review</a></li>
                   <li><a href="#boe">Bulk Object Edit</a></li>
+                  <li><a href="#gir">Group Info Review</a></li>
                 </td>
               </tr>
             </table>
@@ -177,6 +179,13 @@ A map they could all understand.
   computer (using the "Choose Files" button) and then uploads these to the CSpace server. They are then "ingested" into CSpace via a nightly import job.  There is an option to perform the ingestion process online, but since the process is slow -- several seconds at least per image -- the usual practice is to use the nightly batch option.</p>
             </td>
           </tr>
+          <tr>
+            <td style="page-break-before:avoid">
+              <hr/>
+              <div><a href="ceo1.png"><img src="ceo1.png" width="600px"/></a></div>
+              <p>Create Empty Objects allows the user to create up to 500 empty collectionobject records. The only field (in the created object record!) that is filled in by the app is the object number field, which is calculated from data input by the user.</p>.</p>
+            </td>
+          </tr>
         </table>
         <hr/>
         <h4>2. Data Update Webapps</h4>
@@ -199,6 +208,13 @@ A map they could all understand.
               <hr/>
               <div><a href="boe1.png"><img src="boe1.png" width="600px"/></a></div>
               <p>As with the KIR and OIR webapps, the BOE webapp allows registrars, curators, and subject matter experts to quickly update values in several important fields. The sets of available "Key Information" fields are the same as in the KIR and the OIR webapps. The BOE webapp differs in one very important aspect from either KIR or OIR: the values in the fields to be updated are not displayed by the BOE webapp. The user must know in advance what the existing values of these fields are, and must also be certain that they want to override all values in a particular field with a single value that the user can enter into each field. The user can update several fields at once, or only a single field at a time.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="page-break-before:avoid">
+              <hr/>
+              <div><a href="gir1.png"><img src="gir1.png" width="600px"/></a></div>
+              <p>This webapp works just like the KIR and OIR webapps, except that the records are not selected by a range, but by the groups they belong to.</p>
             </td>
           </tr>
         </table>
@@ -302,6 +318,20 @@ A map they could all understand.
       <ul>
         <li>To see what is in the queue, click the "Show Jobs" button.</li>
       </ul>
+      <a id="gir"/>
+        <h3 class="subheader">Group Information Review: Step 1, Initial Data Entry</h3>
+        <img src="gir1.png" width="800px"/>
+        <h4>Inputs and Outputs</h4>
+        <ul>
+          <li>Group Name</li>
+          <li>Field Set</li>
+        </ul>
+        <h4>Remarks</h4>
+        <ul>
+          <li>Ensure you get the right group -- use the term-matching feature!</li>
+          <li>Pick one of the fieldsets in the dropdown</li>
+          <li>Then click Search</li>
+        </ul>
       <a id="kir"/>
         <h3 class="subheader">Key Information Review: Step 1, Initial Data Entry</h3>
         <img src="kir0.png" width="800px"/>
@@ -379,6 +409,24 @@ A map they could all understand.
         <ul>
           <li>Like KIR and OIR, except it sets the values the same value for all the records in the range.</li>
         </ul>
+      <a id="ceo"/>
+        <h3 class="subheader">Create Empty Objects: Step 1, Initial Data Entry</h3>
+        <img src="boe2.png" width="800px"/>
+        <h4>Inputs and Outputs</h4>
+        <ul>
+          <li>Year</li>
+          <li>Accession</li>
+          <li>Sequence</li>
+          <li>Count</li>
+        </ul>
+        <h4>Remarks</h4>
+        <ul>
+          <li>Enter the 3 parts of a museum number, the webapp will compute the range of object numbers using the <pre>count</pre>
+            field. E.g. <pre>2016.9.12</pre>. The program checks to see that none of the object numbers already exists,
+            but it does not at them moment help you find the last values to use.
+          </li>
+        </ul>
+
       <a id="plr"/>
         <h3 class="subheader">Packing List: Step 1, Initial Data Entry</h3>
         <img src="pl1.png" width="800px"/>
