@@ -1249,6 +1249,8 @@ def doUpdateLocations(form, config):
     #notlocated = config.get('info','notlocated')
     if institution == 'bampfa':
         notlocated = "urn:cspace:bampfa.cspace.berkeley.edu:locationauthorities:name(location):item:name(x781)'Not Located'"
+    elif institution == 'omca':
+        notlocated = "urn:cspace:museumca.org:orgauthorities:name(organization):item:name(orgpa26301)'Unknown'"
     else:
         notlocated = "urn:cspace:bampfa.cspace.berkeley.edu:locationauthorities:name(location):item:name(sl23524)'Not located'"
     updateValues = [form.get(i) for i in form if 'r.' in i]
@@ -1266,7 +1268,8 @@ def doUpdateLocations(form, config):
 
         updateItems = {}
         cells = object.split('|')
-        updateItems['referencenumber'] = 'Move' + Now + str(row)
+        locdate = datetime.datetime.utcnow().strftime("%Y-%m-%d-%H-%M")
+        updateItems['referencenumber'] = 'LOC' + locdate + '-' + str(row)
         updateItems['objectStatus'] = cells[0]
         updateItems['objectCsid'] = cells[1]
         updateItems['locationRefname'] = cells[2]
@@ -1275,7 +1278,7 @@ def doUpdateLocations(form, config):
         updateItems['crate'] = cells[5]
         updateItems['inventoryNote'] = form.get('n.' + cells[4]) if form.get('n.' + cells[4]) else ''
         updateItems['locationDate'] = Now
-        updateItems['computedSummary'] = updateItems['locationDate'][0:10] + (' (%s)' % reason)
+        updateItems['computedMovementSummary'] = updateItems['locationDate'][0:10] + (' (%s)' % reason)
 
         for i in ('handlerRefName', 'reason'):
             updateItems[i] = form.get(i)
@@ -1308,7 +1311,7 @@ def doUpdateLocations(form, config):
                 updateLocations(updateItems, config, form)
                 numUpdated += 1
         except:
-            msg = '<span style="color:red;">problem updating</span>'
+            msg = '<span style="color:red;">location update failed!</span>'
         print ('<tr>' + (4 * '<td class="ncell">%s</td>') + '</tr>\n') % (
             updateItems['objectNumber'], updateItems['objectStatus'], updateItems['inventoryNote'], msg)\
 
@@ -2071,7 +2074,7 @@ def doUploadUpdateLocs(data, line, id2ref, form, config):
     # if reason is a refname (e.g. bampfa), extract just the displayname
     reason = form.get('reason')
     reason = re.sub(r"^urn:.*'(.*)'", r'\1', reason)
-    updateItems['computedSummary'] = updateItems['locationDate'][0:10] + (' (%s)' % reason)
+    updateItems['computedMovementSummary'] = updateItems['locationDate'][0:10] + (' (%s)' % reason)
 
     #print updateItems
     numUpdated = 0
@@ -2442,6 +2445,7 @@ def updateLocations(updateItems, config, form):
 
     #print "<br>posting to movements REST API..."
     payload = lmiPayload(updateItems, institution)
+    sys.stderr.write(payload)
     (url, data, csid, elapsedtime) = postxml('POST', uri, realm, hostname, username, password, payload)
     updateItems['subjectCsid'] = csid
 
@@ -3698,29 +3702,27 @@ def lmiPayload(f,institution):
             f['reason'], f['locationRefname'], f['locationDate'], f['inventoryNote'], f['handlerRefName'],
             f['computedSummary'], f['crate'])
 
-    else:
+    elif institution == 'omca':
         payload = """<?xml version="1.0" encoding="UTF-8"?>
 <document name="movements">
-<ns2:movements_common xmlns:ns2="http://collectionspace.org/services/movement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ns1:movements_common xmlns:ns1="http://collectionspace.org/services/movement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<inventoryContactList>
+<inventoryContact>%s</inventoryContact>
+</inventoryContactList>
 <movementReferenceNumber>%s</movementReferenceNumber>
 <reasonForMove>%s</reasonForMove>
 <currentLocation>%s</currentLocation>
 <currentLocationFitness>suitable</currentLocationFitness>
 <locationDate>%s</locationDate>
 <movementNote>%s</movementNote>
-</ns2:movements_common>
-<ns2:movements_anthropology xmlns:ns2="http://collectionspace.org/services/movement/domain/anthropology" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<computedSummary>%s</computedSummary>
-<crate>%s</crate>
-<locationHandlers>
-<locationHandler>%s</locationHandler>
-</locationHandlers>
-</ns2:movements_anthropology>
+</ns1:movements_common>
+<ns2:movements_omca xmlns:ns2="http://collectionspace.org/services/movement/local/omca" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<computedMovementSummary>%s</computedMovementSummary>
+</ns2:movements_omca>
 </document>
 """
-        payload = payload % (f['referencenumber'],
-            f['reason'], f['locationRefname'], f['locationDate'], f['inventoryNote'], f['computedSummary'], f['crate'],
-            f['handlerRefName'])
+        payload = payload % (f['handlerRefName'],f['referencenumber'],
+            f['reason'], f['locationRefname'], f['locationDate'], f['inventoryNote'], f['computedMovementSummary'])
 
     return payload
 
