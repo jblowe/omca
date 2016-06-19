@@ -1269,7 +1269,7 @@ def doUpdateLocations(form, config):
         updateItems = {}
         cells = object.split('|')
         locdate = datetime.datetime.utcnow().strftime("%Y-%m-%d-%H-%M")
-        updateItems['referencenumber'] = 'LOC' + locdate + '-' + str(row)
+        updateItems['referencenumber'] = 'LOC' + locdate + '-' + str(row + 1)
         updateItems['objectStatus'] = cells[0]
         updateItems['objectCsid'] = cells[1]
         updateItems['locationRefname'] = cells[2]
@@ -2445,7 +2445,7 @@ def updateLocations(updateItems, config, form):
 
     #print "<br>posting to movements REST API..."
     payload = lmiPayload(updateItems, institution)
-    sys.stderr.write(payload)
+    #sys.stderr.write(payload)
     (url, data, csid, elapsedtime) = postxml('POST', uri, realm, hostname, username, password, payload)
     updateItems['subjectCsid'] = csid
 
@@ -3706,15 +3706,13 @@ def lmiPayload(f,institution):
         payload = """<?xml version="1.0" encoding="UTF-8"?>
 <document name="movements">
 <ns1:movements_common xmlns:ns1="http://collectionspace.org/services/movement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<inventoryContactList>
-<inventoryContact>%s</inventoryContact>
-</inventoryContactList>
+<movementContact>%s</movementContact>
 <movementReferenceNumber>%s</movementReferenceNumber>
 <reasonForMove>%s</reasonForMove>
 <currentLocation>%s</currentLocation>
 <currentLocationFitness>suitable</currentLocationFitness>
 <locationDate>%s</locationDate>
-<movementNote>%s</movementNote>
+<currentLocationNote>%s</currentLocationNote>
 </ns1:movements_common>
 <ns2:movements_omca xmlns:ns2="http://collectionspace.org/services/movement/local/omca" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <computedMovementSummary>%s</computedMovementSummary>
