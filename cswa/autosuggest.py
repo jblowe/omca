@@ -96,7 +96,8 @@ def dbtransaction(form):
 
         elif srchindex == 'group':
             template = """SELECT title
-            FROM groups_common
+            FROM groups_common gc
+            JOIN misc ON misc.id=gc.id AND misc.lifecyclestate <> 'deleted'
             WHERE title like '%s%%'
             ORDER BY title LIMIT 30
             """

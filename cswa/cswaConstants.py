@@ -10,7 +10,7 @@ OMCADATA = {
     'mattech': [('Museum #', 'objnum', 'onn', 2, '', ''),
                 ('Object name', 'objectName', 'on', 1, 'concept', 'concepts_common'),
                 ('Material', 'material', 'ma', 11, 'concept', 'concepts_common'),
-                ('Technique', 'tech', 'tc', 21, 'concept', ''),
+                ('Technique', 'tech', 'tc', 21, 'concept', 'concepts_common'),
                 ('Material/Technique Summary', 'argusDescription', 'ard', 9, 'argusDescription', '')],
     'nameprod': [('Museum #', 'objnum', 'onn', 2, '', ''),
                  ('Object name', 'objectName', 'on', 1, 'concept', 'concepts_common'),
@@ -19,7 +19,7 @@ OMCADATA = {
                   'organizations_common'),
                  ('Production Date', 'objectProductionDateGroup', 'pdt', 15, '', '')],
     'specimen': [('Museum #', 'objnum', 'onn', 2, 'concept', 'concepts_common'),
-                 ('DH name', 'dhname', 'dh', 10, '', ''),
+                 ('DH name', 'dhname', 'ta', 10, 'taxon', 'taxon_common'),
                  ('Field collection date', 'colldate', 'cod', 4, '', ''),
                  ('Field collection place', 'fieldCollectionPlace', 'pl', 3, 'places_common', 'place'),
                  ('Field collector', 'fieldCollector', 'pc', 5, 'collectionobjects_common_fieldcollectors', '')],
@@ -171,6 +171,32 @@ def getProhibitedLocations(config):
 
     return locList
 
+def ipAuditValues():
+    return [
+        ("Assumed Protected by Copyright",
+         "urn:cspace:museumca.org:vocabularies:name(ipaudit):item:name(assumed_protected_by_copyright)'Assumed Protected by Copyright'"),
+        ("Copyright OMCA",
+         "urn:cspace:museumca.org:vocabularies:name(ipaudit):item:name(copyright_omca)'Copyright OMCA'"),
+        ("No Known Restrictions",
+         "urn:cspace:museumca.org:vocabularies:name(ipaudit):item:name(no_known_restrictions)'No Known Restrictions'"),
+        ("'OMCA Licensed", "urn:cspace:museumca.org:vocabularies:name(ipaudit):item:name(omca_licensed)'OMCA Licensed'")
+    ]
+
+
+def getDropdown(listname, csid, dropdownlist, selected):
+    dropdown = '''
+          <select class="cell" name="%s.%s">
+              <option value="None">Select a value</option>''' % (listname, csid)
+    for dd in dropdownlist:
+        # print dd
+        dropdownOption = """<option value="%s">%s</option>""" % (dd[1], dd[0])
+        if selected and str(selected) == dd[1]:
+            dropdownOption = dropdownOption.replace('option ', 'option selected ')
+        dropdown += dropdownOption
+
+    dropdown += '\n      </select>'
+    return dropdown
+
 
 def getHandlers(form, institution):
     selected = form.get('handlerRefName')
@@ -230,6 +256,29 @@ def getReasons(form, institution):
         </select>
 
         '''
+
+    elif institution == 'omca':
+
+        dropdownlist = [
+            ("Conservation", "urn:cspace:museumca.org:vocabularies:name(reasonformove):item:name(conservation)'Conservation'"),
+            ("Exhibition", "urn:cspace:museumca.org:vocabularies:name(reasonformove):item:name(exhibition)'Exhibition'"),
+            ("Inventory", "urn:cspace:museumca.org:vocabularies:name(reasonformove):item:name(inventory)'Inventory'"),
+            ("Loan", "urn:cspace:museumca.org:vocabularies:name(reasonformove):item:name(loan)'Loan'"),
+            ("New Storage Location", "urn:cspace:museumca.org:vocabularies:name(reasonformove):item:name(new_storage_location)'New Storage Location'"),
+            ("Photography", "urn:cspace:museumca.org:vocabularies:name(reasonformove):item:name(photography)'Photography'"),
+            ("Research", "urn:cspace:museumca.org:vocabularies:name(reasonformove):item:name(research)'Research'")
+        ]
+
+        dropdown = '''
+              <select class="cell" name="reason">
+                  <option value="None">Select a value</option>'''
+        for dd in dropdownlist:
+            # print dd
+            dropdownOption = """<option value="%s">%s</option>""" % (dd[1], dd[0])
+            dropdown += dropdownOption
+        dropdown += '\n      </select>'
+        reasons = dropdown
+
     else:
         # these are for PAHMA
         reasons = '''

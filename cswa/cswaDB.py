@@ -652,7 +652,7 @@ def getlistofobjects(searchType, object1, object2, num2ret, config):
     join collectionobjects_omca coom on (coom.id=cc.id)
     INNER JOIN misc ON misc.id=cc.id and misc.lifecyclestate <> 'deleted'
     WHERE
-         objectNumber %s= '%s' order by objectnumber %s limit 1"""
+         coom.sortableobjectnumber %s= '%s' order by coom.sortableobjectnumber %s limit 1"""
 
     dbconn = psycopg2.connect(config.get('connect', 'connect_string'))
     objects = dbconn.cursor()
@@ -664,9 +664,9 @@ def getlistofobjects(searchType, object1, object2, num2ret, config):
 
     try:
         objects.execute(query1 % ('>', object1, 'asc'))
-        (object1, sortkey1) = objects.fetchone()
+        (object1a, sortkey1) = objects.fetchone()
         objects.execute(query1 % ('<', object2, 'desc'))
-        (object2, sortkey2) = objects.fetchone()
+        (object2a, sortkey2) = objects.fetchone()
     except:
         return []
 
@@ -680,7 +680,9 @@ def getlistofobjects(searchType, object1, object2, num2ret, config):
     elif searchType == 'range':
         whereclause = "WHERE sortableobjectnumber >= '" + sortkey1 + "' AND sortableobjectnumber <= '" + sortkey2 + "'"
 
-    #sys.stderr.write('where: %s\n' % whereclause)
+    # sys.stderr.write('where: %s\n' % whereclause)
+    # sys.stderr.write('o1a: %s o2a:%s\n' % (object1, object2))
+    # sys.stderr.write('o1: %s o2:%s\n' % (object1a, object2a))
 
     if institution == 'omca':
 
@@ -756,12 +758,13 @@ SELECT distinct on (computedcurrentlocation,objectnumber)
 
 FROM groups_common gc
 
+  JOIN misc mc1 ON (gc.id = mc1.id AND mc1.lifecyclestate <> 'deleted')
   JOIN hierarchy h1 ON (gc.id=h1.id)
   JOIN relations_common rc1 ON (h1.name=rc1.subjectcsid)
   JOIN hierarchy hx2 ON (rc1.objectcsid=hx2.name)
   JOIN collectionobjects_common coc ON (hx2.id=coc.id)
   JOIN collectionobjects_omca coom ON (coom.id = coc.id)
-  JOIN misc ON (coc.id = misc.id AND misc.lifecyclestate <> 'deleted')
+  JOIN misc mc2 ON (coc.id = mc2.id AND mc2.lifecyclestate <> 'deleted')
 
   LEFT OUTER JOIN hierarchy h2 ON (coc.id=h2.parentid AND h2.name='collectionobjects_common:objectNameList' AND h2.pos=0)
   LEFT OUTER JOIN objectnamegroup ong ON (ong.id=h2.id)

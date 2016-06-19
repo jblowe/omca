@@ -19,6 +19,7 @@ import re
 
 from cswaConstants import OMCADATA
 from cswaConstants import BASE_DIR
+from cswaConstants import getDropdown, ipAuditValues
 
 #import cswaSMBclient
 
@@ -909,19 +910,21 @@ def doCreateObjects(form, config):
         if msg != '': msgs.append(msg)
 
         try:
+            startsortobject = '%0.10d.%0.10d.%0.10d' % (year, accession, sequence)
             startobject = '%s.%s.%s' % (year, accession, sequence)
         except:
             startobject = 'invalid'
             msgs.append('start object value invalid')
 
         try:
+            endsortobject = '%0.10d.%0.10d.%0.10d' % (year, accession, sequence + count - 1)
             endobject = '%s.%s.%s' % (year, accession, sequence + count - 1)
         except:
             endobject = 'invalid'
             msgs.append('end object value invalid')
 
         try:
-            objs = cswaDB.getlistofobjects('range', startobject, endobject, 100, config)
+            objs = cswaDB.getlistofobjects('range', startsortobject, endsortobject, 100, config)
             totalobjects = len(objs)
             if totalobjects != 0:
                 msgs.append('there are already %s objects in this range!' % totalobjects)
@@ -945,7 +948,9 @@ def doCreateObjects(form, config):
                 # create objects here
                 for seq in range(count):
                     objectNumber = '%s.%s.%s' % (year, accession, sequence + seq)
+                    sortableobjectnumber = '%0.10d.%0.10d.%0.10d' % (year, accession, sequence + seq)
                     objectinfo = {'objectNumber': objectNumber}
+                    objectinfo['sortableObjectNumber'] = sortableobjectnumber
                     message,csid = createObject(objectinfo, config, form)
                     print "<tr><td>%s</td><td>%s</td></tr>" % (objectNumber, csid)
                 print "<tr><td>%s</td><td>%s</td></tr>" % ('created objects', count)
@@ -2400,6 +2405,9 @@ def createObject(objectinfo, config, form):
 </objectNameList>
 <objectNumber/>
 </ns2:collectionobjects_common>
+<ns2:collectionobjects_omca xmlns:ns2="http://collectionspace.org/services/collectionobject/local/omca" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sortableObjectNumber/>
+</ns2:collectionobjects_omca>
 </document>'''
 
     root = etree.fromstring(content)
@@ -2623,8 +2631,15 @@ def formatInfoReviewRow(form, link, rr, link2):
 </td>""" %  (link, rr[2], rr[8], rr[2], rr[8], rr[8])
 
             for x in OMCADATA[f]:
-                if 'Museum #' in x[0]: continue
-                rows += """<td class="zcell"><input class="xspan" type="text" name="%s.%s" value="%s"></td>""" % (x[2], rr[8], cgi.escape(rr[x[3]], True))
+                # print x
+                if 'objnum' == x[1]:
+                    continue
+                if 'ipAudit' == x[1]:
+                    rows += '<td class="zcell">' + getDropdown(x[2], rr[8], ipAuditValues(), rr[0]) + '</td>'
+                elif 'doNotPublishOnWeb' == x[1]:
+                    rows += '<td class="zcell">' + getDropdown(x[2], rr[8], [('Do not publish','true'),('Publish','false')], rr[0]) + '</td>'
+                else:
+                    rows += """<td class="zcell"><input class="xspan" type="text" name="%s.%s" value="%s"></td>""" % (x[2], rr[8], cgi.escape(rr[x[3]], True))
             return rows
 
 
@@ -3717,6 +3732,8 @@ if __name__ == "__main__":
     # this will load the config file and attempt to update some records in server identified
     # in that config file!
 
+    print formatInfoReviewRow({'fieldset': 'rights'}, 'link1', 'a b c d e f g h i j k l m n o p q r s t u v'.split(' '), 'link2')
+    sys.exit()
 
     updateItems = {}
 
