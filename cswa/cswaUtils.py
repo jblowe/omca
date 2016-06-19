@@ -1266,6 +1266,7 @@ def doUpdateLocations(form, config):
 
         updateItems = {}
         cells = object.split('|')
+        updateItems['referencenumber'] = 'Move' + Now + str(row)
         updateItems['objectStatus'] = cells[0]
         updateItems['objectCsid'] = cells[1]
         updateItems['locationRefname'] = cells[2]
@@ -3701,6 +3702,7 @@ def lmiPayload(f,institution):
         payload = """<?xml version="1.0" encoding="UTF-8"?>
 <document name="movements">
 <ns2:movements_common xmlns:ns2="http://collectionspace.org/services/movement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<movementReferenceNumber>%s</movementReferenceNumber>
 <reasonForMove>%s</reasonForMove>
 <currentLocation>%s</currentLocation>
 <currentLocationFitness>suitable</currentLocationFitness>
@@ -3716,7 +3718,7 @@ def lmiPayload(f,institution):
 </ns2:movements_anthropology>
 </document>
 """
-        payload = payload % (
+        payload = payload % (f['referencenumber'],
             f['reason'], f['locationRefname'], f['locationDate'], f['inventoryNote'], f['computedSummary'], f['crate'],
             f['handlerRefName'])
 
@@ -3823,6 +3825,7 @@ if __name__ == "__main__":
               'objectCsid': '41568668-00a7-439b-8a09-8525578e5df4',
               'inventoryNote': 'inventory note',
               'crate': '',
+              'referencenumber': '',
               'handlerRefName': "JW",
               'reason': "urn:cspace:bampfa.cspace.berkeley.edu:vocabularies:name(movereason):item:name(movereason002)'Exhibition'",
               'computedSummary': 'systematic inventory test',
