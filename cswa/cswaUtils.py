@@ -1250,7 +1250,7 @@ def doUpdateLocations(form, config):
     if institution == 'bampfa':
         notlocated = "urn:cspace:bampfa.cspace.berkeley.edu:locationauthorities:name(location):item:name(x781)'Not Located'"
     elif institution == 'omca':
-        notlocated = "urn:cspace:museumca.org:orgauthorities:name(organization):item:name(orgpa26301)'Unknown'"
+        notlocated = "urn:cspace:museumca.org:locationauthorities:name(location):item:name(t15121)'unlocated'"
     else:
         notlocated = "urn:cspace:bampfa.cspace.berkeley.edu:locationauthorities:name(location):item:name(sl23524)'Not located'"
     updateValues = [form.get(i) for i in form if 'r.' in i]
@@ -1278,7 +1278,8 @@ def doUpdateLocations(form, config):
         updateItems['crate'] = cells[5]
         updateItems['inventoryNote'] = form.get('n.' + cells[4]) if form.get('n.' + cells[4]) else ''
         updateItems['locationDate'] = Now
-        updateItems['computedMovementSummary'] = updateItems['locationDate'][0:10] + (' (%s)' % reason)
+        locdisplayname = re.sub(r"^urn:.*'(.*)'", r'\1', cells[2])
+        updateItems['computedMovementSummary'] =  '%s (%s)' % (locdisplayname, reason)
 
         for i in ('handlerRefName', 'reason'):
             updateItems[i] = form.get(i)
@@ -3681,29 +3682,8 @@ def relationsPayload(f):
 
 
 def lmiPayload(f,institution):
-    if institution == 'bampfa':
-        payload = """<?xml version="1.0" encoding="UTF-8"?>
-<document name="movements">
-<ns2:movements_common xmlns:ns2="http://collectionspace.org/services/movement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<reasonForMove>%s</reasonForMove>
-<currentLocation>%s</currentLocation>
-<locationDate>%s</locationDate>
-<movementNote>%s</movementNote>
-<movementContact>%s</movementContact>
-</ns2:movements_common>
-<ns2:movements_bampfa xmlns:ns2="http://collectionspace.org/services/movement/domain/anthropology" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<computedSummary>%s</computedSummary>
-<crate>%s</crate>
-</ns2:movements_bampfa>
-</document>
-"""
 
-        payload = payload % (
-            f['reason'], f['locationRefname'], f['locationDate'], f['inventoryNote'], f['handlerRefName'],
-            f['computedSummary'], f['crate'])
-
-    elif institution == 'omca':
-        payload = """<?xml version="1.0" encoding="UTF-8"?>
+    payload = """<?xml version="1.0" encoding="UTF-8"?>
 <document name="movements">
 <ns1:movements_common xmlns:ns1="http://collectionspace.org/services/movement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <movementContact>%s</movementContact>
@@ -3719,7 +3699,7 @@ def lmiPayload(f,institution):
 </ns2:movements_omca>
 </document>
 """
-        payload = payload % (f['handlerRefName'],f['referencenumber'],
+    payload = payload % (f['handlerRefName'],f['referencenumber'],
             f['reason'], f['locationRefname'], f['locationDate'], f['inventoryNote'], f['computedMovementSummary'])
 
     return payload
