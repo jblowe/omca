@@ -2218,11 +2218,11 @@ def updateKeyInfo(fieldset, updateItems, config, form):
             continue
         listSuffix = 'List'
         extra = ''
-        if relationType in ['assocPeople', 'pahmaAltNum', 'pahmaFieldCollectionDate', 'material']:
+        if relationType in ['assocPeople', 'pahmaAltNum', 'pahmaFieldCollectionDate', 'material', 'objectProductionPerson', 'objectProductionOrganization']:
             extra = 'Group'
-        elif relationType in ['briefDescription', 'fieldCollector', 'responsibleDepartment']:
+        elif relationType in ['briefDescription', 'fieldCollector', 'responsibleDepartment', 'photo']:
             listSuffix = 's'
-        elif relationType in ['collection', 'pahmaFieldLocVerbatim']:
+        elif relationType in ['collection', 'pahmaFieldLocVerbatim', 'ipAudit', 'doNotPublishOnWeb', 'argusDescription']:
             listSuffix = ''
         else:
             pass
@@ -2237,7 +2237,7 @@ def updateKeyInfo(fieldset, updateItems, config, form):
             continue
         #print(etree.tostring(metadata))
         #print ">>> ",relationType,':',updateItems[relationType]
-        if relationType in ['assocPeople', 'objectName', 'pahmaAltNum']:
+        if relationType in ['assocPeople', 'objectName', 'pahmaAltNum', 'material', 'objectProductionPerson', 'objectProductionOrganization']:
             #group = metadata.findall('.//'+relationType+'Group')
             #sys.stderr.write('  updateItem: ' + relationType + ':: ' + updateItems[relationType] + '\n' )
             Entries = metadata.findall('.//' + relationType)
@@ -2335,24 +2335,21 @@ def updateKeyInfo(fieldset, updateItems, config, form):
             newElement.text = updateItems[relationType]
             metadata.insert(0, newElement)
             #print(etree.tostring(metadata, pretty_print=True))
-    objectCount = root.find('.//numberOfObjects')
-    if 'objectCount' in updateItems:
-        if objectCount is None:
-            objectCount = etree.Element('numberOfObjects')
-            collectionobjects_common = root.find(
-                './/{http://collectionspace.org/services/collectionobject}collectionobjects_common')
-            collectionobjects_common.insert(0, objectCount)
-        objectCount.text = updateItems['objectCount']
 
-    inventoryCount = root.find('.//inventoryCount')
-    if 'inventoryCount' in updateItems:
-        if inventoryCount is None:
-            inventoryCount = etree.Element('inventoryCount')
-            collectionobjects_pahma = root.find(
-                './/{http://collectionspace.org/services/collectionobject/local/pahma}collectionobjects_pahma')
-            collectionobjects_pahma.insert(0, inventoryCount)
-        inventoryCount.text = updateItems['inventoryCount']
-    #print(etree.tostring(root, pretty_print=True))
+    for element in 'ipAudit doNotPublishOnWeb argusDescription'.split(' '):
+        if element in updateItems:
+            e = root.find('.//%s' % element)
+            collectionobjects_common = root.find(
+            './/{http://collectionspace.org/services/collectionobject/local/omca}collectionobjects_omca')
+            if e is None:
+                e = etree.Element(element)
+                e.text = updateItems[element]
+                collectionobjects_common.insert(0, e)
+                message += "'%s' added as &lt;%s&gt;.<br/>" % (updateItems[element], element)
+            else:
+                e.text = updateItems[element]
+                message += "'%s' updated as &lt;%s&gt;.<br/>" % (updateItems[element], element)
+            sys.stderr.write(etree.tostring(e) + "\n")
 
     if 'pahmaFieldLocVerbatim' in updateItems:
         pahmaFieldLocVerbatim = root.find('.//pahmaFieldLocVerbatim')
@@ -2374,7 +2371,7 @@ def updateKeyInfo(fieldset, updateItems, config, form):
             message += " %s added as &lt;%s&gt;.<br/>" % (updateItems['collection'], 'collection')
         collection.text = updateItems['collection']
 
-
+    #print(etree.tostring(root))
 
     uri = 'collectionobjects' + '/' + updateItems['objectCsid']
     payload = '<?xml version="1.0" encoding="UTF-8"?>\n' + etree.tostring(root,encoding='utf-8')
@@ -2581,10 +2578,10 @@ def formatRow(result, form, config):
         return """<tr>
 <td class="objno"><a target="cspace" href="%s">%s</a></td>
 <td class="objname" name="onm.%s">%s</td>
-<td class="xspan" name="cp.%s">%s</td>
-<td class="xspan" name="cg.%s">%s</td>
-<td class="xspan" name="fc.%s">%s</td>
-</tr>""" % (link, rr[2], rr[0], rr[1], rr[0], rr[3], rr[0], rr[4], rr[0], rr[5])
+<td class="ncell" name="dh.%s">%s</td>
+<td class="ncell" name="op.%s">%s</td>
+<td class="ncell" name="ad.%s">%s</td>
+</tr>""" % (link, rr[2], rr[0], rr[1], rr[0], rr[10], rr[0], rr[12], rr[0], rr[9])
 #</tr>""" % (link, rr[3], rr[8], rr[4], rr[8], rr[5], rr[8], rr[6], rr[8], rr[7], rr[8], rr[9])
 
     elif result['rowtype'] == 'packinglistbyculture':
@@ -2641,9 +2638,9 @@ def formatInfoReviewRow(form, link, rr, link2):
                 if 'objnum' == x[1]:
                     continue
                 if 'ipAudit' == x[1]:
-                    rows += '<td class="zcell">' + getDropdown(x[2], rr[8], ipAuditValues(), rr[0]) + '</td>'
+                    rows += '<td class="zcell">' + getDropdown(x[2], rr[8], ipAuditValues(), rr[18]) + '</td>'
                 elif 'doNotPublishOnWeb' == x[1]:
-                    rows += '<td class="zcell">' + getDropdown(x[2], rr[8], [('Do not publish','true'),('Publish','false')], rr[0]) + '</td>'
+                    rows += '<td class="zcell">' + getDropdown(x[2], rr[8], [('Do not publish','true'),('Publish','false')], rr[16]) + '</td>'
                 else:
                     rows += """<td class="zcell"><input class="xspan" type="text" name="%s.%s" value="%s"></td>""" % (x[2], rr[8], cgi.escape(rr[x[3]], True))
             return rows

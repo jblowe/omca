@@ -27,7 +27,7 @@ OMCADATA = {
                ('Object name', 'objectName', 'on', 1, 'concept', 'concepts_common'),
                ('IP Audit', 'ipAudit', 'ip', 18, 'item', 'ipAudit'),
                ('Do not publish on web', 'doNotPublishOnWeb', 'dnp', 16, '', ''),
-               ('Copyright Holder', 'holder', 'hld', 20, 'person', ''),
+               ('Copyright Holder', 'holder', 'pc', 20, 'person', 'persons_common'),
                ('Photo', 'photo', 'pho', 19, '', '')]
 }
 
@@ -179,7 +179,7 @@ def ipAuditValues():
          "urn:cspace:museumca.org:vocabularies:name(ipaudit):item:name(copyright_omca)'Copyright OMCA'"),
         ("No Known Restrictions",
          "urn:cspace:museumca.org:vocabularies:name(ipaudit):item:name(no_known_restrictions)'No Known Restrictions'"),
-        ("'OMCA Licensed", "urn:cspace:museumca.org:vocabularies:name(ipaudit):item:name(omca_licensed)'OMCA Licensed'")
+        ("OMCA Licensed", "urn:cspace:museumca.org:vocabularies:name(ipaudit):item:name(omca_licensed)'OMCA Licensed'")
     ]
 
 
@@ -190,7 +190,8 @@ def getDropdown(listname, csid, dropdownlist, selected):
     for dd in dropdownlist:
         # print dd
         dropdownOption = """<option value="%s">%s</option>""" % (dd[1], dd[0])
-        if selected and str(selected) == dd[1]:
+        sys.stderr.write('v=%s t=%s s=%s ' % (dd[1],dd[0],selected))
+        if selected and str(selected) == dd[0]:
             dropdownOption = dropdownOption.replace('option ', 'option selected ')
         dropdown += dropdownOption
 
@@ -822,9 +823,9 @@ def getHeader(updateType, institution):
     <table><tr>
       <th>Museum #</th>
       <th>Object name</th>
-      <th>Field Collection Place</th>
-      <th>Field Collection Date</th>
-      <th>Field Collector</th>
+      <th>Taxon</th>
+      <th>Maker</th>
+      <th>Material/Technique Summary</th>
       <th>P?</th>
     </tr>"""
     elif updateType == 'packinglistbyculture':
