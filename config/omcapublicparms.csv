@@ -78,7 +78,7 @@ field	65	hazard	Hazard	hazard_s		x	dropdown									x
 field	66	conservationstatus	Conservation Status	conservationstatus_s		x	dropdown									x
 field	67	conservationstatusdate	Conservation Status Date	conservationstatusdate_s		x	keyword									x
 field	68	exitnumber	Object Exit Number	exitnumber_ss		x	keyword									x
-field	69	text	Keyword	text			keyword	1,1								x
+field	69	keyword	Keyword	text			keyword	1,1								x
 field	70	blobs	Blobs	blob_ss		n/a	blob									x
 #	71	cards	Card	cards_ss		n/a	card									x
 field	72	primaryimage	Primary Image	primaryimage_s		x	primaryimage									x
