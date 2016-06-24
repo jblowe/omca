@@ -1259,7 +1259,9 @@ def doUpdateLocations(form, config):
     reason = form.get('reason')
     reason = re.sub(r"^urn:.*'(.*)'", r'\1', reason)
 
-    Now = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    #Now = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    # Now = midnight local time for locations...
+    Now = datetime.datetime.utcnow().strftime("%Y-%m-%dT00:00:00Z")
 
     print cswaConstants.getHeader('inventoryResult',institution)
 
@@ -1799,6 +1801,7 @@ def doHierarchyView(form, config):
         print '<h3>Please select an authority!</h3><hr>'
         return
     res = cswaDB.gethierarchy(query, config)
+    sys.stderr.write('%s items\n' % len(res))
     print '<div id="tree"></div>\n<script>'
     lookup = {concept.PARENT: concept.PARENT}
     link = ''
@@ -1808,10 +1811,8 @@ def doHierarchyView(form, config):
     protocol = 'http'
     if query == 'taxonomy':
         link = protocol + '://' + hostname + port + '/collectionspace/ui/' + institution + '/html/taxon.html?csid=%s'
-    elif query == 'places':
-        link = protocol + '://' + hostname + port + '/collectionspace/ui/' + institution + '/html/place.html?csid=%s'
     else:
-        link = protocol + '://' + hostname + port + '/collectionspace/ui/' + institution + '/html/concept.html?csid=%s&vocab=' + query
+        link = protocol + '://' + hostname + port + '/collectionspace/ui/' + institution + ('/html/%s.html?csid=%s' % (query, '%s'))
     for row in res:
         prettyName = row[0].replace('"', "'")
         if len(prettyName) > 0 and prettyName[0] == '@':
@@ -2218,7 +2219,7 @@ def updateKeyInfo(fieldset, updateItems, config, form):
             continue
         listSuffix = 'List'
         extra = ''
-        if relationType in ['assocPeople', 'pahmaAltNum', 'pahmaFieldCollectionDate', 'material', 'objectProductionPerson', 'objectProductionOrganization']:
+        if relationType in ['assocPeople', 'pahmaAltNum', 'material', 'objectProductionPerson', 'objectProductionOrganization']:
             extra = 'Group'
         elif relationType in ['briefDescription', 'fieldCollector', 'responsibleDepartment', 'photo']:
             listSuffix = 's'
@@ -2312,10 +2313,10 @@ def updateKeyInfo(fieldset, updateItems, config, form):
                 metadata.insert(0,new_element)
                 message += "added preferred term %s as %s.<br/>" % (updateItems[relationType],relationType)
 
-        elif relationType in ['pahmaFieldCollectionDate']:
+        elif relationType in ['objectProductionDate']:
             # we'll be replacing the entire structured date group
-            pahmaFieldCollectionDateGroup = metadata.find('.//pahmaFieldCollectionDateGroup')
-            newpahmaFieldCollectionDateGroup = etree.Element('pahmaFieldCollectionDateGroup')
+            pahmaFieldCollectionDateGroup = metadata.find('.//objectProductionDateGroup')
+            newpahmaFieldCollectionDateGroup = etree.Element('objectProductionDateGroup')
             new_element = etree.Element('dateDisplayDate')
             new_element.text = updateItems[relationType]
             newpahmaFieldCollectionDateGroup.insert(0,new_element)

@@ -17,7 +17,7 @@ OMCADATA = {
                  ('Production Person', 'objectProductionPerson', 'pc', 12, 'person', 'persons_common'),
                  ('Production Organization', 'objectProductionOrganization', 'or', 13, 'organization',
                   'organizations_common'),
-                 ('Production Date', 'objectProductionDateGroup', 'pdt', 15, '', '')],
+                 ('Production Date', 'objectProductionDate', 'pdt', 15, '', '')],
     'specimen': [('Museum #', 'objnum', 'onn', 2, 'concept', 'concepts_common'),
                  ('DH name', 'dhname', 'ta', 10, 'taxon', 'taxon_common'),
                  ('Field collection date', 'colldate', 'cod', 4, '', ''),
@@ -532,12 +532,13 @@ def getHierarchies(form):
     selected = form.get('authority')
 
     authoritylist = [
-        ("Concept", "Concept"),
-        ("Place", "Place"),
+        ("Concept", "concept"),
+        ("Place", "place"),
+        ("Organization", "organization"),
         ("Taxon", "taxonomy"),
-        ("Local Storage Location", "Location"),
-        ("Offsite Storage Locations", "Location"),
-        ("Organization", "Organization")
+        #("Local Storage Location", "Location"),
+        #("Offsite Storage Locations", "Location"),
+        ("Storage Location", "location"),
         # ("Ethnographic Culture", "concept"),
         # ("Places", "places"),
         # ("Archaeological Culture", "archculture"),
@@ -826,7 +827,7 @@ def getHeader(updateType, institution):
       <th>Taxon</th>
       <th>Maker</th>
       <th>Material/Technique Summary</th>
-      <th>P?</th>
+      <th></th>
     </tr>"""
     elif updateType == 'packinglistbyculture':
         return """
@@ -836,7 +837,7 @@ def getHeader(updateType, institution):
       <th>Count</th>
       <th width="150px;">Location</th>
       <th>Field Collection Place</th>
-      <th>P?</th>
+      <th></th>
     </tr>"""
     elif updateType == 'moveobject':
         return """
