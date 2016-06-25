@@ -88,9 +88,9 @@ ORDER BY locationkey,objectnumber asc
 
             """
 
-        # else:
+        else:
 
-        return """
+            return """
 SELECT distinct on (locationkey,sortableobjectnumber,h3.name)
 (case when ca.computedcrate is Null then l.termdisplayName  
      else concat(l.termdisplayName,
@@ -98,17 +98,21 @@ SELECT distinct on (locationkey,sortableobjectnumber,h3.name)
 replace(concat(l.termdisplayName,
      ': ',regexp_replace(ca.computedcrate, '^.*\\)''(.*)''$', '\\1')),' ','0') AS locationkey,
 m.locationdate,
+-- 3
 cc.objectnumber objectnumber,
 cc.numberofobjects objectCount,
+-- 5
 (case when ong.objectName is NULL then '' else regexp_replace(ong.objectName, '^.*\\)''(.*)''$', '\\1') end) objectName,
 rc.subjectcsid movementCsid,
 lc.refname movementRefname,
+-- 8
 rc.objectcsid  objectCsid,
 ''  objectRefname,
 m.id moveid,
 rc.subjectdocumenttype,
 rc.objectdocumenttype,
 cp.sortableobjectnumber sortableobjectnumber,
+-- 14
 ca.computedcrate crateRefname,
 regexp_replace(ca.computedcrate, '^.*\\)''(.*)''$', '\\1') crate
 
@@ -293,7 +297,7 @@ SELECT distinct on (computedcurrentlocation,objectnumber)
   regexp_replace(coom.ipaudit, '^.*\\)''(.*)''$', '\\1') AS ipaudit,
   coc_photos.item as photo,
   '' AS copyrightholder,
-  '' AS technique
+  regexp_replace(tg.technique, '^.*\\)''(.*)''$', '\\1') AS technique
 
 FROM loctermgroup l
 
@@ -327,6 +331,8 @@ FROM loctermgroup l
   LEFT OUTER JOIN structureddategroup opd ON (h24.id = opd.id)
   LEFT OUTER JOIN hierarchy h10 ON (h10.parentid = coc.id AND h10.pos = 0 AND h10.name = 'collectionobjects_common:fieldCollectionDateGroup')
   LEFT OUTER JOIN structureddategroup fcd ON (fcd.id = h10.id)
+  LEFT OUTER JOIN hierarchy h25 ON (h25.parentid=coc.id AND h25.primarytype='techniqueGroup' AND h25.pos = 0 )
+  LEFT OUTER JOIN techniquegroup tg ON (tg.id=h.id)
 
   LEFT OUTER JOIN collectionobjects_omca_photos coc_photos ON (coc.id = coc_photos.id AND coc_photos.pos = 0)
   LEFT OUTER JOIN collectionobjects_common_fieldcollectors coc_collectors ON (coc.id = coc_collectors.id AND coc_collectors.pos = 0)
@@ -754,7 +760,7 @@ SELECT distinct on (computedcurrentlocation,objectnumber)
   regexp_replace(coom.ipaudit, '^.*\\)''(.*)''$', '\\1') AS ipaudit,
   coc_photos.item as photo,
   '' AS copyrightholder,
-  '' AS technique
+  regexp_replace(tg.technique, '^.*\\)''(.*)''$', '\\1') AS technique
 
 FROM groups_common gc
 
@@ -782,6 +788,8 @@ FROM groups_common gc
   LEFT OUTER JOIN structureddategroup opd ON (h24.id = opd.id)
   LEFT OUTER JOIN hierarchy h10 ON (h10.parentid = coc.id AND h10.pos = 0 AND h10.name = 'collectionobjects_common:fieldCollectionDateGroup')
   LEFT OUTER JOIN structureddategroup fcd ON (fcd.id = h10.id)
+  LEFT OUTER JOIN hierarchy h25 ON (h25.parentid=coc.id AND h25.primarytype='techniqueGroup' AND h25.pos = 0)
+  LEFT OUTER JOIN techniquegroup tg ON (tg.id=h25.id)
 
   LEFT OUTER JOIN collectionobjects_omca_photos coc_photos ON (coc.id = coc_photos.id AND coc_photos.pos = 0)
   LEFT OUTER JOIN collectionobjects_common_fieldcollectors coc_collectors ON (coc.id = coc_collectors.id AND coc_collectors.pos = 0)
@@ -859,7 +867,7 @@ SELECT
   regexp_replace(coom.ipaudit, '^.*\\)''(.*)''$', '\\1') AS ipaudit,
   coc_photos.item as photo,
   '' AS copyrightholder,
-  '' AS technique
+  regexp_replace(tg.technique, '^.*\\)''(.*)''$', '\\1') AS technique
 
 FROM collectionobjects_omca coom
   left outer join collectionobjects_common coc on (coom.id=coc.id)
@@ -882,6 +890,8 @@ FROM collectionobjects_omca coom
   LEFT OUTER JOIN structureddategroup opd ON (h24.id = opd.id)
   LEFT OUTER JOIN hierarchy h10 ON (h10.parentid = coc.id AND h10.pos = 0 AND h10.name = 'collectionobjects_common:fieldCollectionDateGroup')
   LEFT OUTER JOIN structureddategroup fcd ON (fcd.id = h10.id)
+  LEFT OUTER JOIN hierarchy h25 ON (h25.parentid=coc.id AND h25.primarytype='techniqueGroup' AND h25.pos = 0 )
+  LEFT OUTER JOIN techniquegroup tg ON (tg.id=h.id)
 
   LEFT OUTER JOIN collectionobjects_omca_photos coc_photos ON (coc.id = coc_photos.id AND coc_photos.pos = 0)
   LEFT OUTER JOIN collectionobjects_common_fieldcollectors coc_collectors ON (coc.id = coc_collectors.id AND coc_collectors.pos = 0)

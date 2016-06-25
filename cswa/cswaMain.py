@@ -66,6 +66,7 @@ try:
             if   updateType == 'packinglist':  doPackingList(form,config)
             elif updateType == 'movecrate':    doUpdateLocations(form,config)
             elif updateType == 'powermove':    doUpdateLocations(form,config)
+            elif updateType == 'grpmove':      doUpdateLocations(form,config)
             elif updateType == 'barcodeprint': doBarCodes(form,config)
             elif updateType == 'inventory':    doUpdateLocations(form,config)
             elif updateType == 'moveobject':   doUpdateLocations(form,config)
@@ -94,6 +95,7 @@ try:
         elif action == "Search":
             if   updateType == 'packinglist':  doLocationSearch(form,config,'nolist')
             elif updateType == 'movecrate':    doCheckMove(form,config)
+            elif updateType == 'grpmove':      doCheckGroupMove(form,config)
             elif updateType == 'powermove':    doCheckPowerMove(form,config)
             elif updateType == 'barcodeprint':
                 if form.get('ob.objno1'):

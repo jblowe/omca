@@ -509,7 +509,6 @@ def doGroupSearch(form, config, displaytype):
     institution = config.get('info','institution')
     updateactionlabel = config.get('info', 'updateactionlabel')
 
-
     try:
         sys.stderr.write('group: %s\n' % form.get("gr.group"))
         rows = cswaDB.getgrouplist(form.get("gr.group"), 5000, config)
@@ -517,7 +516,7 @@ def doGroupSearch(form, config, displaytype):
     except:
         sys.stderr.write('group: %s\n' % form.get("gr.group"))
         raise
-    [sys.stderr.write('group member : %s\n' % x[3]) for x in rows]
+    [sys.stderr.write('group member : %s\n' % x[2]) for x in rows]
 
     if len(rows) == 0:
         print '<span style="color:red;">No objects in this group! Sorry!</span>'
@@ -698,6 +697,63 @@ def doCheckMove(form, config):
     print "\n</table><hr/>"
     print '<input type="hidden" name="toRefname" value="%s">' % toRefname
     print '<input type="hidden" name="toLocAndCrate" value="%s: %s">' % (toLocation, crate)
+
+
+def doCheckGroupMove(form, config):
+    updateactionlabel = config.get('info', 'updateactionlabel')
+    #updateType = config.get('info', 'updatetype')
+    institution = config.get('info', 'institution')
+
+
+    if form.get('gr.group') == '':
+        print '<h3>Please enter group identifier!</h3><hr>'
+        return
+
+    toLocation = verifyLocation(form.get("lo.location"), form, config)
+    toRefname = cswaDB.getrefname('locations_common', toLocation, config)
+
+    updateType = 'powermove'
+    institution = config.get('info','institution')
+    updateactionlabel = config.get('info', 'updateactionlabel')
+
+    try:
+        objects = cswaDB.getgrouplist(form.get("gr.group"), 5000, config)
+        #objects = cswaDB.getlocations(form.get("lo.location"), '', 1, config, 'inventory', institution)
+    except:
+        raise
+
+    locations = []
+    if len(objects) == 0:
+        print '<span style="color:red;">No objects found for this group! Sorry!</span>'
+        return
+
+    totalobjects = 0
+
+    # sys.stderr.write('%-13s:: %s :: %-18s:: %s\n' % (updateType, crate, 'objects', len(objects)))
+    for r in objects:
+        rr = [None] * 15
+        rr[3] = r[2]
+        rr[5] = r[1]
+        rr[6] = ''
+        rr[7] = ''
+        rr[8] = r[8]
+        rr[14] = ''
+        sys.stderr.write('%-13s:: %-18s:: %s\n' % (updateType,  r[3],  r[0]))
+        totalobjects += 1
+        locations.append(formatRow({'rowtype': 'powermove', 'data': rr}, form, config))
+
+    print cswaConstants.getHeader('powermove', institution)
+    print '\n'.join(locations)
+
+    print """<tr><td align="center" colspan="6"><hr><td></tr>"""
+    print """<tr><td align="center" colspan="3">"""
+    msg = "Caution: clicking on the button at left will move <b>ALL %s objects</b> shown for this group!" % totalobjects
+    print '''<input type="submit" class="save" value="''' + updateactionlabel + '''" name="action"></td><td  colspan="3">%s</td></tr>''' % msg
+
+    print "\n</table><hr/>"
+    print '<input type="hidden" name="toRefname" value="%s">' % toRefname
+    print '<input type="hidden" name="toLocAndCrate" value="%s">' % (toLocation)
+    print '<input type="hidden" name="toCrate" value="%s">' % ''
 
 
 def doCheckPowerMove(form, config):
@@ -1246,6 +1302,7 @@ def doNothing(form, config):
 def doUpdateLocations(form, config):
 
     institution = config.get('info','institution')
+    updateType = config.get('info', 'updatetype')
     #notlocated = config.get('info','notlocated')
     if institution == 'bampfa':
         notlocated = "urn:cspace:bampfa.cspace.berkeley.edu:locationauthorities:name(location):item:name(x781)'Not Located'"
@@ -1253,7 +1310,7 @@ def doUpdateLocations(form, config):
         notlocated = "urn:cspace:museumca.org:locationauthorities:name(location):item:name(t15121)'unlocated'"
     else:
         notlocated = "urn:cspace:bampfa.cspace.berkeley.edu:locationauthorities:name(location):item:name(sl23524)'Not located'"
-    updateValues = [form.get(i) for i in form if 'r.' in i]
+    updateValues = [form.get(i) for i in form if 'r.' in i and not 'gr.' in i]
 
     # if reason is a refname (e.g. bampfa), extract just the displayname
     reason = form.get('reason')
@@ -1289,18 +1346,17 @@ def doUpdateLocations(form, config):
         # ugh...this logic is in fact rather complicated...
         msg = 'location updated.'
         # if we are moving a crate, use the value of the toLocation's refname, which is stored hidden on the form.
-        if config.get('info', 'updatetype') == 'movecrate':
+        if updateType == 'movecrate':
             updateItems['locationRefname'] = form.get('toRefname')
             msg = 'crate moved to %s.' % form.get('toLocAndCrate')
 
-        if config.get('info', 'updatetype') in ['moveobject', 'powermove']:
+        if updateType in ['moveobject', 'powermove', 'grpmove']:
             if updateItems['objectStatus'] == 'do not move':
                 msg = "not moved."
             else:
                 updateItems['locationRefname'] = form.get('toRefname')
                 updateItems['crate'] = form.get('toCrate')
                 msg = 'object moved to %s.' % form.get('toLocAndCrate')
-
 
 
         if updateItems['objectStatus'] == 'not found':
@@ -3290,6 +3346,22 @@ def starthtml(form, config):
           <th><span class="cell">contact:</span></th><th>''' + handlers + '''</th></tr>'''
 
 
+    elif updateType == 'grpmove':
+        grpinfo = str(form.get("gr.group")) if form.get("gr.group") else ''
+        location = str(form.get("lo.location")) if form.get("lo.location") else ''
+
+        handlers, selected = cswaConstants.getHandlers(form, institution)
+        reasons, selected = cswaConstants.getReasons(form, institution)
+
+
+        otherfields = '''
+            <tr><th><span class="cell">group:</span></th>
+            <th><input id="gr.group" class="cell" type="text" size="40" name="gr.group" value="''' + grpinfo + '''" class="xspan"></th>
+            <th><span class="cell">to location:</span></th>
+            <th><input id="lo.location" class="cell" type="text" size="40" name="lo.location" value="''' + location + '''" class="xspan"></th></tr>
+            <tr><th><span class="cell">reason:</span></th><th>''' + reasons + '''</th>
+            <th><span class="cell">contact:</span></th><th>''' + handlers + '''</th></tr>'''
+
     elif updateType == 'powermove':
         location1 = str(form.get("lo.location1")) if form.get("lo.location1") else ''
         location2 = str(form.get("lo.location2")) if form.get("lo.location2") else ''
@@ -3453,8 +3525,8 @@ def starthtml(form, config):
     else:
         otherfields = '''
           <th><span class="cell">problem:</span></th>
-          <th>internal error: updateType not specified</th></tr>
-          <tr><th/><th/><th/><th/></tr>'''
+          <th>internal error: updateType not specified or supported: %s</th></tr>
+          <tr><th/><th/><th/><th/></tr>''' % updateType
 
     return '''Content-type: text/html; charset=utf-8
 

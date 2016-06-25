@@ -152,8 +152,8 @@ def infoHeaders(fieldSet):
             header += '</tr>'
             return header
 
-    else:
-        return "<table><tr>DEBUG</tr>"
+    #else:
+    #    return "<table><tr>DEBUG</tr>"
 
 
 def getProhibitedLocations(config):
