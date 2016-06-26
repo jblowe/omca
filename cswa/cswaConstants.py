@@ -10,24 +10,23 @@ OMCADATA = {
     'mattech': [('Museum #', 'objnum', 'onn', 2, '', ''),
                 ('Object name', 'objectName', 'on', 1, 'concept', 'concepts_common'),
                 ('Material', 'material', 'ma', 11, 'concept', 'concepts_common'),
-                ('Technique', 'tech', 'tc', 21, 'concept', 'concepts_common'),
+                ('Technique', 'technique', 'tnq', 21, '', ''),
                 ('Material/Technique Summary', 'argusDescription', 'ard', 9, 'argusDescription', '')],
     'nameprod': [('Museum #', 'objnum', 'onn', 2, '', ''),
                  ('Object name', 'objectName', 'on', 1, 'concept', 'concepts_common'),
                  ('Production Person', 'objectProductionPerson', 'pc', 12, 'person', 'persons_common'),
-                 ('Production Organization', 'objectProductionOrganization', 'or', 13, 'organization',
-                  'organizations_common'),
+                 ('Production Organization', 'objectProductionOrganization', 'or', 13, 'organization', 'organizations_common'),
                  ('Production Date', 'objectProductionDate', 'pdt', 15, '', '')],
     'specimen': [('Museum #', 'objnum', 'onn', 2, 'concept', 'concepts_common'),
-                 ('DH name', 'dhname', 'ta', 10, 'taxon', 'taxon_common'),
-                 ('Field collection date', 'colldate', 'cod', 4, '', ''),
-                 ('Field collection place', 'fieldCollectionPlace', 'pl', 3, 'places_common', 'place'),
+                 ('DH name', 'determinationHistory', 'ta', 10, 'taxon', 'taxon_common'),
+                 ('Field collection date', 'fieldCollectionDateGroup', 'cod', 4, '', ''),
+                 ('Field collection place', 'fieldCollectionPlace', 'px', 3, 'place', 'places_common'),
                  ('Field collector', 'fieldCollector', 'pc', 5, 'collectionobjects_common_fieldcollectors', '')],
     'rights': [('Museum #', 'objnum', 'onn', 2, '', ''),
                ('Object name', 'objectName', 'on', 1, 'concept', 'concepts_common'),
-               ('IP Audit', 'ipAudit', 'ip', 18, 'item', 'ipAudit'),
+               ('IP Audit', 'ipAudit', 'ipa', 18, 'item', 'ipAudit'),
                ('Do not publish on web', 'doNotPublishOnWeb', 'dnp', 16, '', ''),
-               ('Copyright Holder', 'holder', 'pc', 20, 'person', 'persons_common'),
+               ('Copyright Holder', 'copyrightHolder', 'pc', 20, 'person', 'persons_common'),
                ('Photo', 'photo', 'pho', 19, '', '')]
 }
 
@@ -190,9 +189,10 @@ def getDropdown(listname, csid, dropdownlist, selected):
     for dd in dropdownlist:
         # print dd
         dropdownOption = """<option value="%s">%s</option>""" % (dd[1], dd[0])
-        sys.stderr.write('v=%s t=%s s=%s ' % (dd[1],dd[0],selected))
-        if selected and str(selected) == dd[0]:
+        sys.stderr.write('v=%s t=%s s=%s \n' % (dd[1],dd[0],selected))
+        if str(selected) in dd[1]:
             dropdownOption = dropdownOption.replace('option ', 'option selected ')
+            sys.stderr.write(dropdownOption + '\n')
         dropdown += dropdownOption
 
     dropdown += '\n      </select>'

@@ -329,6 +329,8 @@ def doObjectSearch(form, config, displaytype):
     except:
         raise
 
+    sys.stderr.write('object range: %s\n' % len(rows))
+
     if len(rows) == 0:
         print '<span style="color:red;">No objects in this range! Sorry!</span>'
     else:
@@ -350,7 +352,7 @@ def doObjectSearch(form, config, displaytype):
         if updateType == 'moveobject':
             print '<input type="hidden" name="toRefname" value="%s">' % toRefname
             print '<input type="hidden" name="toCrate" value="%s">' % toCrate
-            print '<input type="hidden" name="toLocAndCrate" value="%s: %s">' % (toLocation, crate)
+            print '<input type="hidden" name="toLocAndCrate" value="%s">' % (toLocation)
 
 
 
@@ -367,6 +369,9 @@ def doOjectRangeSearch(form, config, displaytype=''):
             objs = cswaDB.getobjlist('range', form.get("ob.objno1"), form.get("ob.objno1"), 1000, config)
     except:
         raise
+
+    sys.stderr.write('object range: %s\n' % len(objs))
+
     print """
     <table><tr>
     <th>Object</th>
@@ -712,6 +717,10 @@ def doCheckGroupMove(form, config):
     toLocation = verifyLocation(form.get("lo.location"), form, config)
     toRefname = cswaDB.getrefname('locations_common', toLocation, config)
 
+    if toLocation is None:
+        print '<h3>Please enter a valid storage location!</h3><hr>'
+        return
+
     updateType = 'powermove'
     institution = config.get('info','institution')
     updateactionlabel = config.get('info', 'updateactionlabel')
@@ -743,8 +752,8 @@ def doCheckGroupMove(form, config):
         locations.append(formatRow({'rowtype': 'powermove', 'data': rr}, form, config))
 
     print cswaConstants.getHeader('powermove', institution)
+    print """<tr><td align="center" colspan="6"><hr><td></tr>"""
     print '\n'.join(locations)
-
     print """<tr><td align="center" colspan="6"><hr><td></tr>"""
     print """<tr><td align="center" colspan="3">"""
     msg = "Caution: clicking on the button at left will move <b>ALL %s objects</b> shown for this group!" % totalobjects
@@ -909,9 +918,9 @@ def doBulkEditForm(form, config, displaytype):
 
     try:
         if form.get('ob.objno2'):
-            objs = cswaDB.getobjlist('range', form.get("ob.objno1"), form.get("ob.objno2"), 3000, config)
+            objs = cswaDB.getobjlist('range', form.get("ob.objno1"), form.get("ob.objno2"), 1000, config)
         else:
-            objs = cswaDB.getobjlist('range', form.get("ob.objno1"), form.get("ob.objno1"), 3000, config)
+            objs = cswaDB.getobjlist('range', form.get("ob.objno1"), form.get("ob.objno1"), 1000, config)
     except:
         objs = []
 
@@ -2269,38 +2278,45 @@ def updateKeyInfo(fieldset, updateItems, config, form):
     root = etree.fromstring(content)
     # add the user's changes to the XML
     for relationType in fieldList:
-        #sys.stderr.write('update: %s = %s\n' % (relationType, updateItems[relationType]))
+        sys.stderr.write('updating: %s = %s\n' % (relationType, updateItems[relationType]))
         # this app does not insert empty values into anything!
         if not relationType in updateItems.keys() or updateItems[relationType] == '':
             continue
         listSuffix = 'List'
         extra = ''
-        if relationType in ['assocPeople', 'pahmaAltNum', 'material', 'objectProductionPerson', 'objectProductionOrganization']:
+        if relationType in ['assocPeople', 'pahmaAltNum', 'material', 'technique', 'objectProductionPerson', 'objectProductionOrganization', 'objectProductionDate', 'determinationHistory']:
             extra = 'Group'
         elif relationType in ['briefDescription', 'fieldCollector', 'responsibleDepartment', 'photo']:
             listSuffix = 's'
-        elif relationType in ['collection', 'pahmaFieldLocVerbatim', 'ipAudit', 'doNotPublishOnWeb', 'argusDescription']:
+        elif relationType in ['collection', 'pahmaFieldLocVerbatim', 'ipAudit', 'doNotPublishOnWeb', 'argusDescription', 'fieldCollectionPlace', 'fieldCollectionDateGroup', 'copyrightHolder']:
             listSuffix = ''
         else:
             pass
-            #print ">>> ",'.//'+relationType+extra+'List'
-        #sys.stderr.write('tag2: %s\n' % (relationType + extra + listSuffix))
+        #print ">>> ",'.//'+relationType+extra+'List'
+        sys.stderr.write('looking for: %s\n' % (relationType + extra + listSuffix))
         metadata = root.findall('.//' + relationType + extra + listSuffix)
         try:
             metadata = metadata[0] # there had better be only one!
+            sys.stderr.write('got one!\n')
         except:
             # hmmm ... we didn't find this element in the record. Make a note a carry on!
             # message += 'No "' + relationType + extra + listSuffix + '" element found to update.'
-            continue
+            sys.stderr.write('did not find: %s\n' % (relationType + extra + listSuffix))
         #print(etree.tostring(metadata))
         #print ">>> ",relationType,':',updateItems[relationType]
-        if relationType in ['assocPeople', 'objectName', 'pahmaAltNum', 'material', 'objectProductionPerson', 'objectProductionOrganization']:
+        if relationType in ['assocPeople', 'objectName', 'pahmaAltNum', 'material', 'technique', 'objectProductionPerson', 'objectProductionOrganization', 'determinationHistory']:
             #group = metadata.findall('.//'+relationType+'Group')
             #sys.stderr.write('  updateItem: ' + relationType + ':: ' + updateItems[relationType] + '\n' )
-            Entries = metadata.findall('.//' + relationType)
+            if relationType == 'determinationHistory':
+                Entries = metadata.findall('.//dhName')
+            else:
+                Entries = metadata.findall('.//' + relationType)
             if not alreadyExists(updateItems[relationType], Entries):
                 newElement = etree.Element(relationType + 'Group')
-                leafElement = etree.Element(relationType)
+                if relationType == 'determinationHistory':
+                    leafElement = etree.Element('dhName')
+                else:
+                    leafElement = etree.Element(relationType)
                 leafElement.text = updateItems[relationType]
                 newElement.append(leafElement)
                 if relationType in ['assocPeople', 'pahmaAltNum']:
@@ -2328,7 +2344,12 @@ def updateKeyInfo(fieldset, updateItems, config, form):
                     # exists, but not preferred. make it the preferred: remove it from where it is, insert it as 1st
                     for child in metadata:
                         if child.tag == relationType + 'Group':
-                            checkval = child.find('.//' + relationType)
+                            sys.stderr.write('child.tag: %s\n' % child.tag)
+                            if relationType == 'determinationHistory':
+                                checkval = child.find('.//dhName')
+                            else:
+                                checkval = child.find('.//' + relationType)
+                            sys.stderr.write('checkval: %s\n' % checkval.text)
                             if checkval.text == updateItems[relationType]:
                                 savechild = child
                                 metadata.remove(child)
@@ -2367,18 +2388,54 @@ def updateKeyInfo(fieldset, updateItems, config, form):
                 new_element = etree.Element(relationType)
                 new_element.text = updateItems[relationType]
                 metadata.insert(0,new_element)
-                message += "added preferred term %s as %s.<br/>" % (updateItems[relationType],relationType)
+                #message += "added preferred term %s as %s.<br/>" % (updateItems[relationType],relationType)
 
-        elif relationType in ['objectProductionDate']:
-            # we'll be replacing the entire structured date group
-            pahmaFieldCollectionDateGroup = metadata.find('.//objectProductionDateGroup')
-            newpahmaFieldCollectionDateGroup = etree.Element('objectProductionDateGroup')
+
+        elif relationType == 'fieldCollectionDateGroup':
+            # fieldCollectionDateGroup must be replaced completely...
+            sys.stderr.write("replacing %s in %s.\n" % (updateItems[relationType], relationType))
+            for c in metadata:
+                metadata.remove(c)
             new_element = etree.Element('dateDisplayDate')
             new_element.text = updateItems[relationType]
-            newpahmaFieldCollectionDateGroup.insert(0,new_element)
-            if pahmaFieldCollectionDateGroup is not None:
-                metadata.remove(pahmaFieldCollectionDateGroup)
-            metadata.insert(0,newpahmaFieldCollectionDateGroup)
+            metadata.append(new_element)
+            sys.stderr.write(etree.tostring(metadata))
+
+        # handle dates, they are special
+        elif 'Date' in relationType:
+            sys.stderr.write("checking for value %s in %s.\n" % (updateItems[relationType], relationType))
+            Entries = metadata.findall('.//dateDisplayDate')
+            alreadyexists = False
+            for child in Entries:
+                sys.stderr.write(' c: %s = %s\n' % (child.tag, child.text))
+                if child.text == updateItems[relationType]:
+                    alreadyexists = True
+            if not alreadyexists:
+                newDateGroup = etree.Element(relationType + 'Group')
+                new_element = etree.Element('dateDisplayDate')
+                new_element.text = updateItems[relationType]
+                newDateGroup.insert(0,new_element)
+                sys.stderr.write("adding %s as %s.<br/>" % (updateItems[relationType], relationType))
+                metadata.insert(0, newDateGroup)
+            else:
+                pass
+                sys.stderr.write("%s already exists in %s, not updated.<br/>" % (updateItems[relationType], relationType))
+
+        elif relationType in 'ipAudit doNotPublishOnWeb argusDescription copyrightHolder fieldCollectionPlace'.split(' '):
+            sys.stderr.write("handling %s \n" % relationType)
+            element = relationType
+            if element in updateItems:
+                e = root.find('.//%s' % element)
+                if e is None:
+                    message += "&lt;%s&gt; not found, not inserted <br/>" % element
+                    sys.stderr.write("%s not found, not inserted\n") % element
+                    # get rid of the existing one
+                    #collectionobjects_omca.remove(e)
+                else:
+                    #message += "'%s' added as &lt;%s&gt;.<br/>" % (updateItems[element], element)
+                    e.text = updateItems[element]
+                    #message += "'%s' updated as &lt;%s&gt;.<br/>" % (updateItems[element], element)
+                    sys.stderr.write('updated ' + etree.tostring(e) + "\n")
 
         else:
             # check if value is already present. if so, skip
@@ -2392,41 +2449,6 @@ def updateKeyInfo(fieldset, updateItems, config, form):
             newElement.text = updateItems[relationType]
             metadata.insert(0, newElement)
             #print(etree.tostring(metadata, pretty_print=True))
-
-    for element in 'ipAudit doNotPublishOnWeb argusDescription'.split(' '):
-        if element in updateItems:
-            e = root.find('.//%s' % element)
-            collectionobjects_common = root.find(
-            './/{http://collectionspace.org/services/collectionobject/local/omca}collectionobjects_omca')
-            if e is None:
-                e = etree.Element(element)
-                e.text = updateItems[element]
-                collectionobjects_common.insert(0, e)
-                message += "'%s' added as &lt;%s&gt;.<br/>" % (updateItems[element], element)
-            else:
-                e.text = updateItems[element]
-                message += "'%s' updated as &lt;%s&gt;.<br/>" % (updateItems[element], element)
-            sys.stderr.write(etree.tostring(e) + "\n")
-
-    if 'pahmaFieldLocVerbatim' in updateItems:
-        pahmaFieldLocVerbatim = root.find('.//pahmaFieldLocVerbatim')
-        if pahmaFieldLocVerbatim is None:
-            pahmaFieldLocVerbatim = etree.Element('pahmaFieldLocVerbatim')
-            pahmaFieldLocVerbatimobjects_common = root.find(
-                './/{http://collectionspace.org/services/collectionobject/local/pahma}collectionobjects_pahma')
-            pahmaFieldLocVerbatimobjects_common.insert(0, pahmaFieldLocVerbatim)
-            message += " %s added as &lt;%s&gt;.<br/>" % (updateItems['pahmaFieldLocVerbatim'], 'pahmaFieldLocVerbatim')
-        pahmaFieldLocVerbatim.text = updateItems['pahmaFieldLocVerbatim']
-
-    collection = root.find('.//collection')
-    if 'collection' in updateItems:
-        if collection is None:
-            collection = etree.Element('collection')
-            collectionobjects_common = root.find(
-                './/{http://collectionspace.org/services/collectionobject}collectionobjects_common')
-            collectionobjects_common.insert(0, collection)
-            message += " %s added as &lt;%s&gt;.<br/>" % (updateItems['collection'], 'collection')
-        collection.text = updateItems['collection']
 
     #print(etree.tostring(root))
 
@@ -2698,6 +2720,7 @@ def formatInfoReviewRow(form, link, rr, link2):
                     rows += '<td class="zcell">' + getDropdown(x[2], rr[8], ipAuditValues(), rr[18]) + '</td>'
                 elif 'doNotPublishOnWeb' == x[1]:
                     rows += '<td class="zcell">' + getDropdown(x[2], rr[8], [('Do not publish','true'),('Publish','false')], rr[16]) + '</td>'
+                    sys.stderr.write('dnp: %s\n' % (rr[16]))
                 else:
                     rows += """<td class="zcell"><input class="xspan" type="text" name="%s.%s" value="%s"></td>""" % (x[2], rr[8], cgi.escape(rr[x[3]], True))
             return rows

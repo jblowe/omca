@@ -296,8 +296,8 @@ SELECT distinct on (computedcurrentlocation,objectnumber)
   regexp_replace(coc.collection, '^.*\\)''(.*)''$', '\\1') AS collection,
   regexp_replace(coom.ipaudit, '^.*\\)''(.*)''$', '\\1') AS ipaudit,
   coc_photos.item as photo,
-  '' AS copyrightholder,
-  regexp_replace(tg.technique, '^.*\\)''(.*)''$', '\\1') AS technique
+  regexp_replace(coom.copyrightholder, '^.*\\)''(.*)''$', '\\1') AS copyrightholder,
+  tg.technique AS technique
 
 FROM loctermgroup l
 
@@ -332,7 +332,7 @@ FROM loctermgroup l
   LEFT OUTER JOIN hierarchy h10 ON (h10.parentid = coc.id AND h10.pos = 0 AND h10.name = 'collectionobjects_common:fieldCollectionDateGroup')
   LEFT OUTER JOIN structureddategroup fcd ON (fcd.id = h10.id)
   LEFT OUTER JOIN hierarchy h25 ON (h25.parentid=coc.id AND h25.primarytype='techniqueGroup' AND h25.pos = 0 )
-  LEFT OUTER JOIN techniquegroup tg ON (tg.id=h.id)
+  LEFT OUTER JOIN techniquegroup tg ON (tg.id=h25.id)
 
   LEFT OUTER JOIN collectionobjects_omca_photos coc_photos ON (coc.id = coc_photos.id AND coc_photos.pos = 0)
   LEFT OUTER JOIN collectionobjects_common_fieldcollectors coc_collectors ON (coc.id = coc_collectors.id AND coc_collectors.pos = 0)
@@ -666,7 +666,7 @@ def getlistofobjects(searchType, object1, object2, num2ret, config):
     if int(num2ret) > 1000: num2ret = 1000
     if int(num2ret) < 1:    num2ret = 1
 
-    #sys.stderr.write('getlistofobjects1: input: %s to %s\n' % (object1, object2))
+    sys.stderr.write('getlistofobjects1: input: %s to %s\n' % (object1, object2))
 
     try:
         objects.execute(query1 % ('>', object1, 'asc'))
@@ -676,7 +676,7 @@ def getlistofobjects(searchType, object1, object2, num2ret, config):
     except:
         return []
 
-    #sys.stderr.write('getlistofobjects2: retrieved: %s to %s\n' % (object1, object2))
+    sys.stderr.write('getlistofobjects2: retrieved: %s to %s\n' % (object1, object2))
 
     # 'set' means 'next num2ret objects', otherwise prefix match
     if searchType == 'set':
@@ -759,8 +759,8 @@ SELECT distinct on (computedcurrentlocation,objectnumber)
   regexp_replace(coc.collection, '^.*\\)''(.*)''$', '\\1') AS collection,
   regexp_replace(coom.ipaudit, '^.*\\)''(.*)''$', '\\1') AS ipaudit,
   coc_photos.item as photo,
-  '' AS copyrightholder,
-  regexp_replace(tg.technique, '^.*\\)''(.*)''$', '\\1') AS technique
+  regexp_replace(coom.copyrightholder, '^.*\\)''(.*)''$', '\\1') AS copyrightholder,
+  tg.technique AS technique
 
 FROM groups_common gc
 
@@ -842,6 +842,8 @@ WHERE
     elif searchType == 'range':
         whereclause = "WHERE sortableobjectnumber >= '" + sortkey1 + "' AND sortableobjectnumber <= '" + sortkey2 + "'"
 
+    sys.stderr.write('getobjlist where: %s\n' % whereclause)
+
     if institution == 'omca':
         getobjects = """
 SELECT
@@ -866,8 +868,8 @@ SELECT
   regexp_replace(coc.collection, '^.*\\)''(.*)''$', '\\1') AS collection,
   regexp_replace(coom.ipaudit, '^.*\\)''(.*)''$', '\\1') AS ipaudit,
   coc_photos.item as photo,
-  '' AS copyrightholder,
-  regexp_replace(tg.technique, '^.*\\)''(.*)''$', '\\1') AS technique
+  regexp_replace(coom.copyrightholder, '^.*\\)''(.*)''$', '\\1') AS copyrightholder,
+  tg.technique AS technique
 
 FROM collectionobjects_omca coom
   left outer join collectionobjects_common coc on (coom.id=coc.id)
@@ -891,7 +893,7 @@ FROM collectionobjects_omca coom
   LEFT OUTER JOIN hierarchy h10 ON (h10.parentid = coc.id AND h10.pos = 0 AND h10.name = 'collectionobjects_common:fieldCollectionDateGroup')
   LEFT OUTER JOIN structureddategroup fcd ON (fcd.id = h10.id)
   LEFT OUTER JOIN hierarchy h25 ON (h25.parentid=coc.id AND h25.primarytype='techniqueGroup' AND h25.pos = 0 )
-  LEFT OUTER JOIN techniquegroup tg ON (tg.id=h.id)
+  LEFT OUTER JOIN techniquegroup tg ON (tg.id=h25.id)
 
   LEFT OUTER JOIN collectionobjects_omca_photos coc_photos ON (coc.id = coc_photos.id AND coc_photos.pos = 0)
   LEFT OUTER JOIN collectionobjects_common_fieldcollectors coc_collectors ON (coc.id = coc_collectors.id AND coc_collectors.pos = 0)
