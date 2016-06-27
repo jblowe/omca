@@ -28,25 +28,29 @@ div { padding-right: 20px; padding-bottom: 10px; float: left; }
             <p>The webapps are a suite of browser-based tools which access the CollectionSpace database to provide
               critical functionality not provided by the "regular" interface.</p>
             <p>In general, the webapps operate on <i>sets of records</i>, a set
-              being defined as something like "all objects in a range of Museum numbers", e.g.,
-              "2010.54.1" to "2010.54.10", or "all objects in a location or sequence of
-              locations" (e.g. "W3.10.b.2.13" to "W3.10.b.2.14"), or "all the images in this folder on my computer". Typical operations performed are updating the data for sets of records, or creating move or
-              inventory actions for them.
+	    being defined as something like "all objects in a range of Museum Numbers", e.g.,
+	    "2010.54.1" to "2010.54.10", or "all objects in a location or sequence of
+	    locations" (e.g. "W3.10.b.2.13" to "W3.10.b.2.14"), "all
+	    objects in this group", or "all the images in this folder on my computer".
+	    Typical operations performed are updating the data for sets of objects, or creating move or
+	    inventory actions for such sets.
             </p>
             <p>The overall UX ("user experience") is intended to be straightforward -- the forms contain only a few input fields,
-              no more than a couple of buttons, and involve (usually) a short two- or thre- step interaction: 1) fill in search values,
-              click Search, 2) verify response, fill in data for individual items, and 3) click Update and wait patiently for
-              results. (NB: the CollectionSpace backend (i.e. database system) is very slow, and this is the limiting factor
-              for the speed of the webapps.)
+	    no more than a couple of buttons, and involve (usually)
+	    a short two- or three-step interaction: 1) fill in search values for
+	    a set of records,
+	    click Search, 2) verify response, fill in data for individual items, and 3) click Update and wait patiently for
+	    results. (NB: the CollectionSpace backend (i.e. database system) is very slow, and this is the limiting factor
+	    for the speed of the webapps.)
             </p>
             <p>Besides move and data update operations, a few other webapps provide a means to view database content
               (e.g., authority hierarchies) in useful ways.</p>
 
       <p>There are three classes of webapps in use at OMCA:</p>
       <ol>
-        <li><b>Procedural webapps</b>, which move objects and crates to other locations; and support upload media. That is, they
-        create <i>procedure records</i> in CollectionSpace</li>
-        <li><b>Data update webapps</b>, which update data elements in (mostly collectionobject) records.</li>
+        <li><b>Procedural webapps</b>, which move objects to other locations; and support uploading media. That is, they mostly
+        create <i>procedure records</i> (e.g. <i>Media Handling</i> or <i>Movement</i> records) in CollectionSpace</li>
+        <li><b>Data update webapps</b>, which update data elements in (mostly) <i>collectionobject</i> records.</li>
         <li><b>Reporting webapps</b>, which return information about the collection (and do not change any data).</li>
       </ol>
           </td>
