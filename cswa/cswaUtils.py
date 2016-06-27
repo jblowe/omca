@@ -340,6 +340,14 @@ def doObjectSearch(form, config, displaytype):
         else:
             print cswaConstants.getHeader(updateType,institution)
         for r in rows:
+            if updateType == 'moveobject':
+                rr = [ str(i) for i in range(15) ]
+                rr[0] = r[0] # current location
+                rr[3] = r[2]
+                rr[4] = r[1] # object name
+                rr[5] = '' # count
+                rr[8] = r[8]
+                r = rr
             totalobjects += 1
             print formatRow({'rowtype': updateType, 'data': r}, form, config)
 
@@ -1153,7 +1161,7 @@ def setUpdateItems(form, index, fieldset, config):
                     updateItems[mySet[1]] = cswaDB.getrefname(mySet[5], form.get(mySet[2] + '.' + index), config)
                 else:
                     updateItems[mySet[1]] = form.get(mySet[2] + '.' + index)
-                sys.stderr.write('added: %s = %s\n' % (mySet[1], updateItems[mySet[1]]))
+                #sys.stderr.write('added: %s = %s\n' % (mySet[1], updateItems[mySet[1]]))
     return updateItems
 
 def doTheUpdate(CSIDs, form, config, fieldset, refNames2find):
@@ -1334,6 +1342,8 @@ def doUpdateLocations(form, config):
     numUpdated = 0
     for row, object in enumerate(updateValues):
 
+        ToLocation = form.get('toRefname')
+
         updateItems = {}
         cells = object.split('|')
         locdate = datetime.datetime.utcnow().strftime("%Y-%m-%d-%H-%M")
@@ -1347,7 +1357,7 @@ def doUpdateLocations(form, config):
         updateItems['inventoryNote'] = form.get('n.' + cells[4]) if form.get('n.' + cells[4]) else ''
         updateItems['locationDate'] = Now
         locdisplayname = re.sub(r"^urn:.*'(.*)'", r'\1', cells[2])
-        updateItems['computedMovementSummary'] =  '%s (%s)' % (locdisplayname, reason)
+        updateItems['computedMovementSummary'] =  '%s (%s)' % ('Webapp move', reason)
 
         for i in ('handlerRefName', 'reason'):
             updateItems[i] = form.get(i)
@@ -2278,7 +2288,7 @@ def updateKeyInfo(fieldset, updateItems, config, form):
     root = etree.fromstring(content)
     # add the user's changes to the XML
     for relationType in fieldList:
-        sys.stderr.write('updating: %s = %s\n' % (relationType, updateItems[relationType]))
+        #sys.stderr.write('updating: %s = %s\n' % (relationType, updateItems[relationType]))
         # this app does not insert empty values into anything!
         if not relationType in updateItems.keys() or updateItems[relationType] == '':
             continue
@@ -2293,15 +2303,16 @@ def updateKeyInfo(fieldset, updateItems, config, form):
         else:
             pass
         #print ">>> ",'.//'+relationType+extra+'List'
-        sys.stderr.write('looking for: %s\n' % (relationType + extra + listSuffix))
+        #sys.stderr.write('looking for: %s\n' % (relationType + extra + listSuffix))
         metadata = root.findall('.//' + relationType + extra + listSuffix)
         try:
             metadata = metadata[0] # there had better be only one!
-            sys.stderr.write('got one!\n')
+            #sys.stderr.write('got one!\n')
         except:
+            pass
             # hmmm ... we didn't find this element in the record. Make a note a carry on!
             # message += 'No "' + relationType + extra + listSuffix + '" element found to update.'
-            sys.stderr.write('did not find: %s\n' % (relationType + extra + listSuffix))
+            #sys.stderr.write('did not find: %s\n' % (relationType + extra + listSuffix))
         #print(etree.tostring(metadata))
         #print ">>> ",relationType,':',updateItems[relationType]
         if relationType in ['assocPeople', 'objectName', 'pahmaAltNum', 'material', 'technique', 'objectProductionPerson', 'objectProductionOrganization', 'determinationHistory']:
@@ -2344,12 +2355,12 @@ def updateKeyInfo(fieldset, updateItems, config, form):
                     # exists, but not preferred. make it the preferred: remove it from where it is, insert it as 1st
                     for child in metadata:
                         if child.tag == relationType + 'Group':
-                            sys.stderr.write('child.tag: %s\n' % child.tag)
+                            #sys.stderr.write('child.tag: %s\n' % child.tag)
                             if relationType == 'determinationHistory':
                                 checkval = child.find('.//dhName')
                             else:
                                 checkval = child.find('.//' + relationType)
-                            sys.stderr.write('checkval: %s\n' % checkval.text)
+                            #sys.stderr.write('checkval: %s\n' % checkval.text)
                             if checkval.text == updateItems[relationType]:
                                 savechild = child
                                 metadata.remove(child)
@@ -2393,21 +2404,20 @@ def updateKeyInfo(fieldset, updateItems, config, form):
 
         elif relationType == 'fieldCollectionDateGroup':
             # fieldCollectionDateGroup must be replaced completely...
-            sys.stderr.write("replacing %s in %s.\n" % (updateItems[relationType], relationType))
+            #sys.stderr.write("replacing %s in %s.\n" % (updateItems[relationType], relationType))
             for c in metadata:
-                metadata.remove(c)
-            new_element = etree.Element('dateDisplayDate')
-            new_element.text = updateItems[relationType]
-            metadata.append(new_element)
-            sys.stderr.write(etree.tostring(metadata))
+                c.text = ''
+                if c.tag == 'dateDisplayDate':
+                    c.text = updateItems[relationType]
+             #sys.stderr.write(etree.tostring(metadata) + '\n')
 
         # handle dates, they are special
         elif 'Date' in relationType:
-            sys.stderr.write("checking for value %s in %s.\n" % (updateItems[relationType], relationType))
+            #sys.stderr.write("checking for value %s in %s.\n" % (updateItems[relationType], relationType))
             Entries = metadata.findall('.//dateDisplayDate')
             alreadyexists = False
             for child in Entries:
-                sys.stderr.write(' c: %s = %s\n' % (child.tag, child.text))
+                #sys.stderr.write(' c: %s = %s\n' % (child.tag, child.text))
                 if child.text == updateItems[relationType]:
                     alreadyexists = True
             if not alreadyexists:
@@ -2415,27 +2425,33 @@ def updateKeyInfo(fieldset, updateItems, config, form):
                 new_element = etree.Element('dateDisplayDate')
                 new_element.text = updateItems[relationType]
                 newDateGroup.insert(0,new_element)
-                sys.stderr.write("adding %s as %s.<br/>" % (updateItems[relationType], relationType))
+                #sys.stderr.write("adding %s as %s.\n" % (updateItems[relationType], relationType))
                 metadata.insert(0, newDateGroup)
             else:
                 pass
+                message += "%s already exists in %s, not updated.<br/>" % (updateItems[relationType], relationType)
                 sys.stderr.write("%s already exists in %s, not updated.<br/>" % (updateItems[relationType], relationType))
 
         elif relationType in 'ipAudit doNotPublishOnWeb argusDescription copyrightHolder fieldCollectionPlace'.split(' '):
-            sys.stderr.write("handling %s \n" % relationType)
+            #sys.stderr.write("handling %s \n" % relationType)
             element = relationType
             if element in updateItems:
                 e = root.find('.//%s' % element)
                 if e is None:
-                    message += "&lt;%s&gt; not found, not inserted <br/>" % element
-                    sys.stderr.write("%s not found, not inserted\n") % element
-                    # get rid of the existing one
-                    #collectionobjects_omca.remove(e)
+                    e = etree.Element(element)
+                    e.text = updateItems[element]
+                    schema = '{http://collectionspace.org/services/collectionobject/local/omca}collectionobjects_omca'
+                    if relationType == 'fieldCollectionPlace':
+                        schema = '{http://collectionspace.org/services/collectionobject}collectionobjects_common'
+                    collectionobjects_schema = root.find('.//%s' % schema)
+                    collectionobjects_schema.append(e)
+                    #message += "&lt;%s&gt; not found, created new one<br/>" % element
+                    #sys.stderr.write("%s not found, created new one\n" % element)
                 else:
                     #message += "'%s' added as &lt;%s&gt;.<br/>" % (updateItems[element], element)
                     e.text = updateItems[element]
                     #message += "'%s' updated as &lt;%s&gt;.<br/>" % (updateItems[element], element)
-                    sys.stderr.write('updated ' + etree.tostring(e) + "\n")
+                    #sys.stderr.write('updated ' + etree.tostring(e) + "\n")
 
         else:
             # check if value is already present. if so, skip
@@ -2456,7 +2472,7 @@ def updateKeyInfo(fieldset, updateItems, config, form):
     payload = '<?xml version="1.0" encoding="UTF-8"?>\n' + etree.tostring(root,encoding='utf-8')
     # update collectionobject..
     sys.stderr.write("post update to %s to REST API..." % updateItems['objectCsid'])
-    #sys.stderr.write(etree.tostring(root))
+    #sys.stderr.write(etree.tostring(root) + "\n")
     (url, data, csid, elapsedtime) = postxml('PUT', uri, realm, hostname, username, password, payload)
     writeLog(updateItems, uri, 'PUT', username, config)
 

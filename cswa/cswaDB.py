@@ -890,7 +890,7 @@ FROM collectionobjects_omca coom
   LEFT OUTER JOIN objectproductionplacegroup objprdplaceg ON (h23.id = objprdplaceg.id)
   LEFT OUTER JOIN hierarchy h24 ON (h24.parentid = coc.id AND h24.name='collectionobjects_common:objectProductionDateGroupList' AND h24.pos=0)
   LEFT OUTER JOIN structureddategroup opd ON (h24.id = opd.id)
-  LEFT OUTER JOIN hierarchy h10 ON (h10.parentid = coc.id AND h10.pos = 0 AND h10.name = 'collectionobjects_common:fieldCollectionDateGroup')
+  LEFT OUTER JOIN hierarchy h10 ON (h10.parentid = coc.id AND h10.name = 'collectionobjects_common:fieldCollectionDateGroup')
   LEFT OUTER JOIN structureddategroup fcd ON (fcd.id = h10.id)
   LEFT OUTER JOIN hierarchy h25 ON (h25.parentid=coc.id AND h25.primarytype='techniqueGroup' AND h25.pos = 0 )
   LEFT OUTER JOIN techniquegroup tg ON (tg.id=h25.id)
@@ -1038,7 +1038,7 @@ def getrefname(table, term, config):
         query = "select %s from %s where %s ILIKE '%%''%s''%%' LIMIT 1" % (
             column, table, column, term.replace("'", "''"))
 
-    sys.stderr.write('query: %s \n' % query)
+    #sys.stderr.write('query: %s \n' % query)
     try:
         objects.execute(query)
         return objects.fetchone()[0]
@@ -1136,7 +1136,7 @@ ORDER BY Parent, Child
     elif query in ['place', 'location', 'concept', 'organization']:
 
         query = query.capitalize() # go figger!
-        sys.stderr.write('query: %s\n' % query)
+        #sys.stderr.write('query: %s\n' % query)
         gethierarchy = """
 SELECT DISTINCT
 	regexp_replace(tc.refname, '^.*\\)''(.*)''$', '\\1') Child,
@@ -1152,7 +1152,7 @@ FROM public.%ss_common tc
 ORDER BY Parent, Child""" % (query, query, query, query)
 
     else:
-        sys.stderr.write('query: %s\n' % query)
+        #sys.stderr.write('query: %s\n' % query)
         gethierarchy = """
 SELECT DISTINCT
 	regexp_replace(tc.refname, '^.*\\)''(.*)''$', '\\1') Child,
