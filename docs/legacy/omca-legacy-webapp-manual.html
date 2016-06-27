@@ -84,6 +84,8 @@ A map they could all understand.
                 <td>
                   <li><a href="#si">Systematic Inventory</a></li>
                   <li><a href="#pm">Power Move</a></li>
+                  <li><a href="#mg">Move Group</a></li>
+                  <li><a href="#mor">Move Object Range</a></li>
                   <li><a href="#bmu">Bulk Media Upload</a></li>
                   <li><a href="#ceo">Create Empty Objects</a></li>
                 </td>
@@ -167,7 +169,37 @@ A map they could all understand.
             <td style="page-break-before:avoid">
               <hr/>
               <div><a href="pm1.png"><img src="pm1.png" width="600px"/></a></div>
-              <p>This webapp allows registrars, collections managers, and conservators to record the movement of all objects at a location to a new storage location. The user must specify the current storage location and the desired new storage location. The user can choose to exclude any objects from the planned move (for instance, if objects were removed just prior to the planned move) by selecting the "Don't Move" radio button.  Once "Move Objects By Location" is clicked, all displayed objects marked as "Move" will be recorded as having been moved to the new storage location, while remaining in their current box. Objects marked as "Don't" will of course remain unchanged.</p>
+              <p>This webapp allows registrars, collections managers, and conservators to record the movement of all objects at a location to a new storage location. The user must specify the current storage location and the desired new storage location. The user can choose to exclude any objects from the planned move (for instance, if objects were removed just prior to the planned move) by selecting the "Don't Move" radio button.  Once "Move Objects By Location" is clicked, all displayed objects marked as "Move" will be recorded as having been moved to the new storage location. Objects marked as "Don't" will of course remain unchanged.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="page-break-before:avoid">
+              <hr/>
+              <div><a href="mg1.png"><img src="mg1.png" width="600px"/></a></div>
+              <p>This webapp allows registrars, collections managers,
+	      and conservators to record the movement of all objects in a
+	      group to a new storage location. The user can choose to exclude
+	      any objects from the planned move (for instance, if objects were
+	      removed just prior to the planned move) by selecting the "Don't
+	      Move" radio button.  Once "Move Objects in Group" is clicked,
+	      all displayed objects marked
+	      as "Move" will be recorded as having been moved to the
+	      new storage location. Objects marked as "Don't Move" will of course remain unchanged.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="page-break-before:avoid">
+              <hr/>
+              <div><a href="mor1.png"><img src="mor1.png" width="600px"/></a></div>
+              <p>This webapp allows registrars, collections managers,
+	      and conservators to record the movement of all objects
+	      accession number range to a new storage location. The user can choose to exclude
+	      any objects from the planned move (for instance, if objects were
+	      removed just prior to the planned move) by selecting the "Don't
+	      Move" radio button.  Once "Move Objects in Group" is clicked,
+	      all displayed objects marked
+	      as "Move" will be recorded as having been moved to the
+	      new storage location. Objects marked as "Don't Move" will of course remain unchanged.</p>
             </td>
           </tr>
           <tr>
@@ -279,6 +311,45 @@ A map they could all understand.
         <ul>
           <li>NB: the objects are not updated in order, alas.</li>
           <li>You can save or print this page for your records.</li>
+	</ul>
+	<a id="mg"/>
+        <h3 class="subheader">Move Group: Steps 1 &amp; 2, Initial Data Entry and Verfication</h3>
+        <img src="mg1.png" width="800px"/>
+        <h4>Inputs and Outputs</h4>
+        <ul>
+          <li>Group Title</li>
+          <li>To Location</li>
+          <li>Reason</li>
+          <li>Handler</li>
+        </ul>
+        <h4>Remarks</h4>
+        <ul>
+          <li>Shows the objects that will be moved.</li>
+          <li>You can use the check boxes under "Move?" to prevent individual items from being moved.</li>
+	</ul>
+	<a id="mor"/>
+        <h3 class="subheader">Move Object Range: Step 1, Initial Data Entry</h3>
+        <img src="mor1.png" width="800px"/>
+        <h4>Inputs and Outputs</h4>
+        <ul>
+          <li>Starting object number</li>
+          <li>Ending Object Number</li>
+          <li>Reason</li>
+          <li>Handler</li>
+        </ul>
+        <h4>Remarks</h4>
+        <ul>
+          <li>Shows the objects that will be moved.</li>
+	</ul>
+        <h3 class="subheader">Move Object Range: Step 2, Verify Locations, Select Objects to Move</h3>
+        <img src="mor2.png" width="800px"/>
+        <h4>Remarks</h4>
+        <ul>
+          <li>The objects in the range you entered is shown</li>
+          <li>You can uncheck the check boxes labelled "Move?" to prevent individual items from being moved.</li>
+          <li>You should not try to do more than a few hundred objects at a time</li>
+          <li>A few dozen is probably the practical limit</li>
+          <li>When you are satisfied with the set of object to move, click "Move Selected Objects"</li>
         </ul>
       <a id="pm"/>
         <h3 class="subheader">Power Move: Steps 1 &amp; 2, Initial Data Entry and Verfication</h3>
@@ -287,10 +358,6 @@ A map they could all understand.
         <ul>
           <li>From Location</li>
           <li>To Location</li>
-          <li>From Crate</li>
-          <li>To Crate</li>
-          <li>Reason</li>
-          <li>Handler</li>
           <li>Reason</li>
           <li>Handler</li>
         </ul>
@@ -411,7 +478,7 @@ A map they could all understand.
         </ul>
       <a id="ceo"/>
         <h3 class="subheader">Create Empty Objects: Step 1, Initial Data Entry</h3>
-        <img src="boe2.png" width="800px"/>
+        <img src="ceo1.png" width="800px"/>
         <h4>Inputs and Outputs</h4>
         <ul>
           <li>Year</li>
@@ -421,9 +488,11 @@ A map they could all understand.
         </ul>
         <h4>Remarks</h4>
         <ul>
-          <li>Enter the 3 parts of a museum number, the webapp will compute the range of object numbers using the <pre>count</pre>
-            field. E.g. <pre>2016.9.12</pre>. The program checks to see that none of the object numbers already exists,
-            but it does not at them moment help you find the last values to use.
+          <li>Enter the 3 parts of a museum number, the webapp will compute the range of object numbers using the <tt>count</tt>
+            field. E.g.if you enter 2015, 9, and 12 in the first three fields, and enter one for count, the app will try to create one
+	    object record with accessinon number <tt>2016.9.12</tt>.
+	  <li>The program checks to see that none of the object numbers already exists,
+            but it does not at the moment help you find the last values to use if you are trying to add on to an existing series.</li>
           </li>
         </ul>
 
