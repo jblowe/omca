@@ -1,6 +1,7 @@
 import csv
 import sys
 import re
+import datetime
 import requests
 from requests.auth import HTTPBasicAuth
 import time
@@ -40,6 +41,7 @@ def mediaPayload(mh, institution):
 <ns2:media_INSTITUTION xmlns:ns2="http://collectionspace.org/services/media/local/INSTITUTION" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <approvedForWeb>{approvedforweb}</approvedForWeb>
 <primaryDisplay>false</primaryDisplay>
+#OMCAINFO#
 #IMAGENUMBERELEMENT#
 #LOCALITY#
 </ns2:media_INSTITUTION>
@@ -80,8 +82,25 @@ def mediaPayload(mh, institution):
                                       </localityGroup></localityGroupList>''' % mh['locality'])
             # payload = payload.replace('#LOCALITY#', '<locality>%s</locality>' % mh['locality'])
 
+    elif institution == 'omca':
+        # xxx = re.sub(r"^urn:.*'(.*)'", r'\1', xxx)
+        # make up an idenfication number "BMUYYYY-MMM-DDD-HH-MM-NNN"
+        locdate = datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S")
+        mh['referencenumber'] = 'BMU' + locdate
+        payload = re.sub('<identificationNumber>.*</identificationNumber>', '<identificationNumber>%s</identificationNumber>' % mh['referencenumber'], payload)
+        # zap the title field
+        payload = re.sub('<title>.*</title>', '<title></title>', payload)
+        # somehow, this strange name seems to be used...
+        payload = payload.replace('<approvedForWeb>true</approvedForWeb>','<approveForPublic>true</approveForPublic>')
+        payload = payload.replace('<approvedForWeb>false</approvedForWeb>','<approveForPublic>false</approveForPublic>')
+        # insert two omca valued, in particular the original file name field
+        payload = payload.replace('#OMCAINFO#', 
+                                      '''<originalFileName>%s</originalFileName>
+                                      <sortableIdentificationNumber>%s</sortableIdentificationNumber>''' % (mh['name'],mh['referencenumber']))
+
     # clean up anything that might be left
     payload = payload.replace('#IMAGENUMBERELEMENT#', '')
+    payload = payload.replace('#OMCAINFO#', '')
     payload = payload.replace('#LOCALITY#', '')
     payload = payload.replace('INSTITUTION', institution)
 
@@ -146,7 +165,7 @@ def uploadmedia(mediaElements, config, http_parms):
             """
 
             try:
-                postxml('POST', 'batch/563d0999-d29e-4888-b58d', http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, primary_payload)
+                postxml('POST', 'batch/563d0999-d29e-4888-b58d', http_parms.realm, hostname, http_parms.username, http_parms.password, primary_payload)
             except:
                 print "batch job to set primary image failed."
 
@@ -179,7 +198,7 @@ def uploadmedia(mediaElements, config, http_parms):
             mediaElements['subjectDocumentType'] = 'Media'
 
             payload = relationsPayload(mediaElements)
-            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, payload)
+            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, hostname, http_parms.username, http_parms.password, payload)
             # elapsedtimetotal += elapsedtime
             messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
             mediaElements['media2objCSID'] = csid
@@ -193,7 +212,7 @@ def uploadmedia(mediaElements, config, http_parms):
             mediaElements['objectDocumentType'] = 'Media'
             mediaElements['subjectDocumentType'] = 'CollectionObject'
             payload = relationsPayload(mediaElements)
-            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, payload)
+            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, hostname, http_parms.username, http_parms.password, payload)
             #elapsedtimetotal += elapsedtime
             messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
             mediaElements['obj2mediaCSID'] = csid
@@ -291,9 +310,11 @@ if __name__ == "__main__":
         for v1, v2 in enumerate(columns):
             mediaElements[v2] = r[v1]
         mediaElements['approvedforweb'] = 'true' if mediaElements['approvedforweb'] == 'on' else 'false'
-        print 'uploading media for objectnumber %s' % mediaElements['objectnumber']
+        print 'MEDIA: uploading media for objectnumber %s' % mediaElements['objectnumber']
         try:
             mediaElements = uploadblob(mediaElements, config, http_parms)
+            print "MEDIA: blobcsid: %s, %8.2f" % (
+                mediaElements['blobCSID'], (time.time() - elapsedtimetotal))
             mediaElements = uploadmedia(mediaElements, config, http_parms)
             print "MEDIA: objectnumber %s, objectcsid: %s, mediacsid: %s, %8.2f" % (
                 mediaElements['objectnumber'], mediaElements['objectCSID'], mediaElements['mediaCSID'],
@@ -302,6 +323,7 @@ if __name__ == "__main__":
             r.append(mediaElements['objectCSID'])
             outputfh.writerow(r)
         except:
+            #raise
             print "MEDIA: create failed for objectnumber %s, %8.2f" % (
                 mediaElements['objectnumber'], (time.time() - elapsedtimetotal))
 

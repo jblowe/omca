@@ -73,7 +73,7 @@ def getConfig(form):
 
 def postxml(requestType, uri, realm, hostname, username, password, payload):
     port = ''
-    protocol = 'https'
+    protocol = 'http'
     server = protocol + "://" + hostname + port
     passman = urllib2.HTTPPasswordMgr()
     passman.add_password(realm, server, username, password)
