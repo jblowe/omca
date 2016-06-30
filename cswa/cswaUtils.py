@@ -878,11 +878,12 @@ def doBulkEdit(form, config):
     except:
         objs = []
 
-
+    # sys.stderr.write('number of objs: %s \n' % len(objs))
     CSIDs = []
     fieldset = form.get('fieldset')
     for row in objs:
         CSIDs.append(row[8])
+        # sys.stderr.write('csid: %s = %s\n' % (row[8], row[0]))
 
     refNames2find = {}
 
@@ -933,6 +934,10 @@ def doBulkEditForm(form, config, displaytype):
         objs = []
 
     totalobjects = len(objs)
+
+    if totalobjects == 0:
+        print '<span style="color:red;">No objects found! Sorry!</span>'
+        return
 
     print '''<table width="100%" cellpadding="8px"><tbody><tr class="smallheader">
       <td width="250px">Field</td>
