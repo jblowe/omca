@@ -118,7 +118,7 @@ done
 # wrap things up: make a gzipped version of what was loaded
 ##############################################################################
 # get rid of intermediate files
-#rm d?.csv d6a.csv m?.csv part*.csv basic.csv
+rm temp*.csv t?.*.csv d?.csv d6a.csv m?.csv part*.csv basic.csv
 # zip up .csvs, save a bit of space on backups
 #gzip -f *.csv
 date

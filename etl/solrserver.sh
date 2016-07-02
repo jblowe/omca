@@ -15,7 +15,7 @@
 DBGLOG=/tmp/initddbg.log
 DBGFLAG=1
 
-SOLRDIR="/home/johnl/solr4/omca"
+SOLRDIR="/xxx/solr4/omca"
 KEY="-DSTOP.KEY=\"Requiescat\""
 MEM="-Xmx512m"
 JARFILE="-Dsolr.solr.home=multicore -jar start.jar"
