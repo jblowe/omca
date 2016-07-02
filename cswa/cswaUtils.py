@@ -2911,8 +2911,16 @@ def formatInfoReviewForm(form):
         if fieldSet == f:
             rows = ''
             for x in OMCADATA[f]:
-                if 'Museum #' in x[0]: continue
-                rows += """<tr><th>%s</th><td class="zcell"><input class="xspan" type="text" size="50" name="%s.user"></td>""" % (x[0],x[2])
+                # print x
+                if 'objnum' == x[1]:
+                    continue
+                if 'ipAudit' == x[1]:
+                    rows += '<tr><th>IP Audit</th><td class="zcell">' + getDropdown(x[2], 'user', ipAuditValues(), '') + '</td></tr>'
+                elif 'doNotPublishOnWeb' == x[1]:
+                    rows += '</tr><th>Do Not Publish</th><td class="zcell">' + getDropdown(x[2], 'user', [('Do not publish','true'),('Publish','false')], '') + '</td></tr>'
+                    # sys.stderr.write('dnp: %s\n' % (''))
+                else:
+                    rows += """<tr><th>%s</th><td class="zcell"><input class="xspan" type="text" name="%s.%s"></td></tr>""" % (x[0], x[2], 'user')
             return rows
 
 def formatError(cspaceObject):
