@@ -84,7 +84,7 @@ def mediaPayload(mh, institution):
 
     elif institution == 'omca':
         # xxx = re.sub(r"^urn:.*'(.*)'", r'\1', xxx)
-        # make up an idenfication number "BMUYYYY-MMM-DDD-HH-MM-NNN"
+        # make up an idenfication number "BMUYYYYMMMDDDHHMMSS"
         locdate = datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S")
         mh['referencenumber'] = 'BMU' + locdate
         payload = re.sub('<identificationNumber>.*</identificationNumber>', '<identificationNumber>%s</identificationNumber>' % mh['referencenumber'], payload)
@@ -94,7 +94,7 @@ def mediaPayload(mh, institution):
         payload = payload.replace('<approvedForWeb>true</approvedForWeb>','<approveForPublic>true</approveForPublic>')
         payload = payload.replace('<approvedForWeb>false</approvedForWeb>','<approveForPublic>false</approveForPublic>')
         # insert two omca valued, in particular the original file name field
-        payload = payload.replace('#OMCAINFO#', 
+        payload = payload.replace('#OMCAINFO#',
                                       '''<originalFileName>%s</originalFileName>
                                       <sortableIdentificationNumber>%s</sortableIdentificationNumber>''' % (mh['name'],mh['referencenumber']))
 
