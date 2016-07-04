@@ -1145,9 +1145,9 @@ SELECT DISTINCT
 	h2.name ParentKey
 FROM public.%ss_common tc
 	INNER JOIN misc m ON (tc.id=m.id AND m.lifecyclestate<>'deleted')
-	INNER JOIN hierarchy h ON (tc.id = h.id AND h.primarytype LIKE '%sitem%%')
+	INNER JOIN hierarchy h ON (tc.id = h.id AND h.primarytype LIKE '%s%%')
 	LEFT OUTER JOIN public.relations_common rc ON (h.name = rc.subjectcsid)
-	LEFT OUTER JOIN hierarchy h2 ON (h2.primarytype LIKE '%sitem%%' AND rc.objectcsid = h2.name)
+	LEFT OUTER JOIN hierarchy h2 ON (h2.primarytype LIKE '%s%%' AND rc.objectcsid = h2.name)
 	LEFT OUTER JOIN %ss_common tc2 ON (tc2.id = h2.id)
 ORDER BY Parent, Child""" % (query, query, query, query)
 

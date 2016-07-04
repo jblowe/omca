@@ -58,6 +58,8 @@ def dbtransaction(form):
         srchindex = 'longplace2'
     elif srchindex in ['pc']:
         srchindex = 'person'
+    elif srchindex in ['or']:
+        srchindex = 'organization'
     else:
         srchindex = 'concept2'
 
@@ -114,6 +116,8 @@ def dbtransaction(form):
             template = makeTemplate('placetermgroup', 'termdisplayname', "like '%s%%'")
         elif srchindex == 'person':
             template = makeTemplate('persontermgroup', 'termdisplayname', "like '%s%%'")
+        elif srchindex == 'organization':
+            template = makeTemplate('orgtermgroup', 'termdisplayname', "like '%s%%'")
         elif srchindex == 'taxon':
             template = makeTemplate('taxontermgroup', 'termdisplayname', "like '%s%%'")
         else:
