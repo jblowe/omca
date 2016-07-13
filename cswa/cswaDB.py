@@ -1040,15 +1040,16 @@ def getrefname(table, term, config):
                JOIN hierarchy h1 ON h1.id=tt.id
                JOIN misc ON misc.id=h1.id and misc.lifecyclestate <> 'deleted'
                WHERE %s ILIKE '%%''%s''%%'
-               """ % (
+               LIMIT 1""" % (
             column, table, column, term.replace("'", "''"))
 
     #sys.stderr.write('query: %s \n' % query)
     try:
         objects.execute(query)
-        return objects.fetchone()[0]
+        refname = objects.fetchone()
+        return refname[0]
     except:
-        return term,''
+        return term
 
 
 def findrefnames(table, termlist, config):
@@ -1396,6 +1397,7 @@ if __name__ == "__main__":
     config = getConfig(form)
     print getrefname('concepts_common', 'Yurok', config)
     print getrefname('persons_common', 'Dorothea Lange', config)
+    print getrefname('concepts_common', 'Crusade Church', config)
     sys.exit()
 
     form = {'webapp': 'ucbgLocationReportV321'}
